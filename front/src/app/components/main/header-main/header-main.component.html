@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg, #1e3c72, #2a5298);">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-white" routerLink="/">Cartify</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link text-light active" routerLink="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a  class="nav-link text-light active" [routerLink]="['/myorders', userEmail]">My Orders</a>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <!-- Cart Link with Item Count -->
+        <a routerLink="/cart" class="btn btn-outline-light me-2 fw-bold">
+          Cart (<span>{{ cartItemCount }}</span>)
+        </a>
+        <a class="btn btn-outline-light me-2 fw-bold" routerLink="/login">Login</a>
+        <a class="btn btn-light fw-bold text-dark" routerLink="/register">Register</a>
+        <!-- <a class="btn btn-danger fw-bold text-light" (click)="signOut()">Logout</a> -->
+      </div>
+    </div>
+  </div>
+</nav>

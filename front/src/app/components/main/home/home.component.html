@@ -1,0 +1,25 @@
+<app-banner></app-banner>
+
+<section class="container py-5">
+  <h2 class="text-center fw-bold mb-4 text-primary">Explore Our Products</h2>
+  <div class="row">
+    <!-- Dynamically Render Products -->
+    <div class="col-lg-4 col-md-6 mb-4" *ngFor="let product of products">
+      <div class="card" style="width: 18rem;">
+        <img [src]="'https://localhost:7125/' + product.productImagePath" class="card-img-top" [alt]="product.productName" style="height: 12rem; object-fit: contain;">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.productName }}</h5>
+          <p class="card-text"><strong>Price:</strong> ₹{{ product.productPrice }}</p>
+          <p class="card-text"><strong>Stock Left:</strong> {{ product.productQuantity }}</p>
+          <p class="card-text"><strong>Features:</strong> {{ product.productFeatures }}</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-primary btn-sm" (click)="addToCart(product)">Add to Cart</button>
+            <button class="btn btn-secondary btn-sm">More Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-related-data></app-related-data>

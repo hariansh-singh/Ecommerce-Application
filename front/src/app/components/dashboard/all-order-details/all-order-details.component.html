@@ -1,0 +1,62 @@
+<div class="container my-5">
+  <h2 class="text-center text-primary mb-4">All Orders</h2>
+
+  <!-- Responsive Table Wrapper -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered align-middle">
+      <thead class="table-dark text-center">
+        <tr>
+          <th>Order ID</th>
+          <th>User Email</th>
+          <th>Order Date</th>
+          <th>Total Amount</th>
+          <th>Status</th>
+          <th>Payment Method</th>
+          <th>Shipping Address</th>
+          <th>Order Items</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td class="text-center">{{ order.orderID }}</td>
+          <td>{{ order.userEmail }}</td>
+          <td>{{ order.orderDate | date: 'medium' }}</td>
+          <td class="text-end text-success fw-bold">{{ order.totalAmount | currency }}</td>
+          <td class="text-center">
+            <span class="badge"
+              [ngClass]="{
+                'bg-success': order.status === 'Delivered',
+                'bg-warning': order.status === 'Pending',
+                'bg-danger': order.status === 'Cancelled'
+              }">
+              {{ order.status }}
+            </span>
+          </td>
+          <td>{{ order.paymentMethod }}</td>
+          <td>{{ order.shippingAddress }}</td>
+          <td>
+            <!-- Nested Table -->
+            <table class="table table-sm table-bordered mb-0">
+              <thead class="table-light">
+                <tr class="text-center">
+                  <th>Product ID</th>
+                  <th>Quantity</th>
+                  <th>Unit Price</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of order.orderItems">
+                  <td class="text-center">{{ item.productId }}</td>
+                  <td class="text-center">{{ item.quantity }}</td>
+                  <td class="text-end">{{ item.unitPrice | currency }}</td>
+                  <td class="text-end">{{ item.subtotal | currency }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

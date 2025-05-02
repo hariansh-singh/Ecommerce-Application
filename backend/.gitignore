@@ -1,0 +1,62 @@
+# Compiled files
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+
+# NuGet dependencies
+*.nupkg
+packages/
+project.lock.json
+
+# Runtime-generated files
+logs/
+debug.log
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Staging.json
+secrets.json
+.env
+
+# User-specific files
+*.swp
+*.*~
+*.DS_Store
+
+# JetBrains Rider / VS Code settings
+.idea/
+.vscode/
+
+# Test results
+TestResults/
+
+# Entity Framework Migrations
+Migrations/
+**/Migrations/
+*.db
+*.mdf
+*.ldf
+
+# Local database files
+*.sqlite
+*.sqlite3
+*.bak
+
+# Docker-related
+docker-compose.override.yml
+*.dockerignore
+
+# Node.js dependencies (if applicable)
+node_modules/
+
+# Temporary files
+Thumbs.db
+desktop.ini

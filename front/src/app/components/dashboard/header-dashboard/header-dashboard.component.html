@@ -1,0 +1,65 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm" style="background: linear-gradient(90deg, #1e3c72, #2a5298);">
+    <div class="container px-4 px-lg-5">
+      <!-- Brand Section -->
+      <a class="navbar-brand fw-bold text-white" style="font-size: 1.5rem;" routerLink="/">
+        <i class="bi-shop me-2"></i>Cartify
+      </a>
+      <!-- Responsive Navbar Toggler -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Left Navigation Links -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+          <li class="nav-item">
+            <a class="nav-link active text-white" aria-current="page" routerLink="/dashboard">
+              <i class="bi-house-door me-1"></i>Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" aria-current="page" routerLink="addProduct">
+              <i class="bi-plus-circle me-1"></i>Add Product
+            </a>
+          </li>
+          <!-- Dropdown for Orders -->
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle text-white"
+              href="#"
+              id="ordersDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="bi-bag me-1"></i>Orders
+            </a>
+            <ul class="dropdown-menu shadow-sm" aria-labelledby="ordersDropdown">
+              <li>
+                <a class="dropdown-item" [routerLink]="['/myorders', userData?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']]">
+                  <i class="bi-cart-check me-2"></i>My Orders
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/dashboard/allorders">
+                  <i class="bi-people me-2"></i>All Orders
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <!-- Right Section: User Info and Logout -->
+        <form class="d-flex align-items-center">
+          <span class="mx-3 text-white fw-bold">Welcome, {{userData?.["FullName"]}}</span>
+          <button class="btn btn-outline-light fw-bold px-3 mx-1" type="button" (click)="signOut()">Logout</button>
+        </form>
+      </div>
+    </div>
+  </nav>

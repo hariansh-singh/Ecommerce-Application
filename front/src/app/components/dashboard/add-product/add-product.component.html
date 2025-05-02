@@ -1,0 +1,31 @@
+<section class="container my-5  w-50">
+  <h1> Add Product</h1>
+  <form [formGroup]="myForm" (ngSubmit)="postProduct()">
+    <div class="mb-3">
+      <label  class="form-label">Category</label>
+      <input type="text" class="form-control" formControlName="ProductCategory">
+    </div>
+    <div class="mb-3">
+      <label  class="form-label">Product Name</label>
+      <input type="text" class="form-control" formControlName="ProductName">
+    </div>
+      <div class="mb-3">
+        <label  class="form-label">Price</label>
+        <input type="number" class="form-control" formControlName="ProductPrice">
+      </div>
+      <div class="mb-3">
+        <label  class="form-label">Quantity</label>
+        <input type="number" class="form-control" formControlName="ProductQuantity">
+      </div>
+     
+      <div class="mb-3">
+        <label  class="form-label">Features</label>
+        <input type="text" class="form-control" formControlName="ProductFeatures">
+      </div>
+      <div class="mb-3">
+          <label  class="form-label">Upload Image</label>
+          <input type="file" class="form-control" (change)="uploadFile($event)">
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="myForm.invalid">Submit</button>
+    </form>
+  </section>
