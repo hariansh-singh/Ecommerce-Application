@@ -1,6 +1,10 @@
 <nav class="navbar navbar-expand-lg" style="background-color: #333;">
   <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-white" routerLink="/">Sha.in</a>
+    <!-- <a class="navbar-brand fw-bold text-white" routerLink="/">Sha.in</a> -->
+    <a class="navbar-brand fw-bold text-white" routerLink="/" style="font-size: 2rem; font-family: 'Georgia', serif;">
+      Sha.in
+    </a>
+    
     <button
       class="navbar-toggler"
       type="button"
@@ -23,19 +27,23 @@
       </ul>
 
       <!-- Search Bar in the Middle -->
-      <form class="d-flex mx-auto" style="width: 600px;">
+      <form class="d-flex mx-auto" style="width: 700px;">
         <input class="form-control me-2" type="search" placeholder="Search Sha.in" aria-label="Search">
-        <button class="btn btn-outline-light" type="submit">Search</button>
+        <button class="nav-link text-white fw-bold active" type="submit">Search</button>
       </form>
 
       <div class="d-flex">
-        <!-- Cart Link with Item Count -->
-        <a routerLink="/cart" class="btn btn-outline-light me-2 fw-bold">
+        <a class="nav-link text-white fw-bold active" routerLink="/cart">
           Cart (<span>{{ cartItemCount }}</span>)
         </a>
-        <a class="btn btn-outline-light me-2 fw-bold" routerLink="/login">Login</a>
-        <a class="btn btn-light fw-bold text-dark" routerLink="/register">Register</a>
+        <a class="nav-link text-white fw-bold active" routerLink="/login">
+          Login
+        </a>
+        <a class="nav-link text-white fw-bold active" routerLink="/register">
+          Register
+        </a>
       </div>
+      
     </div>
   </div>
 </nav>

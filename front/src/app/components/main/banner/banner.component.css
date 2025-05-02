@@ -1,0 +1,14 @@
+.carousel-img {
+    width: 100%; /* Ensure full-width scaling */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Avoid stretched images */
+    border-radius: 10px; /* Keeps styling */
+  }
+  
+  
+  .carousel {
+    width: 100%; /* Allows it to take full width */
+    margin: 0 auto; /* Centers it */
+  }
+  
+

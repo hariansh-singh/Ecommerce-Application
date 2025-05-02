@@ -1,0 +1,5 @@
+.bg-light {
+    margin-top: -100px; /* Adjust this value based on how much overlap you want */
+    position: relative;
+    z-index: 2; /* Ensures the cards remain on top of the carousel */
+}
