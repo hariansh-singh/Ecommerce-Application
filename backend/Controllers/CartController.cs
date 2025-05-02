@@ -20,7 +20,7 @@ namespace backend.Controllers
         [HttpGet("{customerId}")]
         public async Task<IActionResult> GetCartItems(int customerId)
         {
-            var cartItems = await _cartRepository.GetCartByUserIdAsync(customerId;
+            var cartItems = await _cartRepository.GetCartByUserIdAsync(customerId);
             return Ok(new
             {
                 err = 0,

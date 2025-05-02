@@ -1,5 +1,8 @@
 using backend.DataAccessLayer;
+using backend.Repositories.CartRepository;
 using backend.Repositories.CustomerRepository;
+using backend.Repositories.OrderRepository;
+using backend.Repositories.ProductRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -51,6 +54,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<ICustomerRepository, ICustomerRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
 
 var app = builder.Build();
 Console.WriteLine($"Current Environment: {app.Environment.EnvironmentName}");
