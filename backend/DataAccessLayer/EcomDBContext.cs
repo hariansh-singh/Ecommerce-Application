@@ -7,10 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.DataAccessLayer
 {
-    public class EcomDBContext : DbContext
+    public class EcomDBContext(DbContextOptions<EcomDBContext> options) : DbContext(options)
     {
-        public EcomDBContext(DbContextOptions<EcomDBContext> options) : base(options) { }
-
         public DbSet<CustomerDBModel> Customers { get; set; }
         public DbSet<ProductDBModel> Products { get; set; }
         public DbSet<CartDBModel> Carts { get; set; }
