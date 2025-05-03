@@ -74,7 +74,7 @@ namespace backend.Repositories.ProductRepository
             return false;
         }
 
-        public async Task<List<ProductDBModel>?> GetAllProducts()
+        public async Task<List<ProductDBModel>> GetAllProducts()
         {
             return await dbContext.Products.ToListAsync();
         }

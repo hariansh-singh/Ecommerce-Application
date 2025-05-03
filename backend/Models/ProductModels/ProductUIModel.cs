@@ -7,7 +7,6 @@ namespace backend.Models.ProductModels
     {
 
         [Required]
-        [StringLength(100)]
         public string? ProductName { get; set; }
 
 
@@ -15,8 +14,7 @@ namespace backend.Models.ProductModels
         [Column(TypeName = "decimal(10, 2)")]
         public decimal ProductPrice { get; set; }
 
-
-        [StringLength(500)]
+        [Required]
         public string? Description { get; set; }
 
 

@@ -3,6 +3,7 @@ using backend.Repositories.ProductRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Controllers
 {
@@ -22,16 +23,7 @@ namespace backend.Controllers
         public async Task<IActionResult> GetAllProducts()
         {
             var allProducts = await productRepository.GetAllProducts();
-            if (allProducts != null)
-            {
-                return Ok(new
-                {
-                    err = 0,
-                    msg = "Products fetched successfully",
-                    data = allProducts,
-                });
-            }
-            else
+            if(allProducts.IsNullOrEmpty())
             {
                 return NotFound(new
                 {
@@ -39,6 +31,12 @@ namespace backend.Controllers
                     msg = "No product found",
                 });
             }
+            return Ok(new
+            {
+                err = 0,
+                msg = "Products fetched successfully",
+                data = allProducts,
+            });
         }
 
 
@@ -48,7 +46,11 @@ namespace backend.Controllers
             var res = await productRepository.GetProductById(productId);
             if (res == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    err = 1,
+                    msg = "Product does not exit"
+                });
             }
             return Ok(new
             {

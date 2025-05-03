@@ -21,7 +21,6 @@ namespace backend.Models.OrderModels
 
 
         [Required]
-        [StringLength(200)]
         public string? ShippingAddress { get; set; }
 
         [Required]

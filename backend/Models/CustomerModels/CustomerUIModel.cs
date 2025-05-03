@@ -5,7 +5,6 @@ namespace backend.Models.CustomerModels
     public class CustomerUIModel
     {
         [Required]
-        [StringLength(100)]
         public string? Name { get; set; }
 
 
@@ -15,7 +14,6 @@ namespace backend.Models.CustomerModels
 
 
         [Required]
-        [StringLength(50)]
         public string? Password { get; set; }
     }
 }

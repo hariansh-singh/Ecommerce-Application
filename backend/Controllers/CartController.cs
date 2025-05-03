@@ -2,6 +2,7 @@
 using backend.Repositories.CartRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Controllers
 {
@@ -21,10 +22,18 @@ namespace backend.Controllers
         public async Task<IActionResult> GetCartItems(int customerId)
         {
             var cartItems = await _cartRepository.GetCartByUserIdAsync(customerId);
+            if(cartItems.IsNullOrEmpty())
+            {
+                return Ok(new
+                {
+                    err = 1,
+                    msg = "No Cart found"
+                });
+            }
             return Ok(new
             {
                 err = 0,
-                msg = "Cart added successfully",
+                msg = "Cart fetched successfully",
                 data = cartItems
             });
         }
@@ -43,7 +52,11 @@ namespace backend.Controllers
             }
             else
             {
-                return Conflict("Cart item already exists.");
+                return Conflict(new
+                {
+                    err = 1,
+                    msg = "Cart item already exists."
+                });
             }
         }
     }

@@ -53,7 +53,7 @@ namespace backend.Repositories.CartRepository
 
         public async Task<List<CartDBModel>?> GetCartByUserIdAsync(int customerId)
         {
-            return await dbcontext.Carts.Where(c => c.CustomerId == customerId).ToListAsync();
+            return await dbcontext.Carts.Include(c => c.Products).Where(c => c.CustomerId == customerId).ToListAsync();
         }
 
         public async Task<bool> UpdateCartAsync(int cartId, CartUIModel cart)
