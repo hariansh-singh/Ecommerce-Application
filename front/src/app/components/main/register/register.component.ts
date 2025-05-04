@@ -16,12 +16,11 @@ export class RegisterComponent {
 
   myForm:FormGroup = new FormGroup(
     {
+      Name :new FormControl('',[Validators.required]),
       Email :new FormControl('',[Validators.required]),
       Password :new FormControl('',[Validators.required]),
-      FirstName :new FormControl('',[Validators.required]),
-      LastName :new FormControl('',[Validators.required]),
-      PhoneNumber :new FormControl('',[Validators.required]),
-      Age :new FormControl('',[Validators.required]),
+      // PhoneNumber :new FormControl('',[Validators.required]),
+      // Age :new FormControl('',[Validators.required]),
     }
   )
 

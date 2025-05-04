@@ -7,6 +7,7 @@ import { AuthStateService } from '../../../../services/auth-state.service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -16,13 +17,13 @@ export class LoginComponent {
   authService = inject(AuthService)
   authState = inject(AuthStateService);
   router = inject(Router);
-
+  errMsg: string = ''; // Declare the variable
   myForm:FormGroup = new FormGroup(
     {
       Email :new FormControl('',[Validators.required, Validators.email]),
       Password :new FormControl('',[Validators.required])
     }
-  )
+  );
 
   onSubmitLogin() {
     let formData = this.myForm.value;
@@ -32,30 +33,36 @@ export class LoginComponent {
       next: (data: any) => {
         console.log(data);
         
-        if (data.err === 0 && data.token) {
+        if (data && data.token) {
 
           localStorage.setItem('token', data.token);
-
+          try{
           const decodedToken: any = jwtDecode(data.token);
           console.log('Decoded Token:', decodedToken);
 
           this.authState.setLoginState(true);
 
-          const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+          const userRole = decodedToken["Role"];
           if (userRole === 'admin') {
             this.router.navigate(['/dashboard']);
           } else {
             this.router.navigate(['/']);
           }
+        }catch (error) {
+            this.errMsg = "Error decoding JWT token.";
+            console.error('JWT decoding error:', error);
+          }
 
-          alert("Login Successful!");
-        } else {
-          console.error('Login failed:', data.msg);
+        }else {
+          this.errMsg = data?.msg ?? "Login failed due to unknown error.";
+          console.error('Login failed:', this.errMsg);
         }
       },
       error: (err: any) => {
-        console.error('Error during login:', err);
-      }
+        this.errMsg = 'An error occurred during login';
+        console.error('Login API error:', err);
+        
+      }      
     });
 
   }

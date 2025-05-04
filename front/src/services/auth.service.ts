@@ -7,8 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class AuthService {
 
-  private API_URL = "https://localhost:7125"
-
+  private API_URL = 'https://localhost:7116/api/Auth/'; 
   constructor(private http:HttpClient) { }
 
     getToken() {  
@@ -24,11 +23,11 @@ export class AuthService {
     }
 
     signUp(data:any) {
-      return this.http.post("https://localhost:7125/api/Auth/addUser", data)
+      return this.http.post(`${this.API_URL}register`, data)
     }
 
     signIn(data:any) {
-      return this.http.post(`${this.API_URL}/api/Auth/Login`, data)
+      return this.http.post(`${this.API_URL}login`, data)
     }
 
 }
