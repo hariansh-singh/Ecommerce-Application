@@ -13,6 +13,6 @@ namespace backend.Repositories.CustomerRepository
 
         Task<bool> DeleteUser(string email);
 
-        Task<CustomerDBModel?> Login(string email, string password);
+        Task<CustomerDBModel?> Login(LoginModel user);
     }
 }

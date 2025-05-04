@@ -59,14 +59,14 @@ namespace backend.Repositories.CustomerRepository
             return await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<CustomerDBModel?> Login(string email, string password)
+        public async Task<CustomerDBModel?> Login(LoginModel user)
         {
-            var userLogin = await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == email);
+            var userLogin = await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == user.Email);
 
             if (userLogin != null)
             {
                 // Verify the input password with the stored hashed password
-                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, userLogin.Password);
+                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(user.Password, userLogin.Password);
 
                 if (isPasswordValid)
                 {

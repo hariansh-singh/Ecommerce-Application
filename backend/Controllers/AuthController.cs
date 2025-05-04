@@ -24,11 +24,11 @@ namespace backend.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(string email, [FromBody] string password)
+        public async Task<IActionResult> Login([FromForm]LoginModel user)
         {
             if (ModelState.IsValid)
             {
-                var customerLogin = await _customerRepository.Login(email, password);
+                var customerLogin = await _customerRepository.Login(user);
                 if (customerLogin == null)
                 {
                     return Ok(new
