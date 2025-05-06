@@ -18,54 +18,82 @@ namespace backend.Repositories.CartRepository
 
         public async Task<bool> AddCartAsync(CartUIModel cart)
         {
-            if (cart == null)
+            if (cart == null || cart.CustomerId <= 0 || cart.ProductId <= 0)
             {
-                return false; // Prevent null inputs
+                return false; // prevent invalid input
             }
 
-            var cartExists = await dbcontext.Carts.AnyAsync(c => c.CustomerId == cart.CustomerId && c.ProductId == cart.ProductId);
-            if (cartExists)
+            //check for existing cart item
+            var existingCartItem = await dbcontext.Carts
+                .FirstOrDefaultAsync(c => c.CustomerId == cart.CustomerId && c.ProductId == cart.ProductId);
+
+            if (existingCartItem != null)
             {
-                return false; // Prevent duplicate entries
+                //If exists update quantity
+                existingCartItem.Quantity += cart.Quantity;
+                dbcontext.Carts.Update(existingCartItem);
+
             }
-
-            var cartDB = mapper.Map<CartDBModel>(cart);
-
-            await dbcontext.Carts.AddAsync(cartDB);
-
+            else
+            {
+                // If it doesn't exist, create a new cart item
+                var cartDB = mapper.Map<CartDBModel>(cart);
+                await dbcontext.Carts.AddAsync(cartDB);
+            }
             await dbcontext.SaveChangesAsync();
-
             return true;
-        }
+           }
 
+        // delete cart items
         public async Task<bool> DeleteCartAsync(int cartId)
         {
-            var cart = await dbcontext.Carts.FindAsync(cartId);
+            if (cartId <=0)
+            {
+                return false; //invalid ID
+            }
+            var cart = await dbcontext.Carts.FindAsync(cartId).ConfigureAwait(false);
             if (cart == null)
             {
                 return false; // Cart item not found
             }
 
             dbcontext.Carts.Remove(cart);
-            await dbcontext.SaveChangesAsync();
+            await dbcontext.SaveChangesAsync().ConfigureAwait(false);
             return true;
         }
 
+        //get cart by user id
         public async Task<List<CartDBModel>?> GetCartByUserIdAsync(int customerId)
         {
-            return await dbcontext.Carts.Include(c => c.Products).Where(c => c.CustomerId == customerId).ToListAsync();
+            if (customerId <=0)
+            {
+                return null; //invalid customer id
+            }
+            return await dbcontext.Carts
+                .Include(c => c.Products)
+                .Where(c => c.CustomerId == customerId)
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
 
+        //update cart
         public async Task<bool> UpdateCartAsync(int cartId, CartUIModel cart)
         {
-            var existingCart = await dbcontext.Carts.FindAsync(cartId);
+            if (cartId <= 0 || cart == null)
+            {
+                return false;//invalid input
+            }
+
+            var existingCart = await dbcontext.Carts.FindAsync(cartId).ConfigureAwait(false);
             if (existingCart == null)
             {
                 return false; // Cart item not found
             }
 
+
             mapper.Map(cart, existingCart);
-            await dbcontext.SaveChangesAsync();
+            dbcontext.Update(existingCart);
+            await dbcontext.SaveChangesAsync().ConfigureAwait(false);
             return true;
         }
     }
