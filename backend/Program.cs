@@ -71,12 +71,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("devCorsPolicy");
 
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(
-//        Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
-//    RequestPath = "/uploads"
-//});
+
+var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+
+// Only use static files if the uploads directory exists
+if (Directory.Exists(uploadsPath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(uploadsPath),
+        RequestPath = "/uploads"
+    });
+}
 
 app.UseHttpsRedirection();
 

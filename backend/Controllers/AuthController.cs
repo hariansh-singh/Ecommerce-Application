@@ -24,7 +24,7 @@ namespace backend.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromForm]LoginModel user)
+        public async Task<IActionResult> Login([FromBody]LoginModel user)
         {
             if (ModelState.IsValid)
             {

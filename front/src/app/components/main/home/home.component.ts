@@ -44,4 +44,8 @@ export class HomeComponent implements OnInit {
     this.cartService.addToCart(product); 
     console.log('Product added to cart:', product); 
   }
+
+  getStars(): number[] {
+    return Array(4).fill(0).concat([0.5]); 
+  }
 }

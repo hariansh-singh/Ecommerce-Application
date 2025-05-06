@@ -13,6 +13,7 @@ import { CartService } from '../../../../services/cart.service'; // Import CartS
 })
 export class HeaderMainComponent implements OnInit {
   isLoggedIn: boolean = false;
+  userName: string = '';
   userEmail: string = '';
   cartItemCount: number = 0; // Variable to hold the cart item count
 
@@ -30,11 +31,18 @@ export class HeaderMainComponent implements OnInit {
     const token = this.authService.getToken();
     this.authState.setLoginState(!!token);
 
+    let userData: any = null;
+
     if (token) {
-      const userData: any = this.authService.decodedTokenData();
-      this.userEmail =
-        userData?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '';
+      userData = this.authService.decodedTokenData();
+      this.userName = userData?.['Name'] || '';
+      this.userEmail = userData?.['Email'] || '';
     }
+
+    
+    console.log('Decoded Token:', userData);
+    console.log('Extracted Name:', this.userName);
+
 
     // Subscribe to cart item count from CartService
     this.cartService.cartItemCount$.subscribe((count: number) => {

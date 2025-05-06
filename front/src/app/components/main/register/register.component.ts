@@ -19,23 +19,26 @@ export class RegisterComponent {
       Name :new FormControl('',[Validators.required]),
       Email :new FormControl('',[Validators.required]),
       Password :new FormControl('',[Validators.required]),
+<<<<<<< HEAD
       // PhoneNumber :new FormControl('',[Validators.required]),
       // Age :new FormControl('',[Validators.required]),
+=======
+>>>>>>> abbd3cb14004d446cd9030c2ddbd1c4a357937cb
     }
   )
 
   onSubmitRegister() {
     let formData = this.myForm.value;
-    this.authService.signUp(formData)
-      .subscribe({
-        next:(data:any) => {
-          console.log(data);
-          this.router.navigate(['/login']);
-        },
-        error: (err:any) => {
-          console.log(err);
-        }
-      
-      })
+    this.authService.signUp(formData).subscribe({
+      next: (data: any) => {
+        console.log(data);
+        alert("Registration successful!");
+        this.router.navigate(['/login']);
+      },
+      error: (err: any) => {
+        console.error(err);
+        alert("Registration failed. Please try again.");
+      }
+    });
   }
 }

@@ -1,20 +1,31 @@
 <app-banner></app-banner>
 
-<section class="container py-5">
-  <!-- <h2 class="text-center fw-bold mb-4 text-primary">Explore Our Products</h2> -->
-  <div class="row">
-    <!-- Dynamically Render Products -->
-    <div class="col-lg-4 col-md-6 mb-4" *ngFor="let product of products">
-      <div class="card" style="width: 18rem;">
-        <img [src]="'https://localhost:7125/' + product.productImagePath" class="card-img-top" [alt]="product.productName" style="height: 12rem; object-fit: contain;">
-        <div class="card-body">
-          <h5 class="card-title">{{ product.productName }}</h5>
-          <p class="card-text"><strong>Price:</strong> ₹{{ product.productPrice }}</p>
-          <p class="card-text"><strong>Stock Left:</strong> {{ product.productQuantity }}</p>
-          <p class="card-text"><strong>Features:</strong> {{ product.productFeatures }}</p>
-          <div class="d-flex justify-content-between">
-            <button class="btn btn-primary btn-sm" (click)="addToCart(product)">Add to Cart</button>
-            <button class="btn btn-secondary btn-sm">More Details</button>
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-6 col-lg-4 mb-4" *ngFor="let product of products">
+        <div class="card">
+          <div class="d-flex justify-content-between p-3">
+            <p class="lead mb-0">{{ product.description }}</p>
+            <div class="bg-info rounded-circle d-flex align-items-center justify-content-center shadow-1-strong"
+              style="width: 35px; height: 35px;">
+              <p class="text-white mb-0 small">x{{ product.stockQuantity }}</p>
+            </div>
+          </div>
+          <img [src]="'https://localhost:7116/' + product.productImagePath" class="card-img-top" [alt]="product.productName" />
+          <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+              <h5 class="mb-0">{{ product.productName }}</h5>
+              <h5 class="text-dark mb-0">${{ product.productPrice }}</h5>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <p class="text-muted mb-0">Available: <span class="fw-bold">{{ product.stockQuantity }}</span></p>
+              <div class="ms-auto text-warning">
+                <i *ngFor="let star of getStars()" class="fas fa-star"></i>
+                <i class="fas fa-stara-half-alt"></i>
+              </div>
+            </div>
+            <button class="btn btn-primary" (click)="addToCart(product)">Add to Cart</button>
           </div>
         </div>
       </div>
