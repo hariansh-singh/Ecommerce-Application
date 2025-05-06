@@ -1,49 +1,54 @@
-<nav class="navbar navbar-expand-lg" style="background-color: #333;">
-  <div class="container-fluid">
-    <!-- <a class="navbar-brand fw-bold text-white" routerLink="/">Sha.in</a> -->
-    <a class="navbar-brand fw-bold text-white" routerLink="/" style="font-size: 2rem; font-family: 'Georgia', serif;">
-      Sha.in
-    </a>
+<nav class="navbar navbar-expand-lg shadow-lg" style="background: linear-gradient(90deg, #222, #444);">
+  <div class="container-fluid d-flex align-items-center">
     
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link text-white active" routerLink="/">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white active" [routerLink]="['/myorders', userEmail]">My Orders</a>
-        </li>
-      </ul>
+    <!-- Icon-Based Logo with Animation -->
+    <a class="navbar-brand fw-bold text-white d-flex align-items-center animate-logo" routerLink="/">
+      <i class="fas fa-shopping-bag fs-3 me-2 text-warning"></i>
+      <span class="text-light brand-name">Sha<span class="brand-sub">.in</span></span>
+    </a>
 
-      <!-- Search Bar in the Middle -->
-      <form class="d-flex mx-auto" style="width: 700px;">
-        <input class="form-control me-2" type="search" placeholder="Search Sha.in" aria-label="Search">
-        <button class="nav-link text-white fw-bold active" type="submit">Search</button>
-      </form>
-
-      <div class="d-flex">
-        <a class="nav-link text-white fw-bold active" routerLink="/cart">
-          Cart (<span>{{ cartItemCount }}</span>)
-        </a>
-        <a class="nav-link text-white fw-bold active" routerLink="/login">
-          Login
-        </a>
-        <a class="nav-link text-white fw-bold active" routerLink="/register">
-          Register
-        </a>
+    <!-- Search Bar -->
+    <div class="d-flex flex-grow-1 justify-content-center">
+      <div class="input-group animate-search" style="max-width: 500px;">
+        <input type="text" class="form-control rounded-start border-0 search-input bg-light" placeholder="Search for products...">
+        <button class="btn btn-warning rounded-end search-button" type="submit">
+          <i class="fas fa-search"></i>
+        </button>
       </div>
-      
     </div>
+
+    <!-- Account & Cart Icons -->
+    <div class="d-flex align-items-center">
+      <ng-container *ngIf="!isLoggedIn">
+        <a class="nav-link text-light fw-bold px-3 animate-link" routerLink="/login">
+          <i class="fas fa-user-circle fs-4 text-warning"></i> Login
+        </a>
+        <a class="nav-link text-light fw-bold px-3 animate-link" routerLink="/register">
+          <i class="fas fa-user-plus fs-4 text-warning"></i> Register
+        </a>
+      </ng-container>
+
+      <ng-container *ngIf="isLoggedIn">
+
+        <!-- User Dropdown Menu -->
+        <div class="dropdown">
+          <button class="btn btn-dark dropdown-toggle fw-bold ms-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Welcome, <span class="text-gold">{{ userName }}</span>
+        </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
+            <li><a class="dropdown-item" [routerLink]="['/myorders', userEmail]">My Orders</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><button class="dropdown-item text-danger fw-bold" (click)="signOut()">Logout</button></li>
+          </ul>
+        </div>
+
+        <!-- Cart Icon -->
+        <a class="nav-link text-light fw-bold px-3 animate-cart" routerLink="/cart">
+          <i class="fas fa-shopping-cart fs-4 text-warning"></i> <span class="badge bg-light text-danger">{{ cartItemCount }}</span>
+        </a>
+      </ng-container>
+    </div>
+
   </div>
 </nav>

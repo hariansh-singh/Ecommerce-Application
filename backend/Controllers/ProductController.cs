@@ -62,7 +62,7 @@ namespace backend.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "seller")]
+        //[Authorize(Roles = "seller")]
         public async Task<IActionResult> AddProduct([FromForm] ProductUIModel product)
         {
             var result = await productRepository.AddProduct(product);

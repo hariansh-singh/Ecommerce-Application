@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { AuthStateService } from '../../../../services/auth-state.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -26,6 +26,9 @@ export class LoginComponent {
 
   onSubmitLogin() {
     let formData = this.myForm.value;
+    // formData.append("Email", formData.Email);
+    // formData.append("Password", formData.Password);
+
 
     this.authService.signIn(formData)
      .subscribe({

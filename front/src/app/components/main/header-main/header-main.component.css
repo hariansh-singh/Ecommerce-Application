@@ -1,34 +1,129 @@
+/* Navbar Styling */
 .navbar {
-    background-color: black !important; /* Ensure full black background */
-  }
-  
-  .navbar-nav .nav-link {
-    color: white !important;
-    border: none; /* No border by default */
-  }
-  
-  .navbar-nav .nav-link:hover {
-    color: white !important;
-    border: 2px solid white; /* Shows white border on hover */
-  }
-  
-  .btn-outline-light {
-    border: none !important; /* No initial border */
-  }
-  
-  .btn-outline-light:hover {
-    border: 2px solid white !important; /* Adds white border on hover */
-  }
-  
-  .nav-link {
-    color: white !important;
-    font-weight: bold;
-    text-decoration: none;
-    padding: 10px;
-    transition: border 0.3s ease-in-out;
-  }
-  
-  .nav-link:hover {
-    border: 2px solid white; /* White border on hover */
-  }
-  
+  padding: 14px 20px;
+  border-bottom: 2px solid #d4af37; /* Classic gold */
+  background: linear-gradient(90deg, #1a1a2e, #16213e); /* Dark blue gradient */
+}
+
+/* Logo Animation */
+.animate-logo {
+  transition: transform 0.3s ease-in-out;
+}
+.animate-logo:hover {
+  transform: scale(1.1);
+}
+.brand-name {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+}
+.brand-sub {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #d4af37; /* Classic gold */
+}
+
+/* Search Bar Styling */
+.search-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+.search-input {
+  transition: box-shadow 0.3s ease-in-out;
+  font-size: 16px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #333;
+}
+.search-input::placeholder {
+  color: #999;
+}
+.search-input:focus {
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.7); /* Gold glow */
+}
+.search-button {
+  background-color: #d4af37;
+  color: white;
+  transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+  padding: 10px 16px;
+  border-radius: 8px;
+}
+.search-button:hover {
+  background-color: #b8860b;
+  transform: scale(1.05);
+}
+
+/* Link Styling */
+.animate-link {
+  transition: transform 0.3s ease-in-out, color 0.3s ease;
+  color: #ffffff;
+}
+.animate-link:hover {
+  transform: translateY(-2px);
+  color: #d4af37;
+}
+
+/* Cart Icon Animation */
+.animate-cart {
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+}
+.animate-cart:hover {
+  transform: scale(1.1);
+}
+.animate-cart span.badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  font-size: 14px;
+  background: #d4af37; /* Gold badge */
+  color: black;
+  animation: bounceBadge 1.2s infinite;
+}
+
+@keyframes bounceBadge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Dropdown Styling */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 10px;
+}
+.dropdown-item {
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+.dropdown-item:hover {
+  background-color: rgba(212, 175, 55, 0.2); /* Gold effect */
+}
+
+/* Welcome Text Styling */
+.welcome-text {
+  font-size: 0.85rem; /* Smaller text */
+  font-weight: 300; /* Thinner font weight */
+  color: #ccc; /* Muted color */
+}
+
+/* User Name Styling */
+.text-gold {
+  font-size: 1rem; /* Standard size */
+  font-weight: bold;
+  color: #d4af37; /* Gold */
+}
+
+/* Button Styling */
+.animate-button {
+  background: linear-gradient(90deg, #222, #444); /* Sophisticated dark gradient */
+  color: white;
+  border-radius: 8px;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease;
+}
+.animate-button:hover {
+  background: linear-gradient(90deg, #1a1a2e, #16213e); /* Elegant blue gradient */
+  transform: scale(1.1);
+}

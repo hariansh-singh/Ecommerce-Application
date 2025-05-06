@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class AuthService {
 
-  private API_URL = "https://localhost:7125"
+  private API_URL = "https://localhost:7116"
 
   constructor(private http:HttpClient) { }
 
@@ -24,11 +24,11 @@ export class AuthService {
     }
 
     signUp(data:any) {
-      return this.http.post("https://localhost:7125/api/Auth/addUser", data)
+      return this.http.post(`${this.API_URL}/api/Auth/register`, data)
     }
 
     signIn(data:any) {
-      return this.http.post(`${this.API_URL}/api/Auth/Login`, data)
+      return this.http.post(`${this.API_URL}/api/Auth/login`, data)
     }
 
 }

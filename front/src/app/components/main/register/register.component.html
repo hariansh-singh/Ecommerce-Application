@@ -1,53 +1,63 @@
-<section class="d-flex align-items-center justify-content-center vh-100" style="background-color: #232F3E;">
-  <div class="container d-flex justify-content-center">
-    <div class="card text-white text-center" style="width: 400px; border-radius: 15px; background-color: #1A2B44;">
-      <div class="card-body p-4">
-        <h2 class="fw-bold mb-4">Register</h2>
+<!-- Login Component -->
+<section class="py-3 py-md-5 py-xl-8 login-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="display-5 fw-bold">Sign in</h2>
+        <p>Don't have an account? <a class="link-primary" routerLink="/register">Sign up</a></p>
+      </div>
+    </div>
 
-        <!-- Form -->
-        <form [formGroup]="myForm" (ngSubmit)="onSubmitRegister()">
-          <div class="form-group mb-3">
-            <input type="text" id="firstName" formControlName="FirstName" class="form-control"
-              placeholder="First Name" style="border-radius: 10px;">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-8">
+        <div class="row gy-5 justify-content-center">
+          <div class="col-12 col-lg-5">
+            <form [formGroup]="myForm" (ngSubmit)="onSubmitRegister()">
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control border-bottom rounded-0" id="name" placeholder="Full Name" formControlName="Name" required>
+                <label for="email">Full Name</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control border-bottom rounded-0" id="email" placeholder="Email" formControlName="Email" required>
+                <label for="email">Email</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control border-bottom rounded-0" id="password" placeholder="Password" formControlName="Password" required>
+                <label for="password">Password</label>
+              </div>
+              <div class="d-flex justify-content-between">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="remember_me">
+                  <label class="form-check-label text-secondary" for="remember_me">Remember me</label>
+                </div>
+                <a class="link-secondary text-decoration-none">Forgot password?</a>
+              </div>
+              <div class="d-grid">
+                <button class="btn btn-lg btn-dark rounded-0 fs-6 login-btn" type="submit" [disabled]="myForm.invalid">Log in</button>
+              </div>
+            </form>
           </div>
 
-          <div class="form-group mb-3">
-            <input type="text" id="lastName" formControlName="LastName" class="form-control"
-              placeholder="Last Name" style="border-radius: 10px;">
+          <div class="col-12 col-lg-2 d-flex align-items-center justify-content-center gap-3 flex-lg-column">
+            <div class="separator d-lg-block"></div>
+            <div>or</div>
+            <div class="separator d-lg-block"></div>
           </div>
 
-          <div class="form-group mb-3">
-            <input type="email" id="email" formControlName="Email" class="form-control"
-              placeholder="Email" style="border-radius: 10px;">
+          <div class="col-12 col-lg-5">
+            <div class="d-grid gap-3">
+              <a class="btn btn-outline-dark d-flex align-items-center social-login">
+                <i class="fab fa-google text-danger fs-4 me-2"></i> Continue with Google
+              </a>
+              <a class="btn btn-outline-dark d-flex align-items-center social-login">
+                <i class="fab fa-apple text-dark fs-4 me-2"></i> Continue with Apple
+              </a>
+              <a class="btn btn-outline-dark d-flex align-items-center social-login">
+                <i class="fab fa-facebook text-primary fs-4 me-2"></i> Continue with Facebook
+              </a>
+            </div>
           </div>
-
-          <div class="form-group mb-3">
-            <input type="password" id="password" formControlName="Password" class="form-control"
-              placeholder="Password" style="border-radius: 10px;">
-          </div>
-
-          <div class="form-group mb-3">
-            <input type="text" id="phoneNumber" formControlName="PhoneNumber" class="form-control"
-              placeholder="Phone Number" style="border-radius: 10px;">
-          </div>
-
-          <div class="form-group mb-3">
-            <input type="number" id="age" formControlName="Age" class="form-control"
-              placeholder="Age" style="border-radius: 10px;">
-          </div>
-
-          <!-- Buttons -->
-          <div class="d-flex justify-content-between">
-            <button type="submit" [disabled]="myForm.invalid" class="btn w-100"
-              style="background-color: black; color: white; border: 2px solid white; border-radius: 10px; margin-right: 10px;">
-              Submit
-            </button>
-            <button type="button" onclick="window.location.href='login.html'" class="btn w-100"
-              style="background-color: black; color: white; border: 2px solid white; border-radius: 10px;">
-              Login
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
