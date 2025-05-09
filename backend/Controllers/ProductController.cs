@@ -100,7 +100,7 @@ namespace backend.Controllers
 
 
         [HttpDelete("{productId}")]
-        [Authorize(Roles = "seller")]
+        //[Authorize(Roles = "seller")]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
             var result = await productRepository.DeleteProduct(productId);
