@@ -1,18 +1,29 @@
 <app-banner></app-banner>
 
-<section style="background-color: #eee;">
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="fade-in">Welcome to Your Dream Store</h1>
+    <p class="fade-in delay">The best handcrafted products, curated just for you.</p>
+    <a routerLink="/products" class="btn btn-primary btn-lg slide-up">Shop Now</a>
+  </div>
+</section>
+
+<!-- Product Showcase -->
+<section class="product-section">
   <div class="container py-5">
     <div class="row">
       <div class="col-md-6 col-lg-4 mb-4" *ngFor="let product of products">
-        <div class="card">
-          <div class="d-flex justify-content-between p-3">
+        <div class="card product-card">
+          <div class="d-flex justify-content-between p-3 fade-in">
             <p class="lead mb-0">{{ product.description }}</p>
             <div class="bg-info rounded-circle d-flex align-items-center justify-content-center shadow-1-strong"
               style="width: 35px; height: 35px;">
               <p class="text-white mb-0 small">x{{ product.stockQuantity }}</p>
             </div>
           </div>
-          <img [src]="'https://localhost:7116/' + product.productImagePath" class="card-img-top" [alt]="product.productName" />
+          <img [src]="'https://localhost:7116/' + product.productImagePath" class="card-img-top zoom-in"
+            [alt]="product.productName" />
           <div class="card-body">
             <div class="d-flex justify-content-between mb-3">
               <h5 class="mb-0">{{ product.productName }}</h5>
@@ -22,10 +33,10 @@
               <p class="text-muted mb-0">Available: <span class="fw-bold">{{ product.stockQuantity }}</span></p>
               <div class="ms-auto text-warning">
                 <i *ngFor="let star of getStars()" class="fas fa-star"></i>
-                <i class="fas fa-stara-half-alt"></i>
+                <i class="fas fa-star-half-alt"></i>
               </div>
             </div>
-            <button class="btn btn-primary" (click)="addToCart(product)">Add to Cart</button>
+            <button class="btn btn-primary hover-scale" (click)="addToCart(product)">Add to Cart</button>
           </div>
         </div>
       </div>
@@ -33,4 +44,21 @@
   </div>
 </section>
 
-<app-related-data></app-related-data>
+<!-- Testimonials -->
+<section class="testimonials-section">
+  <div class="container">
+    <h2 class="text-center slide-up">What Our Customers Say</h2>
+    <div class="carousel-container">
+      <div class="testimonial fade-in">
+        <p>"Amazing quality! I love the craftsmanship."</p>
+        <span>- A Happy Customer</span>
+      </div>
+      <div class="testimonial fade-in delay">
+        <p>"The best shopping experience I've ever had!"</p>
+        <span>- Another Satisfied Shopper</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-related-data></app-related-data> 
