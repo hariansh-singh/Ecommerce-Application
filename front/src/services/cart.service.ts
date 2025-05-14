@@ -1,61 +1,56 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  
-  private cartItems: any[] = []; 
-
-  private cartItemCount = new BehaviorSubject<number>(0); // Observable for the cart item count
-  private totalPrice = new BehaviorSubject<number>(0); // Observable for the total cart price
+  private apiUrl = 'https://localhost:7116/api/Cart'; // 🔹 API base URL
+  private cartItems: any[] = [];
+  private cartItemCount = new BehaviorSubject<number>(0);
+  private totalPrice = new BehaviorSubject<number>(0);
 
   // Expose the cart item count and total price as observables
   cartItemCount$ = this.cartItemCount.asObservable();
   totalPrice$ = this.totalPrice.asObservable();
 
-  // Fetch all cart items
-  getCartItems() {
-    return this.cartItems;
+  constructor(private http: HttpClient) {} // 🔹 Inject HttpClient for API calls
+
+  // 🔹 Fetch all cart items from the API
+  getCartItems(userId: number) {
+    return this.http.get<any>(`${this.apiUrl}/${userId}`).pipe(
+      map(response => Array.isArray(response.data) ? response.data : []) // ✅ Ensure an array is returned
+    );
   }
 
-  // Add product to the cart
-  addToCart(product: any): void {
-    const existingItem = this.cartItems.find(item => item.productId === product.productId);
-    if (existingItem) {
-      existingItem.quantity += 1; // Increment quantity if the product already exists in the cart
-    } else {
-      this.cartItems.push({
-        productId: product.productId,
-        productName: product.productName,
-        productPrice: product.productPrice,
-        productCategory: product.productCategory,
-        productFeatures: product.productFeatures,
-        quantity: 1 // Default quantity when adding for the first time
-      });
-    }
-    this.updateCartData(); // Recalculate totals and item count
+  // 🔹 Add product to cart via API
+  addToCart(product: any) {
+    return this.http.post(this.apiUrl, product); // ✅ Returns observable, no .subscribe() here
   }
 
-  // Remove a specific item from the cart
-  removeFromCart(productId: number): void {
-    this.cartItems = this.cartItems.filter(item => item.productId !== productId);
-    this.updateCartData(); // Recalculate totals and item count
-  }
+  // 🔹 Update product quantity in cart
+  updateCartItem(cartId: number, updatedItem: any) {
+  console.log(`Sending PUT request to: ${this.apiUrl}/${cartId}`, updatedItem);
+  return this.http.put(`${this.apiUrl}/${cartId}`, updatedItem);
+}
 
-  // Clear all items from the cart
-  clearCart(): void {
-    this.cartItems = [];
-    this.updateCartData(); // Reset totals and item count
-  }
+  // 🔹 Remove an item from the cart
+ removeFromCart(cartId: number) {
+  console.log(`Sending DELETE request to: ${this.apiUrl}/${cartId}`);
+  return this.http.delete(`${this.apiUrl}/${cartId}`);
+}
 
-  // Recalculate cart item count and total price
+  // 🔹 Calculate cart item count & total price
   private updateCartData(): void {
-    const totalItems = this.cartItems.reduce((count, item) => count + item.quantity, 0);
-    const totalPrice = this.cartItems.reduce((sum, item) => sum + item.productPrice * item.quantity, 0);
+    if (!Array.isArray(this.cartItems)) {
+      this.cartItems = []; // ✅ Ensure cartItems is an array before calling reduce
+    }
 
-    // Update the BehaviorSubjects with new values
+    const totalItems = this.cartItems.reduce((count, item) => count + item.quantity, 0);
+    const totalPrice = this.cartItems.reduce((sum, item) => sum + (item.productPrice || 0) * item.quantity, 0);
+
     this.cartItemCount.next(totalItems);
     this.totalPrice.next(totalPrice);
   }

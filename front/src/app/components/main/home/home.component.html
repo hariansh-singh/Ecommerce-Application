@@ -36,7 +36,12 @@
                 <i class="fas fa-star-half-alt"></i>
               </div>
             </div>
-            <button class="btn btn-primary hover-scale" (click)="addToCart(product)">Add to Cart</button>
+            <div class="d-flex align-items-center justify-content-between">
+              <button class="btn btn-outline-secondary" (click)="decreaseQuantity(product)">-</button>
+              <span class="mx-2">{{ product.selectedQuantity }}</span>
+              <button class="btn btn-outline-secondary" (click)="increaseQuantity(product)">+</button>
+              <button class="btn btn-primary hover-scale" (click)="addToCart(product)">Add to Cart</button>
+            </div>
           </div>
         </div>
       </div>
@@ -61,4 +66,4 @@
   </div>
 </section>
 
-<app-related-data></app-related-data> 
+<app-related-data></app-related-data>

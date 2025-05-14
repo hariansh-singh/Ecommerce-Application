@@ -64,7 +64,7 @@ namespace backend.Repositories.OrderRepository
                 };
 
                 var existingOrderItem = await dbContext.OrderItems
-                    .FirstOrDefaultAsync(oi => oi.OrderID == newOrder.OrderID && oi.ProductId == orderItem.ProductId);
+                    .FirstOrDefaultAsync(oi => oi.OrderId == newOrder.OrderId && oi.ProductId == orderItem.ProductId);
 
                 if (existingOrderItem == null)
                 {
@@ -86,29 +86,59 @@ namespace backend.Repositories.OrderRepository
             return true;
         }
 
-        public Task<bool> DeleteOrder(int orderId)
+        //public async Task<OrderDBModel?> GetOrderById(int orderId)
+        //{
+        //    return await dbContext.Orders
+        //        .Include(o => o.OrderItems) // Include associated OrderItems
+        //        .FirstOrDefaultAsync(o => o.OrderId == orderId);
+        //}
+
+        public async Task<List<OrderDBModel>> GetAllOrders()
         {
-            throw new NotImplementedException();
+            var data = await dbContext.Orders
+                .Include(o => o.OrderItems) // Include associated OrderItems
+                .ToListAsync();
+            return data;
         }
 
-        public Task<List<OrderDBModel>> GetAllOrders()
+        public async Task<List<OrderDBModel>> GetOrdersById(int customerId)
         {
-            throw new NotImplementedException();
+            return await dbContext.Orders
+                .Include(o => o.OrderItems) // Include associated OrderItems
+                .Where(o => o.CustomerId == customerId)
+                .ToListAsync();
         }
 
-        public Task<OrderDBModel?> GetOrderById(int orderId)
+        public async Task<bool> UpdateOrder(int orderId, OrderUIModel updatedOrder)
         {
-            throw new NotImplementedException();
+            var existingOrder = await dbContext.Orders
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (existingOrder != null)
+            {
+                //existingOrder.Status = updatedOrder.Status ?? existingOrder.Status;
+                existingOrder.ShippingAddress = updatedOrder.ShippingAddress ?? existingOrder.ShippingAddress;
+
+                dbContext.Orders.Update(existingOrder);
+                await dbContext.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
         }
 
-        public Task<List<OrderDBModel>> GetOrdersByUserEmail(string email)
+        public async Task<bool> DeleteOrder(int orderId)
         {
-            throw new NotImplementedException();
-        }
+            var order = await dbContext.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
 
-        public Task<bool> UpdateOrder(int orderId, OrderUIModel updatedOrder)
-        {
-            throw new NotImplementedException();
+            if (order != null)
+            {
+                dbContext.Orders.Remove(order);
+                await dbContext.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
         }
     }
 }

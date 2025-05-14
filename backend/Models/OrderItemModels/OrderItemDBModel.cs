@@ -24,6 +24,11 @@ namespace backend.Models.OrderItemModels
         public int Quantity { get; set; }
 
 
+        [Required]
+        public decimal UnitPrice { get; set; }
+
+
+
         [JsonIgnore]
         [ForeignKey(nameof(OrderId))]
         public OrderDBModel? Orders { get; set; }
