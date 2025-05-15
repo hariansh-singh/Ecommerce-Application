@@ -2,3 +2,14 @@
   background-color: #343a40; /* Dark grey */
   color: white;
 }
+
+.btn-info {
+  background: linear-gradient(90deg, #FFD700, #1A1A2E);
+  color: white;
+  border: none; /* Removes the border */
+  transition: background 0.1s ease-in-out; /* Smooth color transition */
+}
+
+.btn-info:hover {
+  background: linear-gradient(90deg, #1A1A2E, #FFD700);
+}

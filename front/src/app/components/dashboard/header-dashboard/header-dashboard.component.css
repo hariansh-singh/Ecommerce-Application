@@ -1,0 +1,60 @@
+/* 💠 Navbar Styling */
+.glass-navbar {
+  background: linear-gradient(90deg, #1A1A2E, #16213E); /* Dark blue base */
+  border-bottom: 3px solid #D4AF37; /* Gold accent */
+  backdrop-filter: blur(10px);
+}
+
+/* 🌟 Animated Logo */
+.animate-logo {
+  transition: transform 0.3s ease-in-out;
+}
+.animate-logo:hover {
+  transform: scale(1.1);
+}
+
+/* ✨ Text & Branding */
+.neon-text {
+  color: #D4AF37;
+  text-shadow: 0px 0px 12px rgba(212, 175, 55, 0.8);
+}
+.brand-sub {
+  color: #D4AF37; /* Gold branding */
+}
+
+/* 🔥 Hover Effects */
+.animated-link {
+  transition: color 0.3s ease, transform 0.3s ease;
+  color: #E5E5E5; /* Platinum White */
+}
+.animated-link:hover {
+  color: #D4AF37; /* Gold Hover Effect */
+  transform: scale(1.05);
+}
+
+/* 🚀 Button Styling */
+.futuristic-btn {
+  background: linear-gradient(90deg, #D4AF37, #1A1A2E); /* Gold to Dark */
+  color: white;
+  border-radius: 10px;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease;
+}
+.futuristic-btn:hover {
+  background: linear-gradient(90deg, #1A1A2E, #D4AF37);
+  transform: scale(1.1);
+}
+
+/* 💠 Navbar */
+.glass-navbar {
+  background: linear-gradient(90deg, #1A1A2E, #16213E);
+  border-bottom: 3px solid #D4AF37;
+  backdrop-filter: blur(10px);
+}
+
+/* 🎆 Welcome Text */
+.welcome-user {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #D4AF37;
+  cursor: pointer;
+}

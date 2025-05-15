@@ -1,13 +1,13 @@
 <div class="container mt-5">
   <h2 class="text-center text-primary mb-4">Product Inventory</h2>
-
+ 
   <div class="table-responsive">
     <table class="table table-striped table-hover table-bordered align-middle">
       <thead class="table-dark text-center">
         <tr>
           <th>Product ID</th>
-          <th>Category</th>
-          <th>Name</th>
+          <th>Product Name</th>
+         
           <th>Quantity</th>
           <th>Price</th>
           <th>Features</th>
@@ -18,11 +18,11 @@
       <tbody>
         <tr *ngFor="let product of products">
           <td class="text-center">{{ product.productId }}</td>
-          <td class="text-center">{{ product.productCategory }}</td>
+          <!-- <td class="text-center">{{ product.productCategory }}</td> -->
           <td>{{ product.productName }}</td>
-          <td class="text-center">{{ product.productQuantity }}</td>
+          <td class="text-center">{{ product.stockQuantity }}</td>
           <td class="text-end text-success fw-bold">{{ product.productPrice | currency }}</td>
-          <td>{{ product.productFeatures }}</td>
+          <td>{{ product.description }}</td>
           <td class="text-center">
             <img [src]="'https://localhost:7116/' + product.productImagePath" alt="{{ product.productName }}" class="img-fluid img-thumbnail" style="max-width: 100px;">
           </td>
@@ -39,3 +39,4 @@
     </table>
   </div>
 </div>
+ 

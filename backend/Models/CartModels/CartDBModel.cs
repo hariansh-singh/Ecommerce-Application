@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using backend.Models.CustomerModels;
 using backend.Models.ProductModels;
+using System.Text.Json.Serialization;
 
 namespace backend.Models.CartModels
 {
@@ -23,7 +24,7 @@ namespace backend.Models.CartModels
         public int Quantity { get; set; }
 
 
-
+        [JsonIgnore]
         [ForeignKey(nameof(CustomerId))]
         public CustomerDBModel? Customer { get; set; }
 

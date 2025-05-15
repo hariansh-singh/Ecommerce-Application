@@ -67,6 +67,7 @@ namespace backend.Controllers
 
             var claims = new List<Claim>
             {
+                new("CustomerId", customer.CustomerId.ToString()),
                 new("Email", customer.Email ?? ""),
                 new("Name", customer.Name ?? ""),
                 new("Role", customer.Role ?? "")

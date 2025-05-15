@@ -5,6 +5,8 @@ import { ProductService } from '../../../../services/product.service';
 import { Router,RouterLink} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../../../services/cart.service';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -15,34 +17,51 @@ import { CartService } from '../../../../services/cart.service';
 export class HomeComponent implements OnInit {
   products: any[] = []; 
   cartService = inject(CartService);
+  authService = inject(AuthService);
+  decodedToken: any = this.authService.decodedTokenData();
 
   constructor(private productService: ProductService, private router: Router) {}
 
   ngOnInit(): void {
-    // Fetch all products on initialization
-    // this.productService.getAllProducts().subscribe({
-    //   next: (response: any) => {
-    //     console.log('API Response:', response);
-    //     this.products = response.data;
-    //   },
-    //   error: (error) => {
-    //     console.error('API Error:', error);
-    //   }
-    // });
     this.productService.getAllProducts().subscribe({
       next: (response: any) => {
-        console.log('API Response:', response); // Log the full API response
-        this.products = response.data; // Check if `response.data` has `productName` and `price`
+        this.products = response.data.map((product : any) => ({
+          ...product,
+          selectedQuantity: 1 // ✅ Initialize quantity to 1
+        }));
       },
-      error: (error) => {
-        console.error('API Error:', error); // Log error if the API fails
-      }
+      error: (error) => console.error('API Error:', error)
     });
   }
 
+  increaseQuantity(product: any): void {
+    if (product.selectedQuantity < product.stockQuantity) {
+      product.selectedQuantity++;
+    }
+  }
+
+  decreaseQuantity(product: any): void {
+    if (product.selectedQuantity > 1) {
+      product.selectedQuantity--;
+    }
+  }
+
   addToCart(product: any): void {
-    this.cartService.addToCart(product); 
-    console.log('Product added to cart:', product); 
+    if (!product.selectedQuantity || product.selectedQuantity <= 0 || product.selectedQuantity > product.stockQuantity) {
+      alert('Invalid quantity selected!');
+      return;
+    }
+
+    const cartItem = {
+      customerId: this.decodedToken.CustomerId,
+      productId: product.productId,
+      quantity: product.selectedQuantity
+    };
+
+    this.cartService.addToCart(cartItem).subscribe({
+      next: () => console.log('Product added to cart:', cartItem),
+      error: (error: any) => console.error('Failed to add product to cart', error)
+    });
   }
 
   getStars(): number[] {
