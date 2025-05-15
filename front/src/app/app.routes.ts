@@ -12,6 +12,7 @@ import { EditProductComponent } from './components/dashboard/edit-product/edit-p
 import { MyOrderDetailsComponent } from './components/main/my-order-details/my-order-details.component';
 import { AllOrderDetailsComponent } from './components/dashboard/all-order-details/all-order-details.component';
 import { ViewCartComponent } from './components/main/view-cart/view-cart.component';
+import { ProductdetailsComponent } from './components/main/productdetails/productdetails.component';
 
 export const routes: Routes = [
     {path:'', component: MainComponent, children: [
@@ -20,7 +21,8 @@ export const routes: Routes = [
       {path: 'login', component: LoginComponent},
       {path: 'register', component: RegisterComponent},
       {path: 'myorders/:email', component: MyOrderDetailsComponent},
-      {path: 'cart', component: ViewCartComponent}
+      {path: 'cart', component: ViewCartComponent},
+      { path: 'product/:id', component: ProductdetailsComponent }
     ]},
     {path: 'dashboard', component: DashboardComponent, children: [
       {path: '', component: HomeDashboardComponent},

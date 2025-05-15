@@ -2,13 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { BannerComponent } from '../banner/banner.component';
 import { RelatedDataComponent } from '../related-data/related-data.component';
 import { ProductService } from '../../../../services/product.service';
-import { Router } from '@angular/router';
+import { Router,RouterLink} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../../../services/cart.service';
 
 @Component({
   selector: 'app-home',
-  imports: [BannerComponent, RelatedDataComponent, CommonModule],
+  imports: [BannerComponent, RelatedDataComponent, CommonModule,RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

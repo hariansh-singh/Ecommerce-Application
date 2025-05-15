@@ -1,107 +1,48 @@
-     <!-- Related items section-->
-     <section class="py-5 bg-light">
-        <div class="container px-4 px-lg-5 mt-5">
-            <!-- <h2 class="fw-bolder mb-4">Related products</h2> -->
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Product image-->
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">Fancy Product</h5>
-                                <!-- Product price-->
-                                $40.00 - $80.00
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
-                        </div>
+<section class="py-5 bg-secondary">
+    <div class="container px-4 px-lg-5 mt-5">
+        <h2 class="fw-bolder mb-4 p-4 fw-bold text-light text-center" style="letter-spacing: 1px;">
+            Related Products
+        </h2>
+
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <div class="col mb-4" *ngFor="let product of products.slice(2, 6)">
+                <div class="card shadow-lg"
+                    style="border-radius: 12px; width: 260px; transition: transform 0.3s ease-in-out; overflow: hidden;"
+                    (mouseover)="hoverCard($event)" (mouseleave)="leaveCard($event)">
+
+                    <!-- Sale badge -->
+                    <div *ngIf="product.onSale" class="badge bg-danger text-white position-absolute"
+                        style="top: 0.5rem; right: 0.5rem; font-size: 14px; padding: 5px 10px; border-radius: 5px;">
+                        Sale
                     </div>
-                </div>
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Sale badge-->
-                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                        <!-- Product image-->
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">Special Item</h5>
-                                <!-- Product reviews-->
-                                <div class="d-flex justify-content-center small text-warning mb-2">
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                </div>
-                                <!-- Product price-->
-                                <span class="text-muted text-decoration-line-through">$20.00</span>
-                                $18.00
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                        </div>
+
+                    <!-- Product image -->
+                    <img class="card-img-top" [src]="'https://localhost:7116/' + product.productImagePath"
+                        [alt]="product.pName"
+                        style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px 12px 0 0; cursor: pointer;"
+                        (mouseover)="hoverImage($event)" (mouseleave)="leaveImage($event)" />
+
+                    <!-- Product details -->
+                    <div class="card-body text-center p-3">
+                        <h5 class="fw-bolder text-dark" style="font-size: 18px; margin-bottom: 6px;">
+                            {{ product.productName }}
+                        </h5>
+                        <p class="fw-bold text-dark" style="font-size: 16px;">
+                            ${{ product.productPrice }}
+                        </p>
                     </div>
-                </div>
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Sale badge-->
-                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                        <!-- Product image-->
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">Sale Item</h5>
-                                <!-- Product price-->
-                                <span class="text-muted text-decoration-line-through">$50.00</span>
-                                $25.00
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Product image-->
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name-->
-                                <h5 class="fw-bolder">Popular Item</h5>
-                                <!-- Product reviews-->
-                                <div class="d-flex justify-content-center small text-warning mb-2">
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                </div>
-                                <!-- Product price-->
-                                $40.00
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                        </div>
+
+                    <!-- Product actions -->
+                    <div class="d-flex justify-content-center gap-2 mb-2">
+                        <button class="btn btn-primary btn-sm hover-scale px-3 py-2" style="border-radius: 8px;" (click)="addToCart(product)">
+                            Add to Cart
+                        </button>
+                        <button class="btn btn-primary btn-sm hover-scale px-3 py-2" style="border-radius: 8px;" [routerLink]="['/product', product.productId]">
+                            More Details
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
- 
+    </div>
+</section>

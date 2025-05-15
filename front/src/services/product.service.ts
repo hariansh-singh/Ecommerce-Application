@@ -20,7 +20,7 @@ export class ProductService {
       return this.http.post(`${this.API_URL}/api/Product`, data, { headers })
     }
 
-    getProductById(id:any):Observable<any> {
+    getProductById(id:number):Observable<any> {
       return this.http.get(`${this.API_URL}/api/Product/${id}`);
     }
 
