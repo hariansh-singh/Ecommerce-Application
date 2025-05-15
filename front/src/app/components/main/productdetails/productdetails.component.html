@@ -1,0 +1,31 @@
+<section class="py-5" *ngIf="products" style="background-color: lightgrey;" >
+    <div class="container px-4 px-lg-5 my-5">
+      <div class="row gx-4 gx-lg-5 align-items-center">
+
+        <!-- Product Image -->
+        <div class="col-md-6">
+          <img class="card-img-top mb-5 mb-md-0" [src]="'https://localhost:7116/' + products.productImagePath" alt="{{ products.ProductName }}" />
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+          <h1 class="display-5 fw-bolder">{{ products.productName }}</h1>
+  
+          <!-- Price Display -->
+          <div class="fs-5 mb-3">
+            <span>Rs {{products.productPrice }}</span>
+
+            <!-- <span>${{ products.discountedPrice || products.price }}</span> -->
+          </div>
+          <h3>Description:</h3>
+                    <p class="lead">{{products.description}} Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, doloribus quod blanditiis molestias non unde! Sunt cum quasi hic eveniet sed, modi magni in voluptatibus? Eum eveniet est quia, quos assumenda esse adipisci accusamus id odit distinctio incidunt sequi officiis cum laboriosam blanditiis a sit omnis nemo aspernatur sapiente qui?</p>
+
+           
+        
+          <p class="lead">Quantity Available: {{ products.stockQuantity }}</p>
+          <button class="btn btn-primary" (click)="addToCart()">Add to Cart</button>
+
+        </div>
+      </div>
+    </div>
+  </section>

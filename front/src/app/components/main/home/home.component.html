@@ -23,7 +23,7 @@
             </div>
           </div>
           <img [src]="'https://localhost:7116/' + product.productImagePath" class="card-img-top zoom-in"
-            [alt]="product.productName" />
+            [alt]="product.pName" />
           <div class="card-body">
             <div class="d-flex justify-content-between mb-3">
               <h5 class="mb-0">{{ product.productName }}</h5>
@@ -42,6 +42,8 @@
               <button class="btn btn-outline-secondary" (click)="increaseQuantity(product)">+</button>
               <button class="btn btn-primary hover-scale" (click)="addToCart(product)">Add to Cart</button>
             </div>
+            <button class="btn btn-primary hover-scale" (click)="addToCart(product)">Add to Cart</button>
+<button class="btn btn-primary hover-scale ms-2" [routerLink]="['/product', product.productId]">More Details</button>
           </div>
         </div>
       </div>
