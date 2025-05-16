@@ -82,11 +82,11 @@ namespace backend.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = "seller")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductUIModel product)
+        [HttpPut("{productId}")]
+        //[Authorize(Roles = "seller")]
+        public async Task<IActionResult> UpdateProduct(int productId, [FromForm] ProductUIModel product)
         {
-            var result = await productRepository.UpdateProduct(id, product);
+            var result = await productRepository.UpdateProduct(productId, product);
             if (result)
             {
                 return Ok(new

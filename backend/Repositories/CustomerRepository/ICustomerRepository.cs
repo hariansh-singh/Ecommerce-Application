@@ -6,13 +6,17 @@ namespace backend.Repositories.CustomerRepository
     {
         Task<bool> AddUser(CustomerUIModel user);
 
-        Task<CustomerDBModel?> GetUserByEmail(string email);
+        Task<CustomerDBModel?> GetUserById(int customerId);
         Task<List<CustomerDBModel>> GetAllUsers();
 
-        Task<bool> UpdateUser(string email, CustomerUIModel updatedUser);
+        Task<bool> UpdateUser(int customerId, CustomerUIModel updatedUser);
 
-        Task<bool> DeleteUser(string email);
+        Task<bool> DeleteUser(int customerId);
 
         Task<CustomerDBModel?> Login(LoginModel user);
+        
+        Task<string> ChangeUserStatus(int customerId);
+
+        Task<bool> ChangeUserRole(int customerId, string updatedRole);
     }
 }
