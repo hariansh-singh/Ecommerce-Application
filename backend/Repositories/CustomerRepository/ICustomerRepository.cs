@@ -14,5 +14,9 @@ namespace backend.Repositories.CustomerRepository
         Task<bool> DeleteUser(string email);
 
         Task<CustomerDBModel?> Login(LoginModel user);
+        
+        Task<string> ChangeUserStatus(int customerId);
+
+        Task<bool> ChangeUserRole(int customerId, string updatedRole);
     }
 }

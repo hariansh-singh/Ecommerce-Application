@@ -37,6 +37,39 @@ namespace backend.Repositories.CustomerRepository
             return false; // User already exists
         }
 
+        public async Task<bool> ChangeUserRole(int customerId, string updatedRole)
+        {
+            var userData = await dBContext.Customers.FirstOrDefaultAsync(x => x.CustomerId == customerId);
+            if(userData != null)
+            {
+                userData.Role = updatedRole;
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<string> ChangeUserStatus(int customerId)
+        {
+            var userData = await dBContext.Customers.FirstOrDefaultAsync(x => x.CustomerId == customerId);
+            if (userData != null)
+            {
+                if(userData.UserStatus == 1)
+                {
+                    userData.UserStatus = 0;
+                    await dBContext.SaveChangesAsync();
+                    return "User Deactivated";
+                }
+                else
+                {
+                    userData.UserStatus = 1;
+                    await dBContext.SaveChangesAsync();
+                    return "User Activated";
+                }
+            }
+            return string.Empty;
+        }
+
         public async Task<bool> DeleteUser(string email)
         {
             var user = await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == email);
