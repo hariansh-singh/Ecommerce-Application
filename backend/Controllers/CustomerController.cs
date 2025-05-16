@@ -29,10 +29,10 @@ namespace backend.Controllers
             });
         }
 
-        [HttpGet("{email}")]
-        public async Task<IActionResult> GetUserByEmail(string email)
+        [HttpGet("{customerId}")]
+        public async Task<IActionResult> GetUserById(int customerId)
         {
-            var user = await _customerRepository.GetUserByEmail(email);
+            var user = await _customerRepository.GetUserById(customerId);
             if (user == null)
             {
                 return NotFound(new
@@ -49,8 +49,8 @@ namespace backend.Controllers
             });
         }
 
-        [HttpPut("{email}")]
-        public async Task<IActionResult> UpdateUser(string email, [FromBody] CustomerUIModel updatedUser)
+        [HttpPut("{customerId}")]
+        public async Task<IActionResult> UpdateUser(int customerId, [FromBody] CustomerUIModel updatedUser)
         {
             if (!ModelState.IsValid)
             {
@@ -62,7 +62,7 @@ namespace backend.Controllers
                 });
             }
 
-            var isUpdated = await _customerRepository.UpdateUser(email, updatedUser);
+            var isUpdated = await _customerRepository.UpdateUser(customerId, updatedUser);
             if (isUpdated)
             {
                 return Ok(new
@@ -78,10 +78,10 @@ namespace backend.Controllers
             });
         }
 
-        [HttpDelete("{email}")]
-        public async Task<IActionResult> DeleteUser(string email)
+        [HttpDelete("{customerId}")]
+        public async Task<IActionResult> DeleteUser(int customerId)
         {
-            var isDeleted = await _customerRepository.DeleteUser(email);
+            var isDeleted = await _customerRepository.DeleteUser(customerId);
             if (isDeleted)
             {
                 return Ok(new

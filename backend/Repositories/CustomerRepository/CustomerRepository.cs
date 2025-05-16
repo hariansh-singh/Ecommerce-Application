@@ -70,9 +70,9 @@ namespace backend.Repositories.CustomerRepository
             return string.Empty;
         }
 
-        public async Task<bool> DeleteUser(string email)
+        public async Task<bool> DeleteUser(int customerId)
         {
-            var user = await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await dBContext.Customers.FirstOrDefaultAsync(u => u.CustomerId == customerId);
             if (user != null)
             {
                 dBContext.Customers.Remove(user);
@@ -87,9 +87,9 @@ namespace backend.Repositories.CustomerRepository
             return await dBContext.Customers.ToListAsync(); // Retrieve all users
         }
 
-        public async Task<CustomerDBModel?> GetUserByEmail(string email)
+        public async Task<CustomerDBModel?> GetUserById(int customerId)
         {
-            return await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == email);
+            return await dBContext.Customers.FirstOrDefaultAsync(u => u.CustomerId == customerId);
         }
 
         public async Task<CustomerDBModel?> Login(LoginModel user)
@@ -110,9 +110,9 @@ namespace backend.Repositories.CustomerRepository
             return null; // Return null if authentication fails
         }
 
-        public async Task<bool> UpdateUser(string email, CustomerUIModel updatedUser)
+        public async Task<bool> UpdateUser(int customerId, CustomerUIModel updatedUser)
         {
-            var user = await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await dBContext.Customers.FirstOrDefaultAsync(u => u.CustomerId == customerId);
             if (user != null)
             {
                 user.Name = updatedUser.Name;
