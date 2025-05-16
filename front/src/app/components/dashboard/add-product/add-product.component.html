@@ -1,31 +1,26 @@
-<section class="container my-5  w-50">
-  <h1> Add Product</h1>
-  <form [formGroup]="myForm" (ngSubmit)="postProduct()">
+<section class="container my-5 w-50">
+  <h1>Add Product</h1>
+  <form [formGroup]="productForm" (ngSubmit)="submitProduct()" enctype="multipart/form-data">
     <div class="mb-3">
-      <label  class="form-label">Category</label>
-      <input type="text" class="form-control" formControlName="ProductCategory">
+      <label class="form-label">Product Name *</label>
+      <input type="text" class="form-control" formControlName="ProductName" required>
     </div>
     <div class="mb-3">
-      <label  class="form-label">Product Name</label>
-      <input type="text" class="form-control" formControlName="ProductName">
+      <label class="form-label">Product Price *</label>
+      <input type="number" class="form-control" formControlName="ProductPrice" required>
     </div>
-      <div class="mb-3">
-        <label  class="form-label">Price</label>
-        <input type="number" class="form-control" formControlName="ProductPrice">
-      </div>
-      <div class="mb-3">
-        <label  class="form-label">Quantity</label>
-        <input type="number" class="form-control" formControlName="ProductQuantity">
-      </div>
-     
-      <div class="mb-3">
-        <label  class="form-label">Features</label>
-        <input type="text" class="form-control" formControlName="ProductFeatures">
-      </div>
-      <div class="mb-3">
-          <label  class="form-label">Upload Image</label>
-          <input type="file" class="form-control" (change)="uploadFile($event)">
-      </div>
-      <button type="submit" class="btn btn-primary" [disabled]="myForm.invalid">Submit</button>
-    </form>
-  </section>
+    <div class="mb-3">
+      <label class="form-label">Description *</label>
+      <textarea class="form-control" formControlName="Description" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Stock Quantity *</label>
+      <input type="number" class="form-control" formControlName="StockQuantity" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Upload Image *</label>
+      <input type="file" class="form-control" (change)="handleFileUpload($event)" required>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">Submit</button>
+  </form>
+</section>

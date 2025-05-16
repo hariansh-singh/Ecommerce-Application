@@ -12,21 +12,32 @@ export const authGuard: CanActivateFn = (route, state) => {
     const userData: any = authService.decodedTokenData();
     const userRole = userData["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
-    if (state.url.startsWith('/dashboard')) {
+    // Redirect on login based on role
+    if (state.url === '/login') {
       if (userRole === 'admin') {
-        return true; // Admins can access the dashboard
+        router.navigateByUrl('/admindashboard');
+      } else if (userRole === 'seller') {
+        router.navigateByUrl('/dashboard');
       } else {
-        router.navigateByUrl('/'); // Redirect non-admins
+        router.navigateByUrl('/');
+      }
+      return false;
+    }
+
+    // Access control rules
+    if (state.url.startsWith('/admindashboard')) {
+      if (userRole !== 'admin') {
+        router.navigateByUrl('/');
+        return false;
+      }
+    } else if (state.url.startsWith('/dashboard')) {
+      if (userRole !== 'seller') {
+        router.navigateByUrl('/');
         return false;
       }
     }
 
-    if (userRole === 'user') {
-      return true; // Users can access non-dashboard routes
-    }
-
-    router.navigateByUrl(userRole === 'admin' ? '/dashboard' : '/'); // Fallback redirection
-    return false;
+    return true; // Allow access if none of the restrictions apply
   } else {
     router.navigateByUrl('/login'); // Redirect unauthenticated users
     return false;
