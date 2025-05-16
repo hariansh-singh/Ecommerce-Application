@@ -1,1 +1,17 @@
-<p>home-admin works!</p>
+<section class="dashboard-overview">
+  <h2>Dashboard Overview</h2>
+
+  <div class="dashboard-cards">
+    <mat-card>Total Users: {{ totalUsers }}</mat-card>
+    <mat-card>Sellers Count: {{ sellersCount }}</mat-card>
+    <mat-card>New Orders: {{ newOrders }}</mat-card>
+  </div>
+
+  <div class="charts-section">
+    <h3>Sales/Revenue (Monthly)</h3>
+    <app-sales-chart *ngIf="salesData.labels.length" [data]="salesData"></app-sales-chart>
+
+    <h3>Top 5 Selling Products</h3>
+    <app-top-products-chart *ngIf="topSellingProducts.labels.length" [data]="topSellingProducts"></app-top-products-chart>
+  </div>
+</section>
