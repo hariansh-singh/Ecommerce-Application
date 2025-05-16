@@ -13,6 +13,9 @@ import { MyOrderDetailsComponent } from './components/main/my-order-details/my-o
 import { AllOrderDetailsComponent } from './components/dashboard/all-order-details/all-order-details.component';
 import { ViewCartComponent } from './components/main/view-cart/view-cart.component';
 import { ProductdetailsComponent } from './components/main/productdetails/productdetails.component';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { ManageProfilesAdminComponent } from './components/admin-dashboard/manage-profiles-admin/manage-profiles-admin.component';
+import { HomeAdminComponent } from './components/admin-dashboard/home-admin/home-admin.component';
 
 export const routes: Routes = [
     {path:'', component: MainComponent, children: [
@@ -29,6 +32,10 @@ export const routes: Routes = [
       {path: 'addProduct', component: AddProductComponent},
       {path: 'editpro/:id', component: EditProductComponent},
       {path: 'allorders', component: AllOrderDetailsComponent}
-    ]}
+    ]},
+    {path: 'admindashboard', component: AdminDashboardComponent, children: [
+            { path: '', component: HomeAdminComponent },
+            { path: 'manageprofile', component: ManageProfilesAdminComponent },
+        ]}
   ];
   
