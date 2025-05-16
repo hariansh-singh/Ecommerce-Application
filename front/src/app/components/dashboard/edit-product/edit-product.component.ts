@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './edit-product.component.html',
-  styleUrl: './edit-product.component.css'
+  styleUrls: ['./edit-product.component.css']
 })
 export class EditProductComponent implements OnInit {
   id: any;
