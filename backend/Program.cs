@@ -38,8 +38,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 string? con = builder.Configuration.GetConnectionString("AppConnection");
-
-builder.Services.AddDbContext<EcomDBContext>(Options => {
+builder.Services.AddDbContext<EcomDBContext>(Options =>
+{
     Options.UseSqlServer(con);
 });
 
