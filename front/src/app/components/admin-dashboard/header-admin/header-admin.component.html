@@ -4,7 +4,7 @@
     <!-- Futuristic Logo with Animation -->
     <a class="navbar-brand fw-bold neon-text d-flex align-items-center animate-logo" routerLink="/">
       <i class="fas fa-globe fs-3 me-2 neon-icon"></i>
-      <span class="brand-name">Sha<span class="brand-sub">.in Nexus</span></span>
+      <span class="brand-name">Sha<span class="brand-sub">.in admin</span></span>
     </a>
 
     <!-- Responsive Navbar Toggler -->
@@ -24,39 +24,22 @@
       <!-- Left Navigation Links -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
         <li class="nav-item">
-          <a class="nav-link active animated-link" aria-current="page" routerLink="/dashboard">
+          <a class="nav-link active animated-link" aria-current="page" routerLink="/admindashboard">
             <i class="bi-house-door me-1"></i>Dashboard
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link animated-link" aria-current="page" routerLink="addProduct">
-            <i class="bi-pencil me-1"></i>Product Control
+        
+         <li class="nav-item">
+          <a class="nav-link animated-link" aria-current="page" routerLink="manageprofile">
+            <i class="bi-pencil me-1"></i>Manage Profiles
           </a>
         </li>
-
-        <!-- Advanced Orders Dropdown -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle animated-link" href="#" id="ordersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi-bag me-1"></i>Orders Matrix
-          </a>
-          <ul class="dropdown-menu futuristic-dropdown shadow-sm">
-            <li>
-              <a class="dropdown-item" [routerLink]="['/myorders', userData?.['email']]">
-                <i class="bi-cart-check me-2"></i>Track My Orders
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/dashboard/allorders">
-                <i class="bi-people me-2"></i>Global Order View
-              </a>
-            </li>
-          </ul>
-        </li>
+       
       </ul>
 
       <!-- Right Section: User Profile and Logout -->
       <form class="d-flex align-items-center">
-        <span class="mx-3 neon-text welcome-user">Welcome, {{userData?.["FullName"]}} <span class="badge bg-glow">seller</span></span>
+        <span class="mx-3 neon-text welcome-user">Welcome, {{userData?.["FullName"]}} <span class="badge bg-glow">admin</span></span>
         <button class="btn futuristic-btn fw-bold px-3 mx-1" type="button" (click)="redirectToHome()">Exit Portal</button>
       </form>
     </div>

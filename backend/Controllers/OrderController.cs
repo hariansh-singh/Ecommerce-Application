@@ -17,27 +17,6 @@ namespace backend.Controllers
             _orderRepository = orderRepository;
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetOrderById(int id)
-        //{
-        //    var order = await _orderRepository.GetOrderById(id);
-        //    if (order == null)
-        //    {
-        //        return NotFound(new
-        //        {
-        //            err = 1,
-        //            msg = "Order not found"
-        //        });
-        //    }
-        //    return Ok(new
-        //    {
-        //        err = 0,
-        //        msg = "Order retrieved successfully",
-        //        data = order
-        //    });
-        //}
-
-
         [HttpGet]
         public async Task<IActionResult> GetAllOrders()
         {
@@ -102,8 +81,8 @@ namespace backend.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody] OrderUIModel updatedOrder)
+        [HttpPut("{orderId}")]
+        public async Task<IActionResult> UpdateOrder(int orderId, [FromBody] OrderUIModel updatedOrder)
         {
             if (!ModelState.IsValid)
             {
@@ -115,7 +94,7 @@ namespace backend.Controllers
                 });
             }
 
-            var result = await _orderRepository.UpdateOrder(id, updatedOrder);
+            var result = await _orderRepository.UpdateOrder(orderId, updatedOrder);
             if (!result)
             {
                 return NotFound(new
@@ -132,10 +111,10 @@ namespace backend.Controllers
         }
 
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
+        [HttpDelete("{orderId}")]
+        public async Task<IActionResult> DeleteOrder(int orderId)
         {
-            var result = await _orderRepository.DeleteOrder(id);
+            var result = await _orderRepository.DeleteOrder(orderId);
             if (!result)
             {
                 return NotFound(new

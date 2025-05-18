@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductService } from '../../../../services/product.service';
 
@@ -6,41 +6,43 @@ import { ProductService } from '../../../../services/product.service';
   selector: 'app-add-product',
   imports: [ReactiveFormsModule],
   templateUrl: './add-product.component.html',
-  styleUrl: './add-product.component.css'
+  styleUrls: ['./add-product.component.css']
 })
 export class AddProductComponent {
+  selectedFile: File | null = null;
 
-  prodService:any = inject(ProductService)
-  filePathRef:any;
+  productForm: FormGroup = new FormGroup({
+    ProductName: new FormControl('', [Validators.required]),
+    ProductPrice: new FormControl('', [Validators.required]),
+    Description: new FormControl('', [Validators.required]),
+    StockQuantity: new FormControl('', [Validators.required])
+  });
 
-   myForm:FormGroup=new FormGroup({
-      ProductCategory:new FormControl('',[Validators.required]),
-      ProductName:new FormControl('',[Validators.required]),
-      ProductPrice:new FormControl('',[Validators.required]),
-      ProductQuantity:new FormControl('',[Validators.required]),
-      ProductFeatures:new FormControl('',[Validators.required]),
-   })
-   uploadFile(event:any){
-        if(event.target.files.length>0){
-           let fileRef=event.target.files[0];
-           console.log(fileRef)
-           this.filePathRef=fileRef;
-        }
-   }
-   postProduct(){
-     let fData=this.myForm.value;
-     //whwn file upload send data through formData
-     let formData=new FormData();
-     formData.append("ProductCategory",fData.ProductCategory);
-     formData.append("ProductName",fData.ProductName);
-     formData.append("ProductPrice",fData.ProductPrice);
-     formData.append("ProductQuantity",fData.ProductQuantity);
-     formData.append("ProductFeatures",fData.ProductFeatures);
-     formData.append("ProductImage",this.filePathRef,this.filePathRef.name)
+  constructor(private productService: ProductService) {}
 
-     this.prodService.addProduct(formData).subscribe({
-      next: (response:any) => console.log('Product added successfully', response),
-      error: (error:any) => console.error('Error adding product', error),
+  handleFileUpload(event: any) {
+    if (event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+      console.log("Selected File:", this.selectedFile);
+    }
+  }
+
+  submitProduct() {
+    if (!this.selectedFile) {
+      console.error("Please select an image.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("ProductName", this.productForm.value.ProductName);
+    formData.append("ProductPrice", this.productForm.value.ProductPrice);
+    formData.append("Description", this.productForm.value.Description);
+    formData.append("StockQuantity", this.productForm.value.StockQuantity);
+    formData.append("ProductImage", this.selectedFile, this.selectedFile.name);
+
+    this.productService.addProduct(formData).subscribe({
+      next: (response) => console.log("Product added successfully", response),
+      error: (error) => console.error("Error adding product", error),
     });
-   }
+  }
 }

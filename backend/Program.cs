@@ -1,4 +1,5 @@
 using backend.DataAccessLayer;
+using backend.Repositories.AdminDashboardRepository;
 using backend.Repositories.CartRepository;
 using backend.Repositories.CustomerRepository;
 using backend.Repositories.OrderRepository;
@@ -57,7 +58,7 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-
+builder.Services.AddScoped<IAdminDashboardRepo, AdminDashboardRepo>();
 
 var app = builder.Build();
 Console.WriteLine($"Current Environment: {app.Environment.EnvironmentName}");

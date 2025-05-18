@@ -37,9 +37,42 @@ namespace backend.Repositories.CustomerRepository
             return false; // User already exists
         }
 
-        public async Task<bool> DeleteUser(string email)
+        public async Task<bool> ChangeUserRole(int customerId, string updatedRole)
         {
-            var user = await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == email);
+            var userData = await dBContext.Customers.FirstOrDefaultAsync(x => x.CustomerId == customerId);
+            if(userData != null)
+            {
+                userData.Role = updatedRole;
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<string> ChangeUserStatus(int customerId)
+        {
+            var userData = await dBContext.Customers.FirstOrDefaultAsync(x => x.CustomerId == customerId);
+            if (userData != null)
+            {
+                if(userData.UserStatus == 1)
+                {
+                    userData.UserStatus = 0;
+                    await dBContext.SaveChangesAsync();
+                    return "User Deactivated";
+                }
+                else
+                {
+                    userData.UserStatus = 1;
+                    await dBContext.SaveChangesAsync();
+                    return "User Activated";
+                }
+            }
+            return string.Empty;
+        }
+
+        public async Task<bool> DeleteUser(int customerId)
+        {
+            var user = await dBContext.Customers.FirstOrDefaultAsync(u => u.CustomerId == customerId);
             if (user != null)
             {
                 dBContext.Customers.Remove(user);
@@ -54,9 +87,9 @@ namespace backend.Repositories.CustomerRepository
             return await dBContext.Customers.ToListAsync(); // Retrieve all users
         }
 
-        public async Task<CustomerDBModel?> GetUserByEmail(string email)
+        public async Task<CustomerDBModel?> GetUserById(int customerId)
         {
-            return await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == email);
+            return await dBContext.Customers.FirstOrDefaultAsync(u => u.CustomerId == customerId);
         }
 
         public async Task<CustomerDBModel?> Login(LoginModel user)
@@ -77,9 +110,9 @@ namespace backend.Repositories.CustomerRepository
             return null; // Return null if authentication fails
         }
 
-        public async Task<bool> UpdateUser(string email, CustomerUIModel updatedUser)
+        public async Task<bool> UpdateUser(int customerId, CustomerUIModel updatedUser)
         {
-            var user = await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await dBContext.Customers.FirstOrDefaultAsync(u => u.CustomerId == customerId);
             if (user != null)
             {
                 user.Name = updatedUser.Name;

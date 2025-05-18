@@ -1,41 +1,48 @@
-<h2>Edit Product</h2>
-<form [formGroup]="myForm" (ngSubmit)="postData()">
-    <!-- Product Category -->
-    <div class="form-group">
-        <label for="ProductCategory">Category</label>
-        <input type="text" id="ProductCategory" class="form-control" formControlName="ProductCategory" />
-    </div>
 
-    <!-- Product Name -->
-    <div class="form-group">
-        <label for="ProductName">Name</label>
-        <input type="text" id="ProductName" class="form-control" formControlName="ProductName" />
-    </div>
+<section class="container my-5 w-50 p-4 bg-light shadow rounded">
+    <h2 class="text-center mb-4">Edit Product</h2>
+    
+    <form [formGroup]="myForm" (ngSubmit)="postData()">
+        
+        <!-- Product Name -->
+        <div class="form-group">
+            <label for="ProductName">Name</label>
+            <input type="text" id="ProductName" class="form-control" formControlName="ProductName" />
+        </div>
 
-    <!-- Product Quantity -->
-    <div class="form-group">
-        <label for="ProductQuantity">Quantity</label>
-        <input type="number" id="ProductQuantity" class="form-control" formControlName="ProductQuantity" />
-    </div>
+        <!-- Product Quantity -->
+        <div class="form-group">
+            <label for="StockQuantity">Quantity</label>
+            <input type="number" id="StockQuantity" class="form-control" formControlName="StockQuantity" />
+        </div>
 
-    <!-- Product Price -->
-    <div class="form-group">
-        <label for="ProductPrice">Price</label>
-        <input type="number" id="ProductPrice" class="form-control" formControlName="ProductPrice" />
-    </div>
+        <!-- Product Price -->
+        <div class="form-group">
+            <label for="ProductPrice">Price</label>
+            <input type="number" id="ProductPrice" class="form-control" formControlName="ProductPrice" />
+        </div>
 
-    <!-- Product Features -->
-    <div class="form-group">
-        <label for="ProductFeatures">Features</label>
-        <textarea id="ProductFeatures" class="form-control" formControlName="ProductFeatures"></textarea>
-    </div>
+        <!-- Product Features -->
+        <div class="form-group">
+            <label for="Description">Description</label>
+            <textarea id="Description" class="form-control" formControlName="Description"></textarea>
+        </div>
 
-    <!-- Product Image -->
-    <div class="form-group">
-        <label for="ProductImage">Upload Image</label>
-        <input type="file" id="ProductImage" class="form-control" (change)="uploadFile($event)" />
-    </div>
+        <!-- Product Image -->
+        <div class="form-group">
+            <label for="ProductImage">Upload Image</label>
+            <input type="file" id="ProductImage" class="form-control" (change)="uploadFile($event)" />
 
-    <!-- Submit Button -->
-    <button type="submit" class="btn btn-success" [disabled]="myForm.invalid">Edit Product</button>
-</form>
+            <!-- Show existing image if available -->
+            <div *ngIf="filePathRef" class="mt-3">
+                <p>Current Image:</p>
+                <img [src]="filePathRef" alt="Product Image" class="img-thumbnail shadow-sm" width="200" />
+            </div>
+        </div>
+
+
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success btn-block mt-3" [disabled]="myForm.invalid">Edit Product</button>
+    </form>
+</section>
