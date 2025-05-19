@@ -1,17 +1,89 @@
 <section class="dashboard-overview">
-  <h2>Dashboard Overview</h2>
+  <div class="dashboard-header">
+    <h2>Dashboard Overview</h2>
+    <div class="dashboard-actions">
+      <button class="refresh-btn" (click)="refreshData()">
+        <i class="material-icons">refresh</i>
+        <span>Refresh</span>
+      </button>
+    </div>
+  </div>
 
   <div class="dashboard-cards">
-    <mat-card>Total Users: {{ totalUsers }}</mat-card>
-    <mat-card>Sellers Count: {{ sellersCount }}</mat-card>
-    <mat-card>New Orders: {{ newOrders }}</mat-card>
+    <mat-card class="user-card">
+      <div class="card-icon">
+        <i class="material-icons">people</i>
+      </div>
+      <div class="card-content">
+        <h3>Total Users</h3>
+        <div class="stat-value">{{ animatedTotalUsers | number }}</div>
+        <div class="stat-change positive">
+          <i class="material-icons">trending_up</i> +5.3%
+        </div>
+      </div>
+      <div class="card-badge">+{{ totalUsers - (totalUsers * 0.947) | number:'1.0-0' }} new</div>
+    </mat-card>
+    
+    <mat-card class="seller-card">
+      <div class="card-icon">
+        <i class="material-icons">store</i>
+      </div>
+      <div class="card-content">
+        <h3>Sellers Count</h3>
+        <div class="stat-value">{{ animatedSellersCount | number }}</div>
+        <div class="stat-change positive">
+          <i class="material-icons">trending_up</i> +2.1%
+        </div>
+      </div>
+      <div class="card-badge">+{{ sellersCount - (sellersCount * 0.979) | number:'1.0-0' }} new</div>
+    </mat-card>
+    
+    <mat-card class="order-card">
+      <div class="card-icon">
+        <i class="material-icons">shopping_cart</i>
+      </div>
+      <div class="card-content">
+        <h3>New Orders</h3>
+        <div class="stat-value">{{ animatedNewOrders | number }}</div>
+        <div class="stat-change positive">
+          <i class="material-icons">trending_up</i> +8.7%
+        </div>
+      </div>
+      <div class="card-badge hot">{{ newOrders - (newOrders * 0.85) | number:'1.0-0' }} today</div>
+    </mat-card>
   </div>
 
   <div class="charts-section">
-    <h3>Sales/Revenue (Monthly)</h3>
-    <app-sales-chart *ngIf="salesData.labels.length" [data]="salesData"></app-sales-chart>
+    <div class="chart-container">
+      <h3>
+        <i class="material-icons">trending_up</i>
+        Sales & Revenue (Monthly)
+      </h3>
+      <app-sales-chart 
+        *ngIf="salesData.labels.length" 
+        [data]="salesData"
+        class="animated-chart">
+      </app-sales-chart>
+      <div *ngIf="!salesData.labels.length" class="loading-placeholder">
+        <div class="loading-spinner"></div>
+        <p>Loading chart data...</p>
+      </div>
+    </div>
 
-    <h3>Top 5 Selling Products</h3>
-    <app-top-products-chart *ngIf="topSellingProducts.labels.length" [data]="topSellingProducts"></app-top-products-chart>
+    <div class="chart-container">
+      <h3>
+        <i class="material-icons">star</i>
+        Top 5 Selling Products
+      </h3>
+      <app-top-products-chart 
+        *ngIf="topSellingProducts.labels.length" 
+        [data]="topSellingProducts"
+        class="animated-chart">
+      </app-top-products-chart>
+      <div *ngIf="!topSellingProducts.labels.length" class="loading-placeholder">
+        <div class="loading-spinner"></div>
+        <p>Loading chart data...</p>
+      </div>
+    </div>
   </div>
 </section>

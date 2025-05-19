@@ -3,7 +3,6 @@ using backend.DataAccessLayer;
 using backend.Models.ProductModels;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace backend.Repositories.ProductRepository
 {
@@ -89,9 +88,9 @@ namespace backend.Repositories.ProductRepository
             var existingProduct = await dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
             if (existingProduct != null)
             {
-                existingProduct.ProductName = product.ProductName;
                 existingProduct.StockQuantity = product.StockQuantity;
                 existingProduct.ProductPrice = product.ProductPrice;
+                existingProduct.Description = product.Description;
 
                 if (product.ProductImage != null)
                 {
