@@ -1,28 +1,55 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, HostListener, PLATFORM_ID, Inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AuthStateService } from '../../../../services/auth-state.service';
-import { CartService } from '../../../../services/cart.service'; // Import CartService
+import { CartService } from '../../../../services/cart.service';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-header-main',
   imports: [CommonModule, RouterLink],
   templateUrl: './header-main.component.html',
-  styleUrls: ['./header-main.component.css']
+  styleUrls: ['./header-main.component.css'],
+  animations: [
+    trigger('fadeInOut', [
+      state('void', style({
+        opacity: 0
+      })),
+      transition('void <=> *', animate('0.3s ease-in-out')),
+    ])
+  ],
+  standalone: true
 })
 export class HeaderMainComponent implements OnInit {
   isLoggedIn: boolean = false;
   userName: string = '';
   userEmail: string = '';
-  cartItemCount: number = 0; // Variable to hold the cart item count
-
+  cartItemCount: number = 0;
+  isScrolled: boolean = false;
+  animationEnabled: boolean = true;
+  
   authService = inject(AuthService);
   authState = inject(AuthStateService);
-  cartService = inject(CartService); // Inject CartService
+  cartService = inject(CartService);
   router: Router = inject(Router);
 
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isScrolled = window.scrollY > 50;
+    }
+  }
+
   ngOnInit(): void {
+    // Enable initial animations only on first load
+    this.animationEnabled = true;
+    setTimeout(() => {
+      this.animationEnabled = false;
+    }, 1500);
+
     // Check login status
     this.authState.loginStatus$.subscribe((status: boolean) => {
       this.isLoggedIn = status;
@@ -39,13 +66,19 @@ export class HeaderMainComponent implements OnInit {
       this.userEmail = userData?.['Email'] || '';
     }
 
-    
-    console.log('Decoded Token:', userData);
-    console.log('Extracted Name:', this.userName);
-
-
     // Subscribe to cart item count from CartService
     this.cartService.cartItemCount$.subscribe((count: number) => {
+      // Add animation to cart icon when count changes
+      if (isPlatformBrowser(this.platformId) && count > 0 && this.cartItemCount !== count) {
+        const cartIcon = document.querySelector('.animate-cart i');
+        if (cartIcon) {
+          cartIcon.classList.remove('cart-bounce');
+          // Trigger reflow to restart animation - fixed with proper type casting
+          void (cartIcon as HTMLElement).offsetWidth;
+          cartIcon.classList.add('cart-bounce');
+        }
+      }
+      
       this.cartItemCount = count;
     });
   }

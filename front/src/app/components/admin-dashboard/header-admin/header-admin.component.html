@@ -1,15 +1,20 @@
 <nav class="navbar navbar-expand-lg shadow-lg glass-navbar">
   <div class="container-fluid d-flex align-items-center">
    
-    <!-- Futuristic Logo with Animation -->
-    <a class="navbar-brand fw-bold neon-text d-flex align-items-center animate-logo" routerLink="/">
-      <i class="fas fa-globe fs-3 me-2 neon-icon"></i>
-      <span class="brand-name">Sha<span class="brand-sub">.in admin</span></span>
+    <!-- Modern Animated Logo -->
+    <a class="navbar-brand fw-bold d-flex align-items-center logo-container" routerLink="/">
+      <div class="logo-animation">
+        <i class="fas fa-globe logo-icon"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Sha</span><span class="brand-sub">.in admin</span>
+        <div class="brand-underline"></div>
+      </div>
     </a>
 
-    <!-- Responsive Navbar Toggler -->
+    <!-- Responsive Navbar Toggler with Animation -->
     <button
-      class="navbar-toggler neon-button"
+      class="navbar-toggler custom-toggler"
       type="button"
       data-bs-toggle="collapse"
       data-bs-target="#navbarSupportedContent"
@@ -17,31 +22,49 @@
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
-      <span class="navbar-toggler-icon"></span>
+      <div class="toggler-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <!-- Left Navigation Links -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
         <li class="nav-item">
-          <a class="nav-link active animated-link" aria-current="page" routerLink="/admindashboard">
-            <i class="bi-house-door me-1"></i>Dashboard
+          <a class="nav-link menu-link" [class.active]="activeLink === '/admindashboard'" (click)="setActiveLink('/admindashboard')" aria-current="page" routerLink="/admindashboard">
+            <div class="link-content">
+              <i class="bi-house-door icon-animated"></i>
+              <span>Dashboard</span>
+            </div>
+            <div class="link-hover-effect"></div>
           </a>
         </li>
         
-         <li class="nav-item">
-          <a class="nav-link animated-link" aria-current="page" routerLink="manageprofile">
-            <i class="bi-pencil me-1"></i>Manage Profiles
+        <li class="nav-item">
+          <a class="nav-link menu-link" [class.active]="activeLink === 'manageprofile'" (click)="setActiveLink('manageprofile')" routerLink="manageprofile">
+            <div class="link-content">
+              <i class="bi-pencil icon-animated"></i>
+              <span>Manage Profiles</span>
+            </div>
+            <div class="link-hover-effect"></div>
           </a>
         </li>
-       
       </ul>
 
       <!-- Right Section: User Profile and Logout -->
-      <form class="d-flex align-items-center">
-        <span class="mx-3 neon-text welcome-user">Welcome, {{userData?.["FullName"]}} <span class="badge bg-glow">admin</span></span>
-        <button class="btn futuristic-btn fw-bold px-3 mx-1" type="button" (click)="redirectToHome()">Exit Portal</button>
-      </form>
+      <div class="d-flex align-items-center user-section">
+        <div class="user-info">
+          <span class="welcome-text">Welcome,</span>
+          <span class="user-name">{{getShortenedName()}}</span>
+          <span class="admin-badge">admin</span>
+        </div>
+        <button class="exit-button" type="button" (click)="redirectToHome()">
+          <span>Exit Portal</span>
+          <i class="bi-box-arrow-right ms-2"></i>
+        </button>
+      </div>
     </div>
   </div>
 </nav>
