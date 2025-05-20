@@ -1,46 +1,83 @@
 <app-banner></app-banner>
 
+<!-- Loading Overlay -->
+<div class="loading-overlay" *ngIf="isLoading">
+  <div class="loading-spinner"></div>
+</div>
+
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="hero-content">
-    <h1 class="fade-in">Welcome to Your Dream Store</h1>
-    <p class="fade-in delay">The best handcrafted products, curated just for you.</p>
-    <a routerLink="/products" class="btn btn-primary btn-lg slide-up">Shop Now</a>
+    <h1>Welcome to Tech Haven</h1>
+    <p>Premium electronics, cutting-edge technology.</p>
+    <a routerLink="/products" class="btn btn-primary btn-lg">
+      Shop Now <i class="fas fa-arrow-right ms-2"></i>
+    </a>
   </div>
 </section>
 
 <!-- Product Showcase -->
 <section class="product-section">
   <div class="container py-5">
+    <h2 class="section-title">Featured Electronics</h2>
+    
+    <!-- Show message when no products available -->
+    <div class="alert alert-info" *ngIf="!isLoading && (!products || products.length === 0)">
+      No products available at the moment. Please check back later.
+    </div>
+    
     <div class="row">
-      <div class="col-md-6 col-lg-4 mb-4 product-card-container" *ngFor="let product of products">
-        <div class="card product-card fade-in">
-          <div class="d-flex justify-content-between p-3">
-            <p class="lead mb-0">{{ product.description }}</p>
-            <div class="bg-info rounded-circle d-flex align-items-center justify-content-center shadow-1-strong" style="width: 35px; height: 35px;">
-              <p class="text-white mb-0 small">x{{ product.stockQuantity }}</p>
+      <div class="col-md-6 col-lg-4 mb-4" *ngFor="let product of products; trackBy: trackByProductId">
+        <div class="card product-card" [attr.data-product-id]="product.productId">
+          <!-- Important: Using div with class card-header instead of d-flex -->
+          <div class="card-header d-flex justify-content-between align-items-start">
+            <p class="description-text" title="{{ product.description }}">{{ product.description }}</p>
+            <div class="stock-badge shadow-1-strong">
+              <p class="text-white mb-0 small">{{ product.stockQuantity }}</p>
             </div>
           </div>
-          <img [src]="'https://localhost:7116/' + product.productImagePath" class="card-img-top zoom-in" [alt]="product.pName" />
-          <div class="card-body">
+          
+          <div class="img-container">
+            <img [src]="'https://localhost:7116/' + product.productImagePath" 
+                 class="card-img-top" 
+                 [alt]="product.productName" 
+                 loading="lazy"
+                 onerror="this.src='assets/images/placeholder.jpg'"/>
+          </div>
+          
+          <div class="card-body d-flex flex-column">
             <div class="d-flex justify-content-between mb-3">
-              <h5 class="mb-0">{{ product.productName }}</h5>
-              <h5 class="text-dark mb-0">${{ product.productPrice }}</h5>
+              <h5 class="product-name mb-0" title="{{ product.productName }}">{{ product.productName }}</h5>
+              <h5 class="text-dark mb-0">₹{{ product.productPrice }}</h5>
             </div>
-            <div class="d-flex justify-content-between mb-2">
+            
+            <div class="d-flex justify-content-between mb-3">
               <p class="text-muted mb-0">Available: <span class="fw-bold">{{ product.stockQuantity }}</span></p>
               <div class="ms-auto text-warning">
-                <i *ngFor="let star of getStars()" class="fas fa-star"></i>
-                <i class="fas fa-star-half-alt"></i>
+                <i *ngFor="let star of product.stars" class="fas" 
+                   [ngClass]="{'fa-star': star === 1, 'fa-star-half-alt': star === 0.5}"></i>
               </div>
             </div>
-            <div class="d-flex align-items-center justify-content-between">
-              <button class="btn btn-outline-secondary hover-scale" (click)="decreaseQuantity(product)">-</button>
-              <span class="mx-2">{{ product.selectedQuantity }}</span>
-              <button class="btn btn-outline-secondary hover-scale" (click)="increaseQuantity(product)">+</button>
+            
+            <div class="quantity-control">
+              <button class="quantity-btn" (click)="decreaseQuantity(product)" [disabled]="product.selectedQuantity <= 1">
+                <i class="fas fa-minus"></i>
+              </button>
+              <span class="quantity-display">{{ product.selectedQuantity }}</span>
+              <button class="quantity-btn" (click)="increaseQuantity(product)" [disabled]="product.selectedQuantity >= product.stockQuantity">
+                <i class="fas fa-plus"></i>
+              </button>
             </div>
-            <button class="btn btn-primary hover-scale" (click)="addToCart(product)">Add to Cart</button>
-            <button class="btn btn-primary hover-scale ms-2" [routerLink]="['/product', product.productId]">More Details</button>
+            
+            <!-- Action buttons positioned absolutely -->
+            <div class="action-buttons">
+              <button class="btn btn-primary action-btn" (click)="addToCart(product)">
+                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+              </button>
+              <button class="btn btn-outline-primary action-btn" [routerLink]="['/product', product.productId]">
+                <i class="fas fa-info-circle me-2"></i>Details
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -51,15 +88,27 @@
 <!-- Testimonials -->
 <section class="testimonials-section">
   <div class="container">
-    <h2 class="text-center slide-up">What Our Customers Say</h2>
+    <h2>What Our Tech Enthusiasts Say</h2>
     <div class="carousel-container">
-      <div class="testimonial fade-in">
-        <p>"Amazing quality! I love the craftsmanship."</p>
-        <span>- A Happy Customer</span>
+      <div class="testimonial" *ngFor="let testimonial of testimonials; let i = index" [ngClass]="{'active': i === 0}">
+        <p>{{ testimonial.comment }}</p>
+        <span>- {{ testimonial.author }}</span>
       </div>
-      <div class="testimonial fade-in delay">
-        <p>"The best shopping experience I've ever had!"</p>
-        <span>- Another Satisfied Shopper</span>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center">
+        <h3 class="mb-4">Get Tech Updates</h3>
+        <p class="mb-4">Stay informed about the latest gadgets, tech news, and exclusive offers.</p>
+        <div class="input-group mb-3">
+          <input type="email" class="form-control" placeholder="Your email address" aria-label="Email">
+          <button class="btn btn-primary" type="button" (click)="subscribeNewsletter()">Subscribe</button>
+        </div>
       </div>
     </div>
   </div>
