@@ -1,1 +1,231 @@
-<p>shop works!</p>
+<div class="shop-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Discover Our Collection</h1>
+      <p>Find the perfect products that match your style and needs</p>
+    </div>
+  </div>
+
+  <!-- Shopping Interface -->
+  <div class="shop-interface">
+    <!-- Sidebar with filters -->
+    <aside class="filters-sidebar">
+      <div class="filter-section">
+        <h3>Search</h3>
+        <div class="search-box">
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm" 
+            (ngModelChange)="applyFilters()" 
+            placeholder="Search products..."
+            class="search-input"
+          >
+          <button class="search-button">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Categories</h3>
+        <div class="category-list">
+          <div class="category-item">
+            <input 
+              type="radio" 
+              id="category-all" 
+              name="category" 
+              value="all" 
+              [(ngModel)]="selectedCategory" 
+              (change)="applyFilters()"
+            >
+            <label for="category-all">All Categories</label>
+          </div>
+          
+          <div *ngFor="let category of categories; let i = index" class="category-item">
+            <input 
+              type="radio" 
+              [id]="'category-' + i" 
+              name="category" 
+              [value]="category" 
+              [(ngModel)]="selectedCategory" 
+              (change)="applyFilters()"
+            >
+            <label [for]="'category-' + i">{{ category }}</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h3>Sort By</h3>
+        <select [(ngModel)]="sortOption" (change)="applyFilters()" class="sort-select">
+          <option value="default">Default</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Name: A to Z</option>
+          <option value="name-desc">Name: Z to A</option>
+        </select>
+      </div>
+
+      <div class="cart-summary" *ngIf="cart.length > 0">
+        <h3>Your Cart</h3>
+        <p><strong>Items:</strong> {{ getTotalItems() }}</p>
+        <p><strong>Total:</strong> ${{ getTotalPrice().toFixed(2) }}</p>
+        <button class="view-cart-btn">View Cart</button>
+      </div>
+    </aside>
+
+    <!-- Main product listing area -->
+    <main class="products-grid">
+      <!-- Loading state -->
+      <div *ngIf="loading" class="loading-container">
+        <div class="loader"></div>
+        <p>Loading products...</p>
+      </div>
+
+      <!-- Error state -->
+      <div *ngIf="error && !loading" class="error-container">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>{{ error }}</p>
+        <button (click)="loadProducts()" class="retry-btn">Try Again</button>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!loading && !error && filteredProducts.length === 0" class="empty-container">
+        <i class="fas fa-box-open"></i>
+        <p>No products match your filters</p>
+        <button (click)="searchTerm = ''; selectedCategory = 'all'; sortOption = 'default'; applyFilters()" class="clear-filters-btn">
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- Product cards -->
+      <div class="products-container" *ngIf="!loading && !error && filteredProducts.length > 0">
+        <div 
+          *ngFor="let product of pagedProducts" 
+          class="product-card" 
+          [@fadeIn]
+        >
+          <div class="product-image">
+            <img [src]="getImageUrl(product)" [alt]="product.name">
+            <div class="product-badges" *ngIf="product.isNew || product.isOnSale">
+              <span *ngIf="product.isNew" class="badge new-badge">NEW</span>
+              <span *ngIf="product.isOnSale" class="badge sale-badge">SALE</span>
+            </div>
+          </div>
+          
+          <div class="product-info">
+            <h2 class="product-name">{{ product.name }}</h2>
+            <p class="product-category">{{ product.category || 'Uncategorized' }}</p>
+            <p class="product-description">{{ (product.description || '').slice(0,100) }}{{ (product.description || '').length > 100 ? '...' : '' }}</p>
+            
+            <div class="product-price">
+              <span class="current-price">${{ (product.price || 0).toFixed(2) }}</span>
+              <span class="original-price" *ngIf="product.originalPrice">${{ product.originalPrice.toFixed(2) }}</span>
+            </div>
+            
+            <div class="product-rating" *ngIf="product.rating">
+              <div class="stars">
+                <i *ngFor="let star of [1,2,3,4,5]" 
+                   class="fas" 
+                   [class.fa-star]="star <= product.rating" 
+                   [class.fa-star-half-alt]="star - 0.5 <= product.rating && star > product.rating"
+                   [class.fa-star-o]="star > product.rating"></i>
+              </div>
+              <span class="rating-count" *ngIf="product.ratingCount">({{ product.ratingCount }})</span>
+            </div>
+            
+            <div class="product-actions">
+              <div class="quantity-control" *ngIf="isInCart(product.id)">
+                <button 
+                  class="quantity-btn minus" 
+                  (click)="updateQuantity(product, getCartQuantity(product.id) - 1)"
+                  [disabled]="getCartQuantity(product.id) <= 1"
+                >
+                  <i class="fas fa-minus"></i>
+                </button>
+                <input 
+                  type="number" 
+                  class="quantity-input" 
+                  [value]="getCartQuantity(product.id)" 
+                  min="1" 
+                  (change)="updateQuantity(product, $any($event.target).value)"
+                >
+                <button 
+                  class="quantity-btn plus" 
+                  (click)="updateQuantity(product, getCartQuantity(product.id) + 1)"
+                >
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              
+              <button 
+                class="add-to-cart-btn" 
+                (click)="addToCart(product, 1)"
+                [@pulse]="isInCart(product.id)"
+              >
+                <i class="fas" [class.fa-shopping-cart]="!isInCart(product.id)" [class.fa-check]="isInCart(product.id)"></i>
+                {{ isInCart(product.id) ? 'Added' : 'Add to Cart' }}
+              </button>
+              
+              <button class="view-details-btn">
+                <i class="fas fa-eye"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-container" *ngIf="totalPages > 1">
+        <div class="pagination">
+          <button 
+            class="page-btn prev" 
+            [disabled]="currentPage === 1"
+            (click)="changePage(currentPage - 1)"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          
+          <button 
+            *ngIf="currentPage > 3" 
+            class="page-btn"
+            (click)="changePage(1)"
+          >
+            1
+          </button>
+          
+          <span *ngIf="currentPage > 3" class="page-ellipsis">...</span>
+          
+          <button 
+            *ngFor="let page of getPageNumbers()" 
+            class="page-btn" 
+            [class.active]="page === currentPage"
+            (click)="changePage(page)"
+          >
+            {{ page }}
+          </button>
+          
+          <span *ngIf="currentPage < totalPages - 2" class="page-ellipsis">...</span>
+          
+          <button 
+            *ngIf="currentPage < totalPages - 2" 
+            class="page-btn"
+            (click)="changePage(totalPages)"
+          >
+            {{ totalPages }}
+          </button>
+          
+          <button 
+            class="page-btn next" 
+            [disabled]="currentPage === totalPages"
+            (click)="changePage(currentPage + 1)"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

@@ -16,6 +16,7 @@ import { ProductdetailsComponent } from './components/main/productdetails/produc
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { ManageProfilesAdminComponent } from './components/admin-dashboard/manage-profiles-admin/manage-profiles-admin.component';
 import { HomeAdminComponent } from './components/admin-dashboard/home-admin/home-admin.component';
+import { ShopComponent } from './components/main/shop/shop.component';
 
 export const routes: Routes = [
     {path:'', component: MainComponent, children: [
@@ -25,7 +26,8 @@ export const routes: Routes = [
       {path: 'register', component: RegisterComponent},
       {path: 'myorders/:email', component: MyOrderDetailsComponent},
       {path: 'cart', component: ViewCartComponent},
-      { path: 'product/:id', component: ProductdetailsComponent }
+      { path: 'product/:id', component: ProductdetailsComponent },
+      { path: 'shop', component: ShopComponent }
     ]},
     {path: 'dashboard', component: DashboardComponent, children: [
       {path: '', component: HomeDashboardComponent},
