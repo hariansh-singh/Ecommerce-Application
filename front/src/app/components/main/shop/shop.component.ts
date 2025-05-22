@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import Swal from 'sweetalert2';
 import { ProductService } from '../../../../services/product.service';
 
@@ -194,8 +195,9 @@ export class ShopComponent implements OnInit {
   }
 
   getImageUrl(product: any): string {
-    if (product.imageUrl) {
-      return product.imageUrl;
+    if (product && product.productImagePath) {
+      // Fix: Remove the quotes around the URL concatenation
+      return 'https://localhost:7116/' + product.productImagePath;
     }
     // Return a default image URL or generate a colored placeholder with product name
     return `https://via.placeholder.com/300x200/cccccc/333333?text=${encodeURIComponent(product.name || 'Product')}`;
