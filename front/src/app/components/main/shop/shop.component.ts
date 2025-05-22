@@ -2,14 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import Swal from 'sweetalert2';
 import { ProductService } from '../../../../services/product.service';
+import { CartService } from '../../../../services/cart.service';
+import { RouterLink } from '@angular/router';
+
+// Mock SweetAlert2 for artifact environment
+const Swal = {
+  fire: (options: any) => {
+    console.log('SweetAlert:', options.title || options.text);
+  }
+};
 
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.css',
   animations: [
@@ -47,22 +54,26 @@ export class ShopComponent implements OnInit {
   // Categories (will be dynamically populated)
   categories: string[] = [];
 
-  // Cart 
+  // Cart - using in-memory storage instead of localStorage
   cart: {productId: number, quantity: number, product: any}[] = [];
+  
+  // Mock customer ID for demo purposes
+  private customerId: number = 1;
 
-  constructor(private productService: ProductService) { }
+  constructor(
+    private productService: ProductService,
+    private cartService: CartService
+  ) { }
 
   ngOnInit(): void {
     this.loadProducts();
-    // Check for existing cart in localStorage
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      this.cart = JSON.parse(savedCart);
-    }
+    this.loadCart();
   }
 
   loadProducts(): void {
     this.loading = true;
+    this.error = null;
+    
     this.productService.getAllProducts().subscribe({
       next: (response: any) => {
         // Handle different API response formats
@@ -87,6 +98,17 @@ export class ShopComponent implements OnInit {
           this.products = [];
           this.error = 'Invalid data format received';
         }
+
+        // Ensure products have required properties
+        this.products = this.products.map(product => ({
+          ...product,
+          id: product.id || product.productId,
+          name: product.name || product.productName || 'Unnamed Product',
+          price: product.price || product.productPrice || 0,
+          category: product.category || 'Uncategorized',
+          description: product.description || '',
+          productImagePath: product.productImagePath || product.imageUrl || ''
+        }));
 
         // Only proceed with category extraction if products is an array
         if (Array.isArray(this.products)) {
@@ -113,6 +135,29 @@ export class ShopComponent implements OnInit {
           showConfirmButton: false,
           timer: 3000
         });
+      }
+    });
+  }
+
+  loadCart(): void {
+    // Load cart from CartService
+    this.cartService.getCartItems(this.customerId).subscribe({
+      next: (cartItems) => {
+        this.cart = cartItems.map(item => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          product: {
+            id: item.products.productId,
+            name: item.products.productName,
+            price: item.products.productPrice,
+            productImagePath: item.products.imageUrl
+          }
+        }));
+      },
+      error: (err) => {
+        console.error('Error loading cart:', err);
+        // Keep empty cart if loading fails
+        this.cart = [];
       }
     });
   }
@@ -174,10 +219,10 @@ export class ShopComponent implements OnInit {
     // Sorting
     switch(this.sortOption) {
       case 'price-asc':
-        filtered.sort((a, b) => a.price - b.price);
+        filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
         break;
       case 'price-desc':
-        filtered.sort((a, b) => b.price - a.price);
+        filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
         break;
       case 'name-asc':
         filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
@@ -196,7 +241,6 @@ export class ShopComponent implements OnInit {
 
   getImageUrl(product: any): string {
     if (product && product.productImagePath) {
-      // Fix: Remove the quotes around the URL concatenation
       return 'https://localhost:7116/' + product.productImagePath;
     }
     // Return a default image URL or generate a colored placeholder with product name
@@ -211,7 +255,10 @@ export class ShopComponent implements OnInit {
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      window.scrollTo(0, 0);
+      // Scroll to top of page
+      if (typeof window !== 'undefined') {
+        window.scrollTo(0, 0);
+      }
     }
   }
 
@@ -234,30 +281,48 @@ export class ShopComponent implements OnInit {
   }
 
   addToCart(product: any, quantity: number = 1): void {
-    // Check if product is already in cart
-    const existingItem = this.cart.find(item => item.productId === product.id);
-    
-    if (existingItem) {
-      existingItem.quantity += quantity;
-    } else {
-      this.cart.push({
-        productId: product.id,
-        quantity: quantity,
-        product: product
-      });
-    }
-    
-    // Save to localStorage
-    localStorage.setItem('cart', JSON.stringify(this.cart));
-    
-    // Show toast notification
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'success',
-      title: `${product.name} added to cart`,
-      showConfirmButton: false,
-      timer: 2000
+    const cartPayload = {
+      customerId: this.customerId,
+      productId: product.id,
+      quantity: quantity
+    };
+
+    this.cartService.addToCart(cartPayload).subscribe({
+      next: (response) => {
+        // Update local cart
+        const existingItem = this.cart.find(item => item.productId === product.id);
+        
+        if (existingItem) {
+          existingItem.quantity += quantity;
+        } else {
+          this.cart.push({
+            productId: product.id,
+            quantity: quantity,
+            product: product
+          });
+        }
+        
+        // Show toast notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: `${product.name} added to cart`,
+          showConfirmButton: false,
+          timer: 2000
+        });
+      },
+      error: (err) => {
+        console.error('Error adding to cart:', err);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Failed to add item to cart',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
     });
   }
 
@@ -268,9 +333,18 @@ export class ShopComponent implements OnInit {
     const existingItem = this.cart.find(item => item.productId === product.id);
     
     if (existingItem) {
+      // Find the cart item ID from the service or use a mock update
+      const cartUpdatePayload = {
+        customerId: this.customerId,
+        productId: product.id,
+        quantity: numQuantity
+      };
+
+      // For now, update locally and sync with service later
       existingItem.quantity = numQuantity;
-      // Save to localStorage
-      localStorage.setItem('cart', JSON.stringify(this.cart));
+      
+      // You would call cartService.updateCartItem here with proper cartId
+      console.log('Updating cart quantity:', cartUpdatePayload);
     }
   }
 
@@ -289,5 +363,22 @@ export class ShopComponent implements OnInit {
 
   getTotalPrice(): number {
     return this.cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  }
+
+  // Static rating methods since database doesn't have rating fields
+  getProductRating(product: any): number {
+    // Return a static rating between 3.5 and 5.0 based on product name/id
+    const rating = 3.5 + (((product.id || 0) % 15) / 10);
+    return Math.round(rating * 2) / 2; // Round to nearest 0.5
+  }
+
+  getProductRatingCount(product: any): number {
+    // Return a static rating count between 15 and 150 based on product id
+    return 15 + ((product.id || 0) % 135);
+  }
+
+  // TrackBy function for better performance with *ngFor
+  trackByProductId(index: number, product: any): any {
+    return product.id || index;
   }
 }

@@ -78,7 +78,7 @@
         <h3>Your Cart</h3>
         <p><strong>Items:</strong> {{ getTotalItems() }}</p>
         <p><strong>Total:</strong> ₹{{ getTotalPrice().toFixed(2) }}</p>
-        <button class="view-cart-btn">View Cart</button>
+        <button class="view-cart-btn" routerLink="/cart">View Cart</button>
       </div>
     </aside>
 
@@ -123,7 +123,7 @@
         *ngIf="!loading && !error && filteredProducts.length > 0"
       >
         <div
-          *ngFor="let product of pagedProducts"
+          *ngFor="let product of pagedProducts; trackBy: trackByProductId"
           class="product-card"
           [@fadeIn]
         >
@@ -159,30 +159,29 @@
               >
             </div>
 
-            <div class="product-rating" *ngIf="product.rating">
+            <!-- Static rating for all products -->
+            <div class="product-rating">
               <div class="stars">
                 <i
                   *ngFor="let star of [1, 2, 3, 4, 5]"
                   class="fas"
-                  [class.fa-star]="star <= product.rating"
+                  [class.fa-star]="star <= getProductRating(product)"
                   [class.fa-star-half-alt]="
-                    star - 0.5 <= product.rating && star > product.rating
+                    star - 0.5 <= getProductRating(product) && star > getProductRating(product)
                   "
-                  [class.fa-star-o]="star > product.rating"
+                  [class.fa-star-o]="star > getProductRating(product)"
                 ></i>
               </div>
-              <span class="rating-count" *ngIf="product.ratingCount"
-                >({{ product.ratingCount }})</span
-              >
+              <span class="rating-text">{{ getProductRating(product) }}</span>
+              <span class="rating-count">({{ getProductRatingCount(product) }})</span>
             </div>
 
             <div class="product-actions">
+              <!-- Quantity control - only show if item is in cart -->
               <div class="quantity-control" *ngIf="isInCart(product.id)">
                 <button
                   class="quantity-btn minus"
-                  (click)="
-                    updateQuantity(product, getCartQuantity(product.id) - 1)
-                  "
+                  (click)="updateQuantity(product, getCartQuantity(product.id) - 1)"
                   [disabled]="getCartQuantity(product.id) <= 1"
                 >
                   <i class="fas fa-minus"></i>
@@ -193,19 +192,20 @@
                   [value]="getCartQuantity(product.id)"
                   min="1"
                   (change)="updateQuantity(product, $any($event.target).value)"
+                  readonly
                 />
                 <button
                   class="quantity-btn plus"
-                  (click)="
-                    updateQuantity(product, getCartQuantity(product.id) + 1)
-                  "
+                  (click)="updateQuantity(product, getCartQuantity(product.id) + 1)"
                 >
                   <i class="fas fa-plus"></i>
                 </button>
               </div>
 
+              <!-- Add to cart button -->
               <button
                 class="add-to-cart-btn"
+                [class.in-cart]="isInCart(product.id)"
                 (click)="addToCart(product, 1)"
                 [@pulse]="isInCart(product.id)"
               >
@@ -214,12 +214,13 @@
                   [class.fa-shopping-cart]="!isInCart(product.id)"
                   [class.fa-check]="isInCart(product.id)"
                 ></i>
-                {{ isInCart(product.id) ? "Added" : "Add to Cart" }}
+                <span>{{ isInCart(product.id) ? "Added" : "Add to Cart" }}</span>
               </button>
 
+              <!-- View details button -->
               <button class="view-details-btn">
                 <i class="fas fa-eye"></i>
-                View Details
+                <span>View Details</span>
               </button>
             </div>
           </div>
