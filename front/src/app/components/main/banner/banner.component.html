@@ -1,48 +1,129 @@
-<!-- Bootstrap Carousel -->
-<div id="myCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
-  <div class="carousel-inner">
-    <!-- First Slide -->
-    <div class="carousel-item active">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-md-7 col-12">
-            <h4>HP Pavilion</h4>
-            <p>This laptop has many features that are simply awesome. It comes with a sleek design and powerful specs.</p> 
-            <br> 
-            <a href="#">BUY NOW</a>
-          </div>
-          <div class="col-md-5 col-12">
-            <img src="https://i.imgur.com/iDwDQ4o.png" class="img-fluid d-block mx-auto carousel-image" alt="HP Pavilion">
+<div class="ultra-carousel" [class.paused]="!isPlaying">
+  <!-- Background Gradient Animation -->
+  <div class="gradient-background" [style.transform]="'translateX(' + (-currentSlide * 100) + '%)'"></div>
+
+  <!-- Main Carousel Container -->
+  <div class="carousel-track" [style.transform]="'translateX(' + (-currentSlide * (100 / slides.length)) + '%)'">
+    <div 
+      *ngFor="let slide of slides; let i = index"
+      class="carousel-slide"
+      [ngClass]="slide.bgClass"
+    >
+      <!-- Slide Content -->
+      <div class="slide-container">
+        <div class="content-section">
+          <div class="content-inner">
+            
+            <!-- Badge -->
+            <div class="product-badge" [ngClass]="'badge-' + slide.badge.type">
+              <span class="badge-text">{{ slide.badge.text }}</span>
+              <div class="badge-glow"></div>
+            </div>
+
+            <!-- Title Section -->
+            <div class="title-section">
+              <h1 class="product-title">{{ slide.title }}</h1>
+              <h2 class="product-subtitle">{{ slide.subtitle }}</h2>
+            </div>
+
+            <!-- Description -->
+            <p class="product-description">{{ slide.description }}</p>
+
+            <!-- Pricing -->
+            <div class="pricing-section">
+              <span class="price-original">{{ formatPrice(slide.originalPrice) }}</span>
+              <span class="price-current">{{ formatPrice(slide.salePrice) }}</span>
+              <div class="discount-pill">
+                <span>{{ slide.discount }}% OFF</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button 
+                class="btn-primary" 
+                (click)="handlePrimaryAction(slide)"
+                (mouseenter)="pauseCarousel()"
+                (mouseleave)="resumeCarousel()"
+              >
+                <span class="btn-text">{{ slide.ctaPrimary }}</span>
+                <div class="btn-ripple"></div>
+                <svg class="btn-arrow" viewBox="0 0 24 24">
+                  <path d="M5 12h14m-7-7l7 7-7 7"/>
+                </svg>
+              </button>
+              
+              <button class="btn-secondary" (click)="handleSecondaryAction(slide)">
+                <span>{{ slide.ctaSecondary }}</span>
+              </button>
+            </div>
+
+            <!-- Features -->
+            <div class="features-grid">
+              <div *ngFor="let feature of slide.features" class="feature-item">
+                <svg class="check-icon" viewBox="0 0 24 24">
+                  <polyline points="20,6 9,17 4,12"/>
+                </svg>
+                <span>{{ feature }}</span>
+              </div>
+            </div>
+
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Second Slide -->
-    <div class="carousel-item">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-md-7 col-12">
-            <h4>iPhone XS</h4>
-            <p>This phone has many features that are simply awesome. It has a brilliant display and premium build quality.</p> 
-            <br> 
-            <a href="#">BUY NOW</a>
-          </div>
-          <div class="col-md-5 col-12">
-            <img src="https://i.imgur.com/tVBy5Q0.png" class="img-fluid d-block mx-auto carousel-image" alt="iPhone XS">
+        <!-- Image Section -->
+        <div class="image-section">
+          <div class="image-container">
+            <div class="image-backdrop"></div>
+            <img 
+              [src]="slide.imageUrl" 
+              [alt]="slide.imageAlt" 
+              class="product-image"
+            />
+            <div class="image-particles"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Carousel Controls -->
-  <a class="carousel-control-prev" href="#myCarousel" role="button" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#myCarousel" role="button" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </a>
+  <!-- Navigation Dots -->
+  <div class="navigation-dots">
+    <button
+      *ngFor="let slide of slides; let i = index"
+      class="dot"
+      [class.active]="i === currentSlide"
+      (click)="goToSlide(i)"
+    >
+      <span class="dot-inner"></span>
+    </button>
+  </div>
+
+  <!-- Navigation Arrows -->
+  <button class="nav-arrow nav-prev" (click)="prevSlide()">
+    <svg viewBox="0 0 24 24">
+      <polyline points="15,18 9,12 15,6"/>
+    </svg>
+  </button>
+  
+  <button class="nav-arrow nav-next" (click)="nextSlide()">
+    <svg viewBox="0 0 24 24">
+      <polyline points="9,18 15,12 9,6"/>
+    </svg>
+  </button>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" [style.width]="progressWidth + '%'"></div>
+  </div>
+
+  <!-- Animated Elements -->
+  <div class="floating-elements">
+    <div 
+      *ngFor="let item of [1,2,3,4,5]; let i = index"
+      class="float-circle"
+      [style.animation-delay]="(i + 1) * 0.5 + 's'"
+    ></div>
+  </div>
+
 </div>
