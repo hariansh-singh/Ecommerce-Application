@@ -22,7 +22,7 @@ export class LoginComponent {
 
   myForm: FormGroup = new FormGroup({
     Email: new FormControl('', [Validators.required, Validators.email]),
-    Password: new FormControl('', [Validators.required, Validators.minLength(6)])
+    Password: new FormControl('', [Validators.required])
   });
 
   constructor() {

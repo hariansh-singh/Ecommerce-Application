@@ -35,14 +35,14 @@
         </div>
         
         <div class="user-details">
-          <p><strong>ID:</strong> {{ user.id }}</p>
+          <p><strong>ID:</strong> {{ user.customerId }}</p>
           <p><strong>Email:</strong> {{ user.email }}</p>
           <p><strong>Role:</strong> 
             <span class="role-badge" [class]="'role-' + (user.role || 'unknown').toLowerCase()">
               {{ user.role || 'Unknown' }}
             </span>
           </p>
-          <p><strong>Created:</strong> {{ user.createdDate | date:'medium' }}</p>
+          <p><strong>Created:</strong> {{ user.registeredAt | date:'medium' }}</p>
           <p *ngIf="user.lastLoginDate"><strong>Last Login:</strong> {{ user.lastLoginDate | date:'medium' }}</p>
         </div>
       </div>
@@ -76,9 +76,9 @@
           <h4>Change Status</h4>
           <button 
             class="action-btn status-btn" 
-            [class]="(user.status || '').toLowerCase() === 'active' ? 'deactivate-btn' : 'activate-btn'"
+            [class]="(user.userStatus || '') === 1 ? 'deactivate-btn' : 'activate-btn'"
             (click)="changeUserStatus(user.id)">
-            {{ (user.status || '').toLowerCase() === 'active' ? 'Deactivate' : 'Activate' }}
+            {{ (user.userStatus || '') === 1 ? 'Deactivate' : 'Activate' }}
           </button>
         </div>
       </div>
