@@ -1,64 +1,64 @@
-<nav class="navbar navbar-expand-lg shadow-lg glass-navbar">
+<nav class="navbar navbar-expand-lg premium-navbar">
   <div class="container-fluid d-flex align-items-center">
    
-    <!-- Futuristic Logo with Animation -->
-    <a class="navbar-brand fw-bold neon-text d-flex align-items-center animate-logo" routerLink="/">
-      <i class="fas fa-globe fs-3 me-2 neon-icon"></i>
-      <span class="brand-name">Sha<span class="brand-sub">.in Nexus</span></span>
+    <!-- Premium Logo -->
+    <a class="navbar-brand fw-bold premium-brand d-flex align-items-center" routerLink="/">
+      <div class="logo-wrapper">
+        <i class="fas fa-globe fs-3 me-3 brand-icon"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-primary">Sha.in</span>
+        <span class="brand-secondary">Nexus</span>
+      </div>
     </a>
 
-    <!-- Responsive Navbar Toggler -->
-    <button
-      class="navbar-toggler neon-button"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <!-- Left Navigation Links -->
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+    <div class="navbar-collapse" id="navbarSupportedContent">
+      <!-- Navigation Links -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-5">
         <li class="nav-item">
-          <a class="nav-link active animated-link" aria-current="page" routerLink="/dashboard">
-            <i class="bi-house-door me-1"></i>Dashboard
+          <a class="nav-link active premium-nav-link" aria-current="page" routerLink="/sellerdashboard">
+            <i class="bi-house-door me-2"></i>Dashboard
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link animated-link" aria-current="page" routerLink="addProduct">
-            <i class="bi-pencil me-1"></i>Product Control
+          <a class="nav-link premium-nav-link" aria-current="page" routerLink="addProduct">
+            <i class="bi-pencil me-2"></i>Product Control
           </a>
         </li>
 
-        <!-- Advanced Orders Dropdown -->
+        <!-- Orders Dropdown -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle animated-link" href="#" id="ordersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi-bag me-1"></i>Orders Matrix
+          <a class="nav-link dropdown-toggle premium-nav-link" href="#" id="ordersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi-bag me-2"></i>Orders Matrix
           </a>
-          <ul class="dropdown-menu futuristic-dropdown shadow-sm">
+          <ul class="dropdown-menu premium-dropdown">
             <li>
-              <a class="dropdown-item" [routerLink]="['/myorders', userData?.['email']]">
-                <i class="bi-cart-check me-2"></i>Track My Orders
+              <a class="dropdown-item premium-dropdown-item" [routerLink]="['/myorders', userData?.['email']]">
+                <i class="bi-cart-check me-3"></i>Track My Orders
               </a>
             </li>
             <li>
-              <a class="dropdown-item" routerLink="/dashboard/allorders">
-                <i class="bi-people me-2"></i>Global Order View
+              <a class="dropdown-item premium-dropdown-item" routerLink="/dashboard/allorders">
+                <i class="bi-people me-3"></i>Global Order View
               </a>
             </li>
           </ul>
         </li>
       </ul>
 
-      <!-- Right Section: User Profile and Logout -->
-      <form class="d-flex align-items-center">
-        <span class="mx-3 neon-text welcome-user">Welcome, {{userData?.["FullName"]}} <span class="badge bg-glow">seller</span></span>
-        <button class="btn futuristic-btn fw-bold px-3 mx-1" type="button" (click)="redirectToHome()">Exit Portal</button>
-      </form>
+      <!-- User Profile Section -->
+      <div class="d-flex align-items-center">
+        <div class="user-info me-4">
+          <div class="welcome-text">Welcome back,</div>
+          <div class="user-name">{{userData?.["FullName"]}}</div>
+          <span class="badge seller-badge">
+            <i class="fas fa-crown me-1"></i>Seller
+          </span>
+        </div>
+        <button class="btn premium-btn" type="button" (click)="redirectToHome()">
+          <i class="fas fa-sign-out-alt me-2"></i>Exit Portal
+        </button>
+      </div>
     </div>
   </div>
 </nav>
