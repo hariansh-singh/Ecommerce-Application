@@ -19,25 +19,39 @@ import { SellerDashboardComponent } from './components/seller-dashboard/seller-d
 import { HomeSellerComponent } from './components/seller-dashboard/home-seller/home-seller.component';
 
 export const routes: Routes = [
-    {path:'', component: MainComponent, children: [
-      {path: '', component: HomeComponent},
-      {path: 'about', component: AboutComponent},
-      {path: 'login', component: LoginComponent},
-      {path: 'register', component: RegisterComponent},
-      {path: 'myorders/:email', component: MyOrderDetailsComponent},
-      {path: 'cart', component: ViewCartComponent},
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+
+  {
+    path: '',
+    component: MainComponent,
+    children: [
+      { path: '', component: HomeComponent },
+      { path: 'about', component: AboutComponent },
+      { path: 'myorders/:email', component: MyOrderDetailsComponent },
+      { path: 'cart', component: ViewCartComponent },
       { path: 'product/:id', component: ProductdetailsComponent },
-      { path: 'shop', component: ShopComponent }
-    ]},
-    {path: 'sellerdashboard', component: SellerDashboardComponent, children: [
-      {path: '', component: HomeSellerComponent},
-      {path: 'addProduct', component: AddProductComponent},
-      {path: 'editpro/:id', component: EditProductComponent},
-      {path: 'allorders', component: AllOrderDetailsComponent}
-    ]},
-    {path: 'admindashboard', component: AdminDashboardComponent, children: [
-            { path: '', component: HomeAdminComponent },
-            { path: 'manageprofile', component: ManageProfilesAdminComponent },
-        ]}
-  ];
-  
+      { path: 'shop', component: ShopComponent },
+    ],
+  },
+
+  {
+    path: 'sellerdashboard',
+    component: SellerDashboardComponent,
+    children: [
+      { path: '', component: HomeSellerComponent },
+      { path: 'addProduct', component: AddProductComponent },
+      { path: 'editpro/:id', component: EditProductComponent },
+      { path: 'allorders', component: AllOrderDetailsComponent },
+    ],
+  },
+
+  {
+    path: 'admindashboard',
+    component: AdminDashboardComponent,
+    children: [
+      { path: '', component: HomeAdminComponent },
+      { path: 'manageprofile', component: ManageProfilesAdminComponent },
+    ],
+  },
+];

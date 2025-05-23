@@ -1,60 +1,149 @@
-<!-- Login Component -->
-<section class="py-3 py-md-5 py-xl-8 login-section">
+<!-- Enhanced Login Component -->
+<section class="login-section">
   <div class="container">
+    <!-- Header Section -->
     <div class="row">
-      <div class="col-12 text-center">
-        <h2 class="display-5 fw-bold">Sign in</h2>
-        <p>Don't have an account? <a class="link-primary" routerLink="/register" >Sign up</a></p>
+      <div class="col-12 text-center header-section">
+        <div class="login-header">
+          <h2 class="login-title">Welcome Back</h2>
+          <p class="login-subtitle">
+            Don't have an account? 
+            <a class="signup-link" routerLink="/register">Create one here</a>
+          </p>
+        </div>
       </div>
     </div>
 
+    <!-- Main Content -->
     <div class="row justify-content-center">
       <div class="col-12 col-lg-10 col-xl-8">
-        <div class="row gy-5 justify-content-center">
-          <div class="col-12 col-lg-5">
-            <form [formGroup]="myForm" (ngSubmit)="onSubmitLogin()">
-              <div class="form-floating mb-3">
-                <input type="email" class="form-control border-bottom rounded-0" id="email" placeholder="Email" formControlName="Email" required>
-                <label for="email">Email</label>
+        <div class="login-container">
+          <div class="row gy-4 justify-content-center align-items-center">
+            
+            <!-- Login Form -->
+            <div class="col-12 col-lg-5">
+              <div class="form-container">
+                <form [formGroup]="myForm" (ngSubmit)="onSubmitLogin()" class="login-form">
+                  
+                  <!-- Email Field -->
+                  <div class="form-group">
+                    <div class="input-wrapper">
+                      <input 
+                        type="email" 
+                        class="form-input" 
+                        id="email" 
+                        placeholder=" " 
+                        formControlName="Email" 
+                        required
+                        [class.error]="myForm.get('Email')?.invalid && myForm.get('Email')?.touched">
+                      <label for="email" class="form-label">Email Address</label>
+                      <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                      </div>
+                    </div>
+                    <div class="error-message" *ngIf="myForm.get('Email')?.invalid && myForm.get('Email')?.touched">
+                      <small *ngIf="myForm.get('Email')?.errors?.['required']">Email is required</small>
+                      <small *ngIf="myForm.get('Email')?.errors?.['email']">Please enter a valid email</small>
+                    </div>
+                  </div>
+
+                  <!-- Password Field -->
+                  <div class="form-group">
+                    <div class="input-wrapper">
+                      <input 
+                        type="password" 
+                        class="form-input" 
+                        id="password" 
+                        placeholder=" " 
+                        formControlName="Password" 
+                        required
+                        [class.error]="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
+                      <label for="password" class="form-label">Password</label>
+                      <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                      </div>
+                    </div>
+                    <div class="error-message" *ngIf="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
+                      <small *ngIf="myForm.get('Password')?.errors?.['required']">Password is required</small>
+                    </div>
+                  </div>
+
+                  <!-- Remember Me & Forgot Password -->
+                  <div class="form-options">
+                    <div class="checkbox-wrapper">
+                      <input class="custom-checkbox" type="checkbox" id="remember_me">
+                      <label class="checkbox-label" for="remember_me">
+                        <span class="checkmark"></span>
+                        Remember me
+                      </label>
+                    </div>
+                    <a class="forgot-link">Forgot password?</a>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="submit-section">
+                    <button 
+                      class="login-btn" 
+                      type="submit" 
+                      [disabled]="myForm.invalid"
+                      [class.loading]="isLoading">
+                      <span class="btn-text">Sign In</span>
+                      <div class="btn-loader" *ngIf="isLoading">
+                        <div class="spinner"></div>
+                      </div>
+                    </button>
+                  </div>
+                </form>
               </div>
-              <div class="form-floating mb-3">
-                <input type="password" class="form-control border-bottom rounded-0" id="password" placeholder="Password" formControlName="Password" required>
-                <label for="password">Password</label>
+            </div>
+
+            <!-- Divider -->
+            <div class="col-12 col-lg-2 divider-section">
+              <div class="divider-container">
+                <div class="divider-line"></div>
+                <span class="divider-text">or</span>
+                <div class="divider-line"></div>
               </div>
-              <div class="d-flex justify-content-between">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="remember_me">
-                  <label class="form-check-label text-secondary" for="remember_me">Remember me</label>
+            </div>
+
+            <!-- Social Login -->
+            <div class="col-12 col-lg-5">
+              <div class="social-container">
+                <h6 class="social-title">Continue with</h6>
+                <div class="social-buttons">
+                  <button class="social-btn google-btn">
+                    <div class="social-icon">
+                      <i class="fab fa-google"></i>
+                    </div>
+                    <span>Google</span>
+                  </button>
+                  
+                  <button class="social-btn apple-btn">
+                    <div class="social-icon">
+                      <i class="fab fa-apple"></i>
+                    </div>
+                    <span>Apple</span>
+                  </button>
+                  
+                  <button class="social-btn facebook-btn">
+                    <div class="social-icon">
+                      <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <span>Facebook</span>
+                  </button>
                 </div>
-                <a class="link-secondary text-decoration-none">Forgot password?</a>
               </div>
-              <div class="d-grid">
-                <button class="btn btn-lg btn-dark rounded-0 fs-6 login-btn" type="submit" [disabled]="myForm.invalid">Log in</button>
-              </div>
-            </form>
-          </div>
-
-          <div class="col-12 col-lg-2 d-flex align-items-center justify-content-center gap-3 flex-lg-column">
-            <div class="separator d-lg-block"></div>
-            <div>or</div>
-            <div class="separator d-lg-block"></div>
-          </div>
-
-          <div class="col-12 col-lg-5">
-            <div class="d-grid gap-3">
-              <a class="btn btn-outline-dark d-flex align-items-center social-login">
-                <i class="fab fa-google text-danger fs-4 me-2"></i> Continue with Google
-              </a>
-              <a class="btn btn-outline-dark d-flex align-items-center social-login">
-                <i class="fab fa-apple text-dark fs-4 me-2"></i> Continue with Apple
-              </a>
-              <a class="btn btn-outline-dark d-flex align-items-center social-login">
-                <i class="fab fa-facebook text-primary fs-4 me-2"></i> Continue with Facebook
-              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Background Elements -->
+  <div class="bg-elements">
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    <div class="bg-circle circle-3"></div>
   </div>
 </section>
