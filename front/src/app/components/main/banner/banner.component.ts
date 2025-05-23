@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 interface SlideData {
   id: string;
@@ -32,6 +34,8 @@ export class BannerComponent implements OnInit, OnDestroy {
   isPlaying: boolean = true;
   progressWidth: number = 0;
 
+  router = inject(Router);
+
   private readonly SLIDE_DURATION = 2500;
   private readonly PROGRESS_UPDATE_RATE = 25;
   
@@ -60,8 +64,8 @@ export class BannerComponent implements OnInit, OnDestroy {
       title: 'HP Pavilion Gaming',
       subtitle: 'Power Meets Performance',
       description: 'Experience ultimate gaming performance with Intel Core i7, RTX 3060, and lightning-fast SSD storage. Built for creators and gamers who demand excellence.',
-      originalPrice: 1299,
-      salePrice: 999,
+      originalPrice: 129349,
+      salePrice: 99999,
       discount: 23,
       imageUrl: 'https://i.imgur.com/iDwDQ4o.png',
       imageAlt: 'HP Pavilion Gaming Laptop',
@@ -76,8 +80,8 @@ export class BannerComponent implements OnInit, OnDestroy {
       title: 'MacBook Pro M2',
       subtitle: 'Supercharged for Pros',
       description: 'Revolutionary M2 chip delivers incredible performance and battery life. Perfect for developers, designers, and creative professionals who push boundaries.',
-      originalPrice: 1999,
-      salePrice: 1699,
+      originalPrice: 215999,
+      salePrice: 169900,
       discount: 15,
       imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=400&fit=crop',
       imageAlt: 'MacBook Pro M2',
@@ -138,13 +142,30 @@ export class BannerComponent implements OnInit, OnDestroy {
   }
 
   handlePrimaryAction(slide: SlideData): void {
-    console.log(`Primary action clicked for ${slide.title}`);
-    // Add your primary action logic here
+    if(slide.title === 'iPhone 16 Pro') {
+      this.router.navigate(['product/1']);
+    }
+    else if(slide.title === 'HP Pavilion Gaming') {
+      Swal.fire({
+        title: 'Product Unavailable',
+        text: 'This product is currently unavailable.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+    }
+    else if(slide.title === 'MacBook Pro M2') {
+      this.router.navigate(['product/3']);
+    }
   }
 
   handleSecondaryAction(slide: SlideData): void {
     console.log(`Secondary action clicked for ${slide.title}`);
-    // Add your secondary action logic here
+    Swal.fire({
+      title: 'Feature Coming Soon',
+      text: 'This feature is not yet available.',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
   }
 
   private startAutoPlay(): void {
