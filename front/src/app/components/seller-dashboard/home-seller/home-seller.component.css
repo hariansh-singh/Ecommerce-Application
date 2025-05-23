@@ -1,0 +1,101 @@
+/* General Table Styling */
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Header Styling */
+.table-dark th {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Center Image */
+.img-thumbnail {
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.img-thumbnail:hover {
+  transform: scale(1.1);
+}
+
+/* Adjust text alignment */
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* Buttons Styling */
+.btn-sm {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+.btn-warning, .btn-danger {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.btn-warning:hover, .btn-danger:hover {
+  opacity: 0.8;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .img-thumbnail {
+    max-width: 80px;
+  }
+}
+
+/* Edit Button */
+.btn-warning {
+  background-color: #ffc107;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 6px 12px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
+  color: #fff;
+}
+
+/* Delete Button */
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  padding: 6px 12px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Button Icon Styling */
+.btn i {
+  margin-right: 5px;
+}
+
+/* Spacing and Alignment */
+.btn {
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.d-flex .btn {
+  flex: 1; /* Makes buttons even-sized */
+}
+

@@ -1,16 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { AuthStateService } from '../../../../services/auth-state.service';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [ReactiveFormsModule,RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
+
+
 export class LoginComponent {
 
   authService = inject(AuthService)
