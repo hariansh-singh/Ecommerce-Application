@@ -5,12 +5,12 @@ import { jwtDecode } from 'jwt-decode';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-header-dashboard',
+  selector: 'app-header-seller',
   imports: [RouterModule],
-  templateUrl: './header-dashboard.component.html',
-  styleUrl: './header-dashboard.component.css'
+  templateUrl: './header-seller.component.html',
+  styleUrl: './header-seller.component.css'
 })
-export class HeaderDashboardComponent implements OnInit {
+export class HeaderSellerComponent implements OnInit {
   userData: any;
   authService = inject(AuthService);
   router: Router = inject(Router);

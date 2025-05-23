@@ -6,12 +6,12 @@ import { ProductService } from '../../../../services/product.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-home-dashboard',
+  selector: 'app-home-seller',
   imports: [CommonModule, RouterModule],
-  templateUrl: './home-dashboard.component.html',
-  styleUrl: './home-dashboard.component.css'
+  templateUrl: './home-seller.component.html',
+  styleUrl: './home-seller.component.css'
 })
-export class HomeDashboardComponent implements OnInit {
+export class HomeSellerComponent implements OnInit {
 
   products:any[] = [];
  
