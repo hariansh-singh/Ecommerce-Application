@@ -1,1 +1,87 @@
-<p>manage-profiles-admin works!</p>
+<div class="manage-profiles-container">
+  <div class="header">
+    <h2>Manage User Profiles</h2>
+    <button class="refresh-btn" (click)="refreshUsers()" [disabled]="loading">
+      <span *ngIf="!loading">🔄 Refresh</span>
+      <span *ngIf="loading">Loading...</span>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading users...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="loadUsers()">Try Again</button>
+  </div>
+
+  <!-- Users List -->
+  <div *ngIf="!loading && !error" class="users-container">
+    <div *ngIf="users.length === 0" class="no-users">
+      <p>No users found.</p>
+    </div>
+
+    <div *ngFor="let user of users" class="user-card">
+      <div class="user-info">
+        <div class="user-header">
+          <h3>{{ user.name }}</h3>
+          <span class="status-badge" [class]="'status-' + (user.status || 'unknown').toLowerCase()">
+            {{ user.status || 'Unknown' }}
+          </span>
+        </div>
+        
+        <div class="user-details">
+          <p><strong>ID:</strong> {{ user.id }}</p>
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p><strong>Role:</strong> 
+            <span class="role-badge" [class]="'role-' + (user.role || 'unknown').toLowerCase()">
+              {{ user.role || 'Unknown' }}
+            </span>
+          </p>
+          <p><strong>Created:</strong> {{ user.createdDate | date:'medium' }}</p>
+          <p *ngIf="user.lastLoginDate"><strong>Last Login:</strong> {{ user.lastLoginDate | date:'medium' }}</p>
+        </div>
+      </div>
+
+      <div class="user-actions">
+        <div class="action-group">
+          <h4>Change Role</h4>
+          <div class="role-buttons">
+            <button 
+              class="action-btn role-btn user-btn" 
+              (click)="changeUserRole(user.id, 'User')"
+              [disabled]="(user.role || '').toLowerCase() === 'user'">
+              User
+            </button>
+            <button 
+              class="action-btn role-btn seller-btn" 
+              (click)="changeUserRole(user.id, 'Seller')"
+              [disabled]="(user.role || '').toLowerCase() === 'seller'">
+              Seller
+            </button>
+            <button 
+              class="action-btn role-btn admin-btn" 
+              (click)="changeUserRole(user.id, 'Admin')"
+              [disabled]="(user.role || '').toLowerCase() === 'admin'">
+              Admin
+            </button>
+          </div>
+        </div>
+
+        <div class="action-group">
+          <h4>Change Status</h4>
+          <button 
+            class="action-btn status-btn" 
+            [class]="(user.status || '').toLowerCase() === 'active' ? 'deactivate-btn' : 'activate-btn'"
+            (click)="changeUserStatus(user.id)">
+            {{ (user.status || '').toLowerCase() === 'active' ? 'Deactivate' : 'Activate' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
