@@ -319,3 +319,302 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Add these styles to your global styles.css or component CSS */
+
+/* SweetAlert2 Custom Styles */
+.swal2-popup {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.swal-wide {
+  width: 500px !important;
+  max-width: 90vw !important;
+}
+
+.swal2-title {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+}
+
+.swal2-html-container {
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+}
+
+.swal2-confirm {
+  font-weight: 600 !important;
+  padding: 12px 24px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  transition: all 0.3s ease !important;
+}
+
+.swal2-cancel {
+  font-weight: 600 !important;
+  padding: 12px 24px !important;
+  border-radius: 6px !important;
+  font-size: 14px !important;
+  transition: all 0.3s ease !important;
+}
+
+.swal2-confirm:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.swal2-cancel:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Toast specific styles */
+.swal2-toast {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.swal2-toast .swal2-title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+}
+
+.swal2-toast .swal2-content {
+  font-size: 14px !important;
+  margin: 5px 0 0 0 !important;
+}
+
+/* Progress bar styling */
+.swal2-timer-progress-bar {
+  height: 3px !important;
+}
+
+/* Loading spinner in toasts */
+.swal2-toast .swal2-loading {
+  color: #007bff !important;
+}
+
+/* Icon styling */
+.swal2-icon {
+  margin: 20px auto 30px !important;
+}
+
+.swal2-toast .swal2-icon {
+  margin: 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .swal-wide {
+    width: 95vw !important;
+    margin: 0 auto !important;
+  }
+  
+  .swal2-title {
+    font-size: 20px !important;
+  }
+  
+  .swal2-html-container {
+    font-size: 14px !important;
+  }
+}
+
+/* Add these styles to your manage-profiles-admin.component.css */
+
+/* Search Container */
+.search-container {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e1e5e9;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-box:focus-within {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50;
+  background: transparent;
+}
+
+.search-input::placeholder {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 10px;
+  background: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.clear-search-btn:hover {
+  background: #7f8c8d;
+  transform: scale(1.1);
+}
+
+.search-icon {
+  padding: 15px 20px;
+  background: #3498db;
+  color: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+}
+
+/* Search Info */
+.search-info {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.search-results {
+  color: #2c3e50;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.search-term {
+  color: #3498db;
+  font-weight: 600;
+  font-style: italic;
+}
+
+/* Search Highlight */
+.search-highlight {
+  background: #fff3cd;
+  color: #856404;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+/* Clear Search Link */
+.clear-search-link {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.clear-search-link:hover {
+  background: #2980b9;
+  transform: translateY(-1px);
+}
+
+/* Enhanced No Users State */
+.no-users {
+  text-align: center;
+  padding: 50px 20px;
+  color: #7f8c8d;
+  font-size: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #e1e5e9;
+}
+
+.no-users p {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .search-container {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+  
+  .search-icon {
+    padding: 12px 15px;
+    min-width: 48px;
+  }
+  
+  .clear-search-btn {
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+  
+  .search-info {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+  
+  .search-results {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-box {
+    flex-direction: column;
+  }
+  
+  .search-input-wrapper {
+    width: 100%;
+  }
+  
+  .search-icon {
+    width: 100%;
+    border-top: 1px solid #e1e5e9;
+    padding: 10px;
+  }
+}

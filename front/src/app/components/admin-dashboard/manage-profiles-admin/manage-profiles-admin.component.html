@@ -7,6 +7,39 @@
     </button>
   </div>
 
+  <!-- Search Bar -->
+  <div class="search-container" *ngIf="!loading && !error">
+    <div class="search-box">
+      <div class="search-input-wrapper">
+        <input 
+          type="text" 
+          class="search-input"
+          placeholder="Search users by name, email, or ID..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange($event)"
+        />
+        <button 
+          class="clear-search-btn" 
+          *ngIf="searchTerm"
+          (click)="clearSearch()"
+          title="Clear search">
+          ✕
+        </button>
+      </div>
+      <div class="search-icon">
+        🔍
+      </div>
+    </div>
+    
+    <!-- Search Results Info -->
+    <div class="search-info" *ngIf="searchTerm">
+      <span class="search-results">
+        {{ filteredUsers.length }} of {{ users.length }} users
+        <span class="search-term">matching "{{ searchTerm }}"</span>
+      </span>
+    </div>
+  </div>
+
   <!-- Loading State -->
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
@@ -21,14 +54,19 @@
 
   <!-- Users List -->
   <div *ngIf="!loading && !error" class="users-container">
-    <div *ngIf="users.length === 0" class="no-users">
+    <div *ngIf="filteredUsers.length === 0 && users.length === 0" class="no-users">
       <p>No users found.</p>
     </div>
 
-    <div *ngFor="let user of users" class="user-card">
+    <div *ngIf="filteredUsers.length === 0 && users.length > 0 && searchTerm" class="no-users">
+      <p>No users match your search criteria.</p>
+      <button class="clear-search-link" (click)="clearSearch()">Clear search to see all users</button>
+    </div>
+
+    <div *ngFor="let user of filteredUsers" class="user-card">
       <div class="user-info">
         <div class="user-header">
-          <h3>{{ user.name }}</h3>
+          <h3 [innerHTML]="highlightSearchTerm(user.name)"></h3>
           <span class="status-badge" [class]="'status-' + (user.status || 'unknown').toLowerCase()">
             {{ user.status || 'Unknown' }}
           </span>
@@ -36,7 +74,9 @@
         
         <div class="user-details">
           <p><strong>ID:</strong> {{ user.customerId }}</p>
-          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p><strong>Email:</strong> 
+            <span [innerHTML]="highlightSearchTerm(user.email)"></span>
+          </p>
           <p><strong>Role:</strong> 
             <span class="role-badge" [class]="'role-' + (user.role || 'unknown').toLowerCase()">
               {{ user.role || 'Unknown' }}
@@ -53,19 +93,19 @@
           <div class="role-buttons">
             <button 
               class="action-btn role-btn user-btn" 
-              (click)="changeUserRole(user.id, 'User')"
+              (click)="changeUserRole(user.customerId, 'user')"
               [disabled]="(user.role || '').toLowerCase() === 'user'">
               User
             </button>
             <button 
               class="action-btn role-btn seller-btn" 
-              (click)="changeUserRole(user.id, 'Seller')"
+              (click)="changeUserRole(user.customerId, 'seller')"
               [disabled]="(user.role || '').toLowerCase() === 'seller'">
               Seller
             </button>
             <button 
               class="action-btn role-btn admin-btn" 
-              (click)="changeUserRole(user.id, 'Admin')"
+              (click)="changeUserRole(user.customerId, 'admin')"
               [disabled]="(user.role || '').toLowerCase() === 'admin'">
               Admin
             </button>
@@ -77,7 +117,7 @@
           <button 
             class="action-btn status-btn" 
             [class]="(user.userStatus || '') === 1 ? 'deactivate-btn' : 'activate-btn'"
-            (click)="changeUserStatus(user.id)">
+            (click)="changeUserStatus(user.customerId)">
             {{ (user.userStatus || '') === 1 ? 'Deactivate' : 'Activate' }}
           </button>
         </div>
