@@ -70,7 +70,8 @@ namespace backend.Controllers
                 new("CustomerId", customer.CustomerId.ToString()),
                 new("Email", customer.Email ?? ""),
                 new("Name", customer.Name ?? ""),
-                new("Role", customer.Role ?? "")
+                new("Role", customer.Role ?? ""),
+                new("RegisteredAt", customer.RegisteredAt.ToString())
             };
 
             var token = new JwtSecurityToken(
