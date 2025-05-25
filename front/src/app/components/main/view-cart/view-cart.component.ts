@@ -11,15 +11,18 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-view-cart',
-  standalone: true,
+  standalone: true, 
   imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './view-cart.component.html',
   styleUrls: ['./view-cart.component.css'],
   animations: [
-    trigger('fadeIn', [
+  trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('400ms ease-in', style({ opacity: 1 }))
+        animate('300ms ease-in', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-out', style({ opacity: 0 }))
       ])
     ]),
     trigger('cartItemAnimation', [
