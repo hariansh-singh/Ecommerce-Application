@@ -641,11 +641,11 @@
   animation: pulse 2s infinite;
 }
 
-.status-indicator.status-active {
+.status-indicator.status-1 {
   background: #10b981;
 }
 
-.status-indicator.status-inactive {
+.status-indicator.status-0 {
   background: #ef4444;
 }
 
@@ -707,12 +707,12 @@
   color: white;
 }
 
-.status-badge.status-active {
+.status-badge.status-1 {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
 }
 
-.status-badge.status-inactive {
+.status-badge.status-0 {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
 }

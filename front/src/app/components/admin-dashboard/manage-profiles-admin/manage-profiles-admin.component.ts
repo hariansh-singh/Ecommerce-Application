@@ -91,7 +91,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
   // Get stats for dashboard
   getActiveUsersCount(): number {
     return this.users.filter(user => 
-      (user.status || '').toLowerCase() === 'active'
+      (user.userStatus || '') === 1
     ).length;
   }
 
@@ -109,6 +109,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
         this.currentAdmin = adminData;
         this.currentAdminId = adminData["customerId"];
         console.log('Current admin loaded from storage:', this.currentAdmin);
+        console.log("User status is: ", adminData["UserStatus"]);
       } else {
         console.warn('No admin data found in storage');
       }

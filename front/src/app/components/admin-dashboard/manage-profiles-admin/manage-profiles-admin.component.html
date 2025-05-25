@@ -301,7 +301,7 @@
         <div class="user-header">
           <div class="user-avatar">
             <span class="avatar-text">{{ getInitials(user.name) }}</span>
-            <div class="status-indicator" [class]="'status-' + (user.status || 'unknown').toLowerCase()"></div>
+            <div class="status-indicator" [class]="'status-' + (user.userStatus)"></div>
           </div>
           
           <div class="user-basic-info">
@@ -313,8 +313,8 @@
             <span class="role-badge" [class]="'role-' + (user.role || 'unknown').toLowerCase()">
               {{ user.role || 'Unknown' }}
             </span>
-            <span class="status-badge" [class]="'status-' + (user.status || 'unknown').toLowerCase()">
-              {{ user.status || 'Unknown' }}
+            <span class="status-badge" [class]="'status-' + (user.userStatus)">
+              {{ user.userStatus === 1 ? 'active' : 'inactive' }}
             </span>
           </div>
         </div>
