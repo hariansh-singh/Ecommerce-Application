@@ -44,6 +44,27 @@ namespace backend.Repositories.CartRepository
             return true;
            }
 
+        public async Task<bool> ClearCartAsync(int userId)
+        {
+            if (userId <= 0)
+            {
+                return false; // Invalid user ID
+            }
+
+            var cartItems = await dbcontext.Carts
+                .Where(c => c.CustomerId == userId)
+                .ToListAsync();
+
+            if (cartItems == null || !cartItems.Any())
+            {
+                return true; // No items to clear, consider it successful
+            }
+
+            dbcontext.Carts.RemoveRange(cartItems);
+            await dbcontext.SaveChangesAsync();
+            return true;
+        }
+
         // delete cart items
         public async Task<bool> DeleteCartAsync(int cartId)
         {

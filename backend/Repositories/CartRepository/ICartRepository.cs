@@ -8,5 +8,7 @@ namespace backend.Repositories.CartRepository
         Task<bool> AddCartAsync(CartUIModel cart);
         Task<bool> UpdateCartAsync(int cartId, CartUIModel cart);
         Task<bool> DeleteCartAsync(int cartId);
+
+        Task<bool> ClearCartAsync(int userId);
     }
 }

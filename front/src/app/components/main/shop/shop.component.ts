@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ProductService } from '../../../../services/product.service';
 import { CartService } from '../../../../services/cart.service';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../services/auth.service';
 
 // Mock SweetAlert2 for artifact environment
 const Swal = {
@@ -56,9 +57,12 @@ export class ShopComponent implements OnInit {
 
   // Cart - using in-memory storage instead of localStorage
   cart: {productId: number, quantity: number, product: any}[] = [];
+
+  authService: any = inject(AuthService);
   
   // Mock customer ID for demo purposes
-  private customerId: number = 1;
+  userData :any = this.authService.decodedTokenData();
+  private customerId: number = this.userData["CustomerId"]
 
   constructor(
     private productService: ProductService,

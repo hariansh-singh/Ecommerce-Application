@@ -71,7 +71,6 @@ namespace backend.Controllers
                 new("Email", customer.Email ?? ""),
                 new("Name", customer.Name ?? ""),
                 new("Role", customer.Role ?? ""),
-                //new("UserStatus", customer.UserStatus.ToString()),
                 new("RegisteredAt", customer.RegisteredAt.ToString())
             };
 

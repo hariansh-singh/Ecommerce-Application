@@ -67,7 +67,7 @@ namespace backend.Controllers
                 {
                     return Conflict(new
                     {
-                        err = 2,
+                        err = 1,
                         msg = "Cart item already exists or couldn't be added."
                     });
                 }
@@ -78,7 +78,7 @@ namespace backend.Controllers
                 Console.WriteLine($"Error adding cart item: {ex.Message}");
                 return StatusCode(500, new
                 {
-                    err = 3,
+                    err = 1,
                     msg = "An unexpected error occurred while adding the cart item. Please try again later."
                 });
             }
@@ -130,7 +130,7 @@ namespace backend.Controllers
                 {
                     return Conflict(new
                     {
-                        err = 3,
+                        err = 1,
                         msg = $"Failed to update cart item with ID {cartId}. Possible conflicting data or constraints."
                     });
                 }
@@ -140,7 +140,7 @@ namespace backend.Controllers
                 Console.WriteLine($"Error updating cart (ID {cartId}): {ex.Message}");
                 return StatusCode(500, new
                 {
-                    err = 4,
+                    err = 1,
                     msg = $"An unexpected error occurred while updating cart ID {cartId}. Please try again later."
                 });
             }
@@ -176,7 +176,7 @@ namespace backend.Controllers
                 {
                     return NotFound(new
                     {
-                        err = 2,
+                        err = 1,
                         msg = "Cart item not found or deletion failed."
                     });
                 }
@@ -187,10 +187,31 @@ namespace backend.Controllers
                 Console.WriteLine($"Error deleting cart item: {ex.Message}");
                 return StatusCode(500, new
                 {
-                    err = 3,
+                    err = 1,
                     msg = "An unexpected error occurred. Please try again later."
                 });
             }
+        }
+
+        [HttpDelete("clear/{userId}")]
+        public async Task<IActionResult> ClearCart(int userId)
+        {
+            var result = await _cartRepository.ClearCartAsync(userId);
+
+            if (result)
+            {
+                return Ok(new
+                {
+                    err = 0,
+                    msg = "Cart cleared successfully."
+                });
+            }
+
+            return BadRequest(new
+            {
+                err = 1,
+                msg = "Failed to clear cart or invalid userId"
+            });
         }
 
     }
