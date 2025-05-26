@@ -1,48 +1,94 @@
-<section class="py-5 bg-secondary">
-    <div class="container px-4 px-lg-5 mt-5">
-        <h2 class="fw-bolder mb-4 p-4 fw-bold text-light text-center" style="letter-spacing: 1px;">
-            Related Products
-        </h2>
-
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            <div class="col mb-4" *ngFor="let product of products.slice(2, 6)">
-                <div class="card shadow-lg"
-                    style="border-radius: 12px; width: 260px; transition: transform 0.3s ease-in-out; overflow: hidden;"
-                    (mouseover)="hoverCard($event)" (mouseleave)="leaveCard($event)">
-
-                    <!-- Sale badge -->
-                    <div *ngIf="product.onSale" class="badge bg-danger text-white position-absolute"
-                        style="top: 0.5rem; right: 0.5rem; font-size: 14px; padding: 5px 10px; border-radius: 5px;">
-                        Sale
-                    </div>
-
-                    <!-- Product image -->
-                    <img class="card-img-top" [src]="'https://localhost:7116/' + product.productImagePath"
-                        [alt]="product.pName"
-                        style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px 12px 0 0; cursor: pointer;"
-                        (mouseover)="hoverImage($event)" (mouseleave)="leaveImage($event)" />
-
-                    <!-- Product details -->
-                    <div class="card-body text-center p-3">
-                        <h5 class="fw-bolder text-dark" style="font-size: 18px; margin-bottom: 6px;">
-                            {{ product.productName }}
-                        </h5>
-                        <p class="fw-bold text-dark" style="font-size: 16px;">
-                            ${{ product.productPrice }}
-                        </p>
-                    </div>
-
-                    <!-- Product actions -->
-                    <div class="d-flex justify-content-center gap-2 mb-2">
-                        <button class="btn btn-primary btn-sm hover-scale px-3 py-2" style="border-radius: 8px;" (click)="addToCart(product)">
-                            Add to Cart
-                        </button>
-                        <button class="btn btn-primary btn-sm hover-scale px-3 py-2" style="border-radius: 8px;" [routerLink]="['/product', product.productId]">
-                            More Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<section class="related-products-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="fas fa-star"></i>
+        Related Products
+      </h2>
+      <div class="section-divider"></div>
     </div>
+
+    <div class="products-grid">
+      <div class="product-card-wrapper" *ngFor="let product of products.slice(2, 6)">
+        <div class="product-card" 
+             (mouseenter)="onCardHover($event, true)" 
+             (mouseleave)="onCardHover($event, false)">
+          
+          <!-- Sale Badge -->
+          <div *ngIf="product.onSale" class="sale-badge">
+            <i class="fas fa-fire"></i>
+            SALE
+          </div>
+
+          <!-- Product Image -->
+          <div class="image-container">
+            <img [src]="'https://localhost:7116/' + product.productImagePath" 
+                 [alt]="product.productName"
+                 class="product-image"
+                 (error)="onImageError($event)">
+            <div class="image-overlay">
+              <button class="quick-view-btn" 
+                      [routerLink]="['/product', product.productId]"
+                      title="Quick View">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product Info -->
+          <div class="product-info">
+            <h5 class="product-name" [title]="product.productName">
+              {{ product.productName }}
+            </h5>
+            <div class="price-section">
+              <span class="current-price">${{ product.productPrice }}</span>
+              <span *ngIf="product.originalPrice" class="original-price">
+                ${{ product.originalPrice }}
+              </span>
+            </div>
+            <div class="rating" *ngIf="product.rating">
+              <div class="stars">
+                <i class="fas fa-star" 
+                   *ngFor="let star of getStarArray(product.rating)"
+                   [class.filled]="star <= product.rating"></i>
+              </div>
+              <span class="rating-text">({{ product.reviewCount || 0 }})</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="btn btn-primary btn-cart" 
+                    (click)="addToCart(product)"
+                    [disabled]="isAddingToCart"
+                    title="Add to Cart">
+              <i class="fas fa-shopping-cart"></i>
+              <span>{{ isAddingToCart ? 'Adding...' : 'Add to Cart' }}</span>
+            </button>
+            <button class="btn btn-outline-primary btn-details" 
+                    [routerLink]="['/product', product.productId]"
+                    title="View Details">
+              <i class="fas fa-info-circle"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && products.length === 0" class="empty-state">
+      <i class="fas fa-box-open"></i>
+      <h3>No Related Products Found</h3>
+      <p>Check back later for more amazing products!</p>
+    </div>
+  </div>
 </section>
