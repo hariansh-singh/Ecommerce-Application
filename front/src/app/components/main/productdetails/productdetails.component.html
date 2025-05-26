@@ -1,31 +1,88 @@
-<section class="py-5" *ngIf="products" style="background-color: lightgrey;" >
-    <div class="container px-4 px-lg-5 my-5">
-      <div class="row gx-4 gx-lg-5 align-items-center">
-
-        <!-- Product Image -->
-        <div class="col-md-6">
-          <img class="card-img-top mb-5 mb-md-0" [src]="'https://localhost:7116/' + products.productImagePath" alt="{{ products.ProductName }}" />
-        </div>
-
-        <!-- Product Details -->
-        <div class="col-md-6">
-          <h1 class="display-5 fw-bolder">{{ products.productName }}</h1>
-  
-          <!-- Price Display -->
-          <div class="fs-5 mb-3">
-            <span>Rs {{products.productPrice }}</span>
-
-            <!-- <span>${{ products.discountedPrice || products.price }}</span> -->
-          </div>
-          <h3>Description:</h3>
-                    <p class="lead">{{products.description}} Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, doloribus quod blanditiis molestias non unde! Sunt cum quasi hic eveniet sed, modi magni in voluptatibus? Eum eveniet est quia, quos assumenda esse adipisci accusamus id odit distinctio incidunt sequi officiis cum laboriosam blanditiis a sit omnis nemo aspernatur sapiente qui?</p>
-
-           
+<div class="product-container" *ngIf="products" [@fadeInUp]>
+  <div class="product-card" [@slideIn]>
+    <div class="floating-elements">
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+    </div>
+    
+    <div class="product-content">
+      <div class="image-section">
+        <img 
+          class="product-image" 
+          [src]="'https://localhost:7116/' + products.productImagePath" 
+          [alt]="products.productName"
+          [@imageFloat]
+        />
+      </div>
+      
+      <div class="details-section">
+        <h1 class="product-title" [@titleSlide]>{{ products.productName }}</h1>
         
-          <p class="lead">Quantity Available: {{ products.stockQuantity }}</p>
-          <button class="btn btn-primary" (click)="addToCart()">Add to Cart</button>
-
+        <div class="price-container" [@priceSlide]>
+          <div class="price">Rs {{ products.productPrice | number:'1.0-0' }}</div>
         </div>
+        
+        <div class="description-section" [@descriptionSlide]>
+          <h3 class="description-title">Description:</h3>
+          <p class="description-text">{{ products.description }}</p>
+        </div>
+        
+        <div class="stock-info" [@stockSlide]>
+          <div class="stock-icon"></div>
+          <span class="stock-text">{{ products.stockQuantity }} items available</span>
+        </div>
+        
+        <div class="quantity-selector" [@quantitySlide]>
+          <span class="quantity-label">Quantity:</span>
+          <div class="quantity-control">
+            <button 
+              class="quantity-btn" 
+              (click)="decreaseQuantity()"
+              [disabled]="quantity <= 1"
+              [@buttonHover]
+            >-</button>
+            <input 
+              type="number" 
+              class="quantity-input" 
+              [(ngModel)]="quantity" 
+              [min]="1" 
+              [max]="products.stockQuantity"
+              readonly
+            >
+            <button 
+              class="quantity-btn" 
+              (click)="increaseQuantity()"
+              [disabled]="quantity >= products.stockQuantity"
+              [@buttonHover]
+            >+</button>
+          </div>
+        </div>
+        
+        <button 
+          class="add-to-cart-btn" 
+          (click)="addToCart()"
+          [class.success-animation]="showSuccessAnimation"
+          [@buttonSlide]
+        >
+          {{ buttonText }}
+        </button>
       </div>
     </div>
-  </section>
+  </div>
+</div>
+
+<!-- Success notification -->
+<div 
+  class="success-notification" 
+  *ngIf="showSuccessNotification"
+  [@slideInRight]
+>
+  ✓ Added to Cart!
+</div>
+
+<!-- Loading state -->
+<div class="loading-container" *ngIf="!products" [@fadeInUp]>
+  <div class="loading-spinner"></div>
+  <p>Loading product details...</p>
+</div>

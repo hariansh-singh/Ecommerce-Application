@@ -291,6 +291,9 @@ export class ShopComponent implements OnInit {
       quantity: quantity
     };
 
+    console.log(cartPayload);
+    
+
     this.cartService.addToCart(cartPayload).subscribe({
       next: (response) => {
         // Update local cart
