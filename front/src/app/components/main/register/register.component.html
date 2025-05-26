@@ -11,27 +11,46 @@
         <div class="row gy-5 justify-content-center">
           <div class="col-12 col-lg-5">
             <form [formGroup]="myForm" (ngSubmit)="onSubmitRegister()">
+              <!-- Full Name -->
               <div class="form-floating mb-3">
-                <input type="email" class="form-control border-bottom rounded-0" id="name" placeholder="Full Name"
+                <input type="text" class="form-control border-bottom rounded-0" id="name" placeholder="Full Name"
                   formControlName="Name" required>
-                <label for="email">Full Name</label>
+                <label for="name">Full Name</label>
               </div>
+
+              <!-- Email -->
               <div class="form-floating mb-3">
                 <input type="email" class="form-control border-bottom rounded-0" id="email" placeholder="Email"
                   formControlName="Email" required>
                 <label for="email">Email</label>
               </div>
+
+              <!-- Password -->
               <div class="form-floating mb-3">
                 <input type="password" class="form-control border-bottom rounded-0" id="password" placeholder="Password"
                   formControlName="Password" required>
                 <label for="password">Password</label>
               </div>
+
+              <!-- Confirm Password -->
               <div class="form-floating mb-3">
                 <input type="password" class="form-control border-bottom rounded-0" id="confirm-password"
                   placeholder="Confirm Password" formControlName="ConfirmPassword" required>
                 <label for="confirm-password">Confirm Password</label>
               </div>
 
+              <!-- Role Selection -->
+              <div class="form-floating mb-3">
+                <select class="form-control border-bottom rounded-0" id="role" formControlName="Role"
+                  (change)="setRole($event)">
+                  <option value="user" selected>Buyer</option>
+                  <option value="seller">Seller</option>
+                </select>
+                <label for="role">Register As</label>
+              </div>
+
+
+              <!-- Remember Me & Forgot Password -->
               <div class="d-flex justify-content-between">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="remember_me">
@@ -39,6 +58,8 @@
                 </div>
                 <a class="link-secondary text-decoration-none">Forgot password?</a>
               </div>
+
+              <!-- Register Button -->
               <div class="d-grid">
                 <button class="btn btn-lg btn-dark rounded-0 fs-6 login-btn" type="submit"
                   [disabled]="myForm.invalid">Register Me</button>
@@ -52,6 +73,7 @@
             <div class="separator d-lg-block"></div>
           </div>
 
+          <!-- Social Login Options -->
           <div class="col-12 col-lg-5">
             <div class="d-grid gap-3">
               <a class="btn btn-outline-dark d-flex align-items-center social-login">

@@ -16,7 +16,6 @@ namespace backend.Repositories.CustomerRepository
             this.dBContext = dBContext;
             this.mapper = mapper;
         }
-
         public async Task<bool> AddUser(CustomerUIModel user)
         {
             var existingUser = await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == user.Email);
@@ -24,18 +23,21 @@ namespace backend.Repositories.CustomerRepository
             {
                 var addUser = mapper.Map<CustomerDBModel>(user);
 
-                // Securely hash the password using bcrypt
                 addUser.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
-                await dBContext.Customers.AddAsync(addUser);
+                // **Ensure the role is properly assigned**
+                addUser.Role = user.Role == "seller" ? "seller" : "user";
 
+                await dBContext.Customers.AddAsync(addUser);
                 await dBContext.SaveChangesAsync();
 
-                return true; // User successfully added
+                return true;
             }
-
-            return false; // User already exists
+            return false;
         }
+
+
+
 
         public async Task<bool> ChangeUserRole(int customerId, string updatedRole)
         {

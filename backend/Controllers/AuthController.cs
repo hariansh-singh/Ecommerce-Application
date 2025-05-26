@@ -24,7 +24,7 @@ namespace backend.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody]LoginModel user)
+        public async Task<IActionResult> Login([FromBody] LoginModel user)
         {
             if (ModelState.IsValid)
             {
@@ -87,6 +87,8 @@ namespace backend.Controllers
         [Route("register")]
         public async Task<IActionResult> AddUser([FromBody] CustomerUIModel customer)
         {
+            Console.WriteLine("Received Role in Controller: " + customer.Role); // Debugging log
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(new
@@ -103,14 +105,17 @@ namespace backend.Controllers
                 return Ok(new
                 {
                     err = 0,
-                    msg = "Registration successful"
+                    msg = "Registration successful",
+                    role = customer.Role // Include role in the response
                 });
             }
+
             return Ok(new
             {
                 err = 1,
                 msg = "Failed to add user"
             });
         }
+
     }
 }
