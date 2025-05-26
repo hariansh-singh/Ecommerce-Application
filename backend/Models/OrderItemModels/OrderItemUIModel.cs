@@ -7,8 +7,8 @@ namespace backend.Models.OrderItemModels
 {
     public class OrderItemUIModel
     {
-        [Required]
-        public int OrderId { get; set; }
+        //[Required]
+        //public int OrderId { get; set; }
 
 
         [Required]

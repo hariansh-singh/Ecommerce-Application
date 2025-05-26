@@ -2,6 +2,7 @@
 using backend.DataAccessLayer;
 using backend.Models.OrderItemModels;
 using backend.Models.OrderModels;
+using backend.Models.ProductModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories.OrderRepository
@@ -20,70 +21,85 @@ namespace backend.Repositories.OrderRepository
 
         public async Task<bool> AddOrder(OrderUIModel order)
         {
-            // Map UI model to database model
-            var newOrder = _mapper.Map<OrderDBModel>(order);
-            if (newOrder == null)
+            using var transaction = await dbContext.Database.BeginTransactionAsync();
+            try
             {
-                throw new InvalidOperationException("Mapping failed: newOrder is null.");
-            }
-
-            // Validate order items
-            if (newOrder.OrderItems == null || !newOrder.OrderItems.Any())
-            {
-                throw new ArgumentException("Order must contain at least one item.");
-            }
-
-            // Validate stock for all order items before saving the order
-            foreach (var orderItem in newOrder.OrderItems)
-            {
-                // Check if product exists and validate stock
-                var product = await dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == orderItem.ProductId);
-                if (product == null || product.StockQuantity < orderItem.Quantity)
+                // Map UI model to database model
+                var newOrder = _mapper.Map<OrderDBModel>(order);
+                if (newOrder == null)
                 {
-                    throw new InvalidOperationException($"Product with ID {orderItem.ProductId} does not exist or has insufficient stock.");
+                    throw new InvalidOperationException("Mapping failed: newOrder is null.");
                 }
 
-                // Deduct product stock
-                product.StockQuantity -= orderItem.Quantity;
-                dbContext.Products.Update(product);
+                // Validate order items
+                if (newOrder.OrderItems == null || !newOrder.OrderItems.Any())
+                {
+                    throw new ArgumentException("Order must contain at least one item.");
+                }
+
+                // Clear the mapped order items - we'll recreate them with proper pricing
+                var originalOrderItems = newOrder.OrderItems.ToList();
+                newOrder.OrderItems.Clear();
+
+                // Validate stock and create proper order items
+                var orderItemsToProcess = new List<(OrderItemDBModel orderItem, ProductDBModel product)>();
+
+                foreach (var originalItem in originalOrderItems)
+                {
+                    // Check if product exists and validate stock
+                    var product = await dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == originalItem.ProductId);
+                    if (product == null)
+                    {
+                        throw new InvalidOperationException($"Product with ID {originalItem.ProductId} does not exist.");
+                    }
+
+                    if (product.StockQuantity < originalItem.Quantity)
+                    {
+                        throw new InvalidOperationException($"Product '{product.ProductName}' has insufficient stock. Available: {product.StockQuantity}, Requested: {originalItem.Quantity}");
+                    }
+
+                    // Create order item with unit price from product
+                    var orderItemEntity = new OrderItemDBModel
+                    {
+                        ProductId = originalItem.ProductId,
+                        Quantity = originalItem.Quantity,
+                        UnitPrice = product.ProductPrice // Get unit price from product
+                    };
+
+                    orderItemsToProcess.Add((orderItemEntity, product));
+                }
+
+                // Add the order first to generate OrderId
+                await dbContext.Orders.AddAsync(newOrder);
+                await dbContext.SaveChangesAsync(); // Save to get the OrderId
+
+                // Process all order items
+                foreach (var (orderItemEntity, product) in orderItemsToProcess)
+                {
+                    // Set the OrderId now that we have it
+                    orderItemEntity.OrderId = newOrder.OrderId;
+
+                    // Deduct stock
+                    product.StockQuantity -= orderItemEntity.Quantity;
+                    dbContext.Products.Update(product);
+
+                    // Add order item to the order's collection
+                    newOrder.OrderItems.Add(orderItemEntity);
+                }
+
+                // Save all changes
+                await dbContext.SaveChangesAsync();
+
+                // Commit transaction
+                await transaction.CommitAsync();
+                return true;
             }
-
-            // Save the new order to generate OrderID
-            await dbContext.Orders.AddAsync(newOrder);
-            await dbContext.SaveChangesAsync();
-
-            // Save order items to the database
-            foreach (var orderItem in newOrder.OrderItems)
+            catch
             {
-                var orderItemEntity = new OrderItemDBModel
-                {
-                    OrderId = newOrder.OrderId,
-                    ProductId = orderItem.ProductId,
-                    Quantity = orderItem.Quantity,
-                    UnitPrice = orderItem.UnitPrice
-                };
-
-                var existingOrderItem = await dbContext.OrderItems
-                    .FirstOrDefaultAsync(oi => oi.OrderId == newOrder.OrderId && oi.ProductId == orderItem.ProductId);
-
-                if (existingOrderItem == null)
-                {
-                    // Add the new order item if it doesn't exist
-                    await dbContext.OrderItems.AddAsync(orderItemEntity);
-                }
-                else
-                {
-                    // Update the existing order item if necessary
-                    existingOrderItem.Quantity += orderItem.Quantity; // Example: Increment quantity
-                    existingOrderItem.UnitPrice = orderItem.UnitPrice; // Update unit price
-                    dbContext.OrderItems.Update(existingOrderItem);
-                }
+                // Rollback transaction on any error
+                await transaction.RollbackAsync();
+                throw; // Re-throw the exception
             }
-
-            // Save updated product quantities and order items
-            await dbContext.SaveChangesAsync();
-
-            return true;
         }
 
         //public async Task<OrderDBModel?> GetOrderById(int orderId)
