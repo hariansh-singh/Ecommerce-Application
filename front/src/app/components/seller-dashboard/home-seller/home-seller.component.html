@@ -27,7 +27,7 @@
             <img [src]="'https://localhost:7116/' + product.productImagePath" alt="{{ product.productName }}" class="img-fluid img-thumbnail" style="max-width: 100px;">
           </td>
           <td class="text-center">
-            <button class="btn btn-warning btn-sm me-2" [routerLink]="['/dashboard/editpro', product.productId]">
+            <button class="btn btn-warning btn-sm me-2" [routerLink]="['/sellerdashboard/editpro', product.productId]">
               <i class="bi bi-pencil-square"></i> Edit
             </button>
             <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.productId)">

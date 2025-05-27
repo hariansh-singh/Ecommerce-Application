@@ -94,7 +94,7 @@ export class RegisterComponent {
     }
 
     this.isLoading = true;
-    const formData = { Name: `${this.myForm.value.FirstName} ${this.myForm.value.LastName}`, 
+    const formData = { Name: `${this.myForm.value.FirstName+' '+this.myForm.value.LastName}`, 
       Email: this.myForm.value.Email, 
       Password: this.myForm.value.Password 
 
