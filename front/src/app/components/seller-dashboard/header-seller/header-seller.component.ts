@@ -35,6 +35,10 @@ export class HeaderSellerComponent implements OnInit {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   }
 
+  redirectToHome() {
+  this.router.navigate(['/']); // Redirects to homepage without logging out
+}
+
   signOut() {
     if (confirm("Are you sure you want to sign out?")) {
       localStorage.removeItem('token'); 
