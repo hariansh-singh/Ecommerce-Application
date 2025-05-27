@@ -120,6 +120,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadProduct();
+    window.scrollTo(0, 0);
   }
 
   ngOnDestroy(): void {
@@ -132,7 +133,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
 
     if (!productIdStr || isNaN(Number(productIdStr))) {
       console.error("Invalid Product ID:", productIdStr);
-      this.router.navigate(['/products']);
+      this.router.navigate(['/products']).then(() => window.scrollTo(0, 0));
       return;
     }
 
@@ -206,6 +207,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
       next: (response) => {
         // Trigger success animations only after successful API call
         this.triggerSuccessAnimations();
+         window.scrollTo(0, 0);
       },
       error: (error) => {
         console.error('Error adding product to cart:', error);
@@ -267,7 +269,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
 
   // Method to navigate back to products
   goBack(): void {
-    this.router.navigate(['/products']);
+    this.router.navigate(['/products']).then(() => window.scrollTo(0, 0));
   }
 
   // Track by function for performance optimization
