@@ -35,11 +35,12 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderAdminComponent implements OnInit, AfterViewInit {
   userData: any;
+  adminName: string = '';
   authService = inject(AuthService);
   router = inject(Router);
   private el = inject(ElementRef);
   private renderer = inject(Renderer2);
-  
+
   isScrolled = false;
   menuState = 'collapsed';
   activeLink = '/admindashboard';
@@ -55,14 +56,23 @@ export class HeaderAdminComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    let _token: any = this.authService.getToken();
-    this.userData = jwtDecode(_token);
+    const _token: any = this.authService.getToken();
+
+    if (_token) {
+      try {
+        this.userData = jwtDecode(_token);
+        this.adminName = this.capitalizeFirstLetter(this.userData?.Name || "Admin"); // Ensure proper capitalization
+        console.log("Decoded Admin Data:", this.userData);
+      } catch (error) {
+        console.error("Token decode error:", error);
+      }
+    }
+
     this.activeLink = this.router.url;
-    
-    // Initialize animations for menu items with delay
-    setTimeout(() => {
-      this.animateMenuItems();
-    }, 500);
+    setTimeout(() => this.animateMenuItems(), 500);
+  }
+  capitalizeFirstLetter(name: string): string {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   }
 
   ngAfterViewInit(): void {
@@ -72,21 +82,21 @@ export class HeaderAdminComponent implements OnInit, AfterViewInit {
 
   setupRippleEffect() {
     const buttons = this.el.nativeElement.querySelectorAll('.exit-button, .menu-link');
-    
+
     buttons.forEach((button: HTMLElement) => {
       this.renderer.listen(button, 'click', (event) => {
         const ripple = this.renderer.createElement('span');
         const rect = button.getBoundingClientRect();
-        
+
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        
+
         this.renderer.addClass(ripple, 'ripple');
         this.renderer.setStyle(ripple, 'top', `${y}px`);
         this.renderer.setStyle(ripple, 'left', `${x}px`);
-        
+
         this.renderer.appendChild(button, ripple);
-        
+
         setTimeout(() => {
           this.renderer.removeChild(button, ripple);
         }, 600);
@@ -96,7 +106,7 @@ export class HeaderAdminComponent implements OnInit, AfterViewInit {
 
   animateMenuItems() {
     const menuItems = this.el.nativeElement.querySelectorAll('.nav-item');
-    
+
     menuItems.forEach((item: HTMLElement, index: number) => {
       setTimeout(() => {
         this.renderer.addClass(item, 'animated');
@@ -116,25 +126,25 @@ export class HeaderAdminComponent implements OnInit, AfterViewInit {
     // Add exit animation
     const navbar = this.el.nativeElement.querySelector('.glass-navbar');
     this.renderer.addClass(navbar, 'exit-animation');
-    
+
     // Delay navigation to allow animation to complete
     setTimeout(() => {
       this.router.navigate(['/']);
     }, 300);
   }
-  
+
   // Get shortened user name for responsive display
   getShortenedName(): string {
     if (!this.userData?.["FullName"]) return '';
-    
+
     const fullName = this.userData["FullName"];
     if (fullName.length <= 15) return fullName;
-    
+
     const names = fullName.split(' ');
     if (names.length > 1) {
-      return `${names[0]} ${names[names.length-1].charAt(0)}.`;
+      return `${names[0]} ${names[names.length - 1].charAt(0)}.`;
     }
-    
+
     return fullName.substring(0, 15) + '...';
   }
 }

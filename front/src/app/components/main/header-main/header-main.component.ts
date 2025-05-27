@@ -43,7 +43,7 @@ export class HeaderMainComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
+   ngOnInit(): void {
     // Enable initial animations only on first load
     this.animationEnabled = true;
     setTimeout(() => {
@@ -62,7 +62,7 @@ export class HeaderMainComponent implements OnInit {
 
     if (token) {
       userData = this.authService.decodedTokenData();
-      this.userName = userData?.['Name'] || '';
+      this.userName = this.capitalizeFirstLetter(userData?.['Name'] || '');
       this.userEmail = userData?.['Email'] || '';
     }
 
@@ -83,6 +83,10 @@ export class HeaderMainComponent implements OnInit {
     });
   }
 
+  // Function to capitalize the first letter of the user name
+  capitalizeFirstLetter(name: string): string {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }
   signOut(): void {
     if (confirm('Are you sure you want to sign out?')) {
       localStorage.removeItem('token');
