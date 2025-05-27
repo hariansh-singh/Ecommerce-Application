@@ -424,3 +424,37 @@
 .navbar-toggler:hover i {
   transform: rotate(90deg);
 }
+
+/* 🛒 Adjust Cart Badge Position */
+.cart-badge {
+  position: absolute;
+  top: -2px;  /* Lowered slightly for visibility */
+  right: 2px; /* Maintained right positioning */
+  font-size: 14px;
+  padding: 5px 7px;
+  border-radius: 50%;
+  transform: scale(1.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.animate-cart:hover .cart-badge {
+  transform: scale(1.3);
+}
+
+/* 🌟 Logo Glow Effect */
+.logo-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, rgba(255,204,0,0.8) 0%, rgba(255,204,0,0) 70%);
+  transform: translate(-50%, -50%);
+  animation: glowPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes glowPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}

@@ -40,12 +40,10 @@
           <a class="nav-link text-light fw-bold px-3" routerLink="/login"
              [ngClass]="{'animate__animated animate__fadeIn': animationEnabled}">
             <i class="fas fa-user-circle fs-5 text-warning"></i>
-            <span class="ms-1">Login</span>
           </a>
           <a class="nav-link text-light fw-bold px-3" routerLink="/register"
              [ngClass]="{'animate__animated animate__fadeIn': animationEnabled}">
             <i class="fas fa-user-plus fs-5 text-warning"></i>
-            <span class="ms-1">Register</span>
           </a>
         </ng-container>
 
@@ -75,51 +73,14 @@
             </ul>
           </div>
 
-          <!-- Cart Icon with Badge -->
+          <!-- Cart Icon with Badge Positioned Above -->
           <a class="nav-link text-light fw-bold px-3 animate-cart position-relative" 
              routerLink="/cart" [ngClass]="{'animate__animated animate__fadeIn': animationEnabled}">
+            <span *ngIf="cartItemCount > 0" class="badge cart-badge bg-danger">{{ cartItemCount }}</span>
             <i class="fas fa-shopping-cart fs-5 text-warning"></i>
-            <span *ngIf="cartItemCount > 0" class="badge bg-danger rounded-circle">{{ cartItemCount }}</span>
-            <span class="ms-1 d-none d-md-inline">Cart</span>
           </a>
         </ng-container>
       </div>
     </div>
   </div>
 </nav>
-
-<!-- Category Navigation (Optional) -->
-<div class="category-nav py-2 px-3 d-none d-lg-block" 
-     [ngClass]="{'animate__animated animate__fadeIn': animationEnabled}">
-  <div class="container-fluid">
-    <ul class="nav justify-content-center">
-      <li class="nav-item">
-        <a class="cat-link" routerLink="/">Home</a>
-      </li>
-       <li class="nav-item">
-        <a class="cat-link" routerLink="/shop">Shop</a>
-      </li>
-      <li class="nav-item">
-        <a class="cat-link" routerLink="/offers">
-          <i class="fas fa-tags me-1 text-warning"></i>Offers
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="cat-link" routerLink="/category/electronics">Electronics</a>
-      </li>
-      <li class="nav-item">
-        <a class="cat-link" routerLink="/category/fashion">Fashion</a>
-      </li>
-      <li class="nav-item">
-        <a class="cat-link" routerLink="/category/beauty">Beauty</a>
-      </li>
-      <li class="nav-item">
-        <a class="cat-link" routerLink="/category/books">Books</a>
-      </li>
-      <li class="nav-item">
-        <a class="cat-link" routerLink="/category/sports">Sports</a>
-      </li>
-      
-    </ul>
-  </div>
-</div>
