@@ -2,8 +2,7 @@
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">
-        <i class="fas fa-star"></i>
-        More Products
+        <i class="fas fa-star"></i> More Products
       </h2>
       <div class="section-divider"></div>
     </div>
@@ -11,13 +10,13 @@
     <div class="products-grid">
       <div class="product-card-wrapper" *ngFor="let product of products.slice(2, 6)">
         <div class="product-card" 
+             [attr.data-product-id]="product.productId"
              (mouseenter)="onCardHover($event, true)" 
              (mouseleave)="onCardHover($event, false)">
           
           <!-- Sale Badge -->
           <div *ngIf="product.onSale" class="sale-badge">
-            <i class="fas fa-fire"></i>
-            SALE
+            <i class="fas fa-fire"></i> SALE
           </div>
 
           <!-- Product Image -->
@@ -53,6 +52,17 @@
                    [class.filled]="star <= product.rating"></i>
               </div>
               <span class="rating-text">({{ product.reviewCount || 0 }})</span>
+            </div>
+
+            <!-- Quantity Control -->
+            <div class="quantity-control">
+              <button class="quantity-btn" (click)="decreaseQuantity(product)" [disabled]="(product.selectedQuantity || 1) <= 1">
+                <i class="fas fa-minus"></i>
+              </button>
+              <span class="quantity-display">{{ product.selectedQuantity || 1 }}</span>
+              <button class="quantity-btn" (click)="increaseQuantity(product)" [disabled]="(product.selectedQuantity || 1) >= (product.stockQuantity || 10)">
+                <i class="fas fa-plus"></i>
+              </button>
             </div>
           </div>
 
@@ -90,5 +100,7 @@
       <h3>No Related Products Found</h3>
       <p>Check back later for more amazing products!</p>
     </div>
+
+   
   </div>
 </section>
