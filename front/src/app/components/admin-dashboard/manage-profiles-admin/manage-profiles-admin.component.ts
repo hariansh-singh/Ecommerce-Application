@@ -22,7 +22,7 @@ interface User {
   selector: 'app-manage-profiles-admin',
   imports: [CommonModule, FormsModule],
   templateUrl: './manage-profiles-admin.component.html',
-  styleUrl: './manage-profiles-admin.component.css'
+  styleUrl: './manage-profiles-admin.component.css',
 })
 export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
   users: User[] = [];
@@ -35,7 +35,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
 
   // Filter properties
   selectedRoleFilter: string = '';
-  selectedStatusFilter: string = '';
+  selectedStatusFilter: any = '';
 
   // Sort properties
   sortBy: string = 'name';
@@ -50,16 +50,14 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
 
   authService: any = inject(AuthService);
 
-  constructor(private manageProfilesService: ManageProfilesService) { 
+  constructor(private manageProfilesService: ManageProfilesService) {
     // Setup search debouncing
-    this.searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(searchTerm => {
-      this.searchTerm = searchTerm;
-      this.applyAllFilters();
-    });
+    this.searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((searchTerm) => {
+        this.searchTerm = searchTerm;
+        this.applyAllFilters();
+      });
   }
 
   ngOnInit(): void {
@@ -82,7 +80,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
     if (!name) return '??';
     return name
       .split(' ')
-      .map(word => word.charAt(0))
+      .map((word) => word.charAt(0))
       .join('')
       .toUpperCase()
       .slice(0, 2);
@@ -90,14 +88,12 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
 
   // Get stats for dashboard
   getActiveUsersCount(): number {
-    return this.users.filter(user => 
-      (user.userStatus || '') === 1
-    ).length;
+    return this.users.filter((user) => (user.userStatus || '') === 1).length;
   }
 
   getAdminUsersCount(): number {
-    return this.users.filter(user => 
-      (user.role || '').toLowerCase() === 'admin'
+    return this.users.filter(
+      (user) => (user.role || '').toLowerCase() === 'admin'
     ).length;
   }
 
@@ -107,21 +103,21 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
       const adminData: any = this.authService.decodedTokenData();
       if (adminData) {
         this.currentAdmin = adminData;
-        this.currentAdminId = adminData["customerId"];
+        this.currentAdminId = adminData['customerId'];
         console.log('Current admin loaded from storage:', this.currentAdmin);
-        console.log("User status is: ", adminData["UserStatus"]);
+        console.log('User status is: ', adminData['UserStatus']);
       } else {
         console.warn('No admin data found in storage');
       }
     } catch (error) {
       console.error('Error loading admin info from storage:', error);
-      
+
       this.showToast({
         icon: 'warning',
         title: 'Admin verification failed',
         text: 'Some features may be restricted',
         background: '#fff3cd',
-        color: '#856404'
+        color: '#856404',
       });
     }
   }
@@ -129,33 +125,38 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
   loadUsers(): void {
     this.loading = true;
     this.error = null;
-    
+
     this.manageProfilesService.getAllUsers().subscribe({
       next: (users: any) => {
         console.log('Received users:', users);
         this.users = Array.isArray(users) ? users : [];
         this.applyAllFilters();
-        
+
         // If we don't have current admin info, try to find it in the users list
         if (!this.currentAdmin && this.currentAdminId) {
-          this.currentAdmin = this.users.find(user => 
-            (user.customerId === this.currentAdminId || user.customerId === this.currentAdminId) && 
-            (user.role || '').toLowerCase() === 'admin'
+          this.currentAdmin = this.users.find(
+            (user) =>
+              (user.customerId === this.currentAdminId ||
+                user.customerId === this.currentAdminId) &&
+              (user.role || '').toLowerCase() === 'admin'
           );
           if (this.currentAdmin) {
-            console.log('Found current admin in users list:', this.currentAdmin);
+            console.log(
+              'Found current admin in users list:',
+              this.currentAdmin
+            );
           }
         }
-        
+
         this.loading = false;
-        
+
         // Success toast
         if (this.users.length > 0) {
           this.showToast({
             icon: 'success',
             title: `Successfully loaded ${this.users.length} users`,
             background: '#f8f9fa',
-            color: '#495057'
+            color: '#495057',
           });
         }
       },
@@ -165,16 +166,16 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
         console.error('Error loading users:', error);
         this.users = [];
         this.filteredUsers = [];
-        
+
         this.showToast({
           icon: 'error',
           title: 'Failed to load users',
           text: 'Please check your connection and try again',
           background: '#f8d7da',
           color: '#721c24',
-          timer: 5000
+          timer: 5000,
         });
-      }
+      },
     });
   }
 
@@ -182,7 +183,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
   refreshUsers(): void {
     this.isRefreshing = true;
     this.showLoadingToast('Refreshing user data...');
-    
+
     setTimeout(() => {
       this.loadUsers();
       this.isRefreshing = false;
@@ -210,8 +211,8 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
       background: options.background || '#f8f9fa',
       color: options.color || '#495057',
       customClass: {
-        popup: 'animated-toast'
-      }
+        popup: 'animated-toast',
+      },
     });
   }
 
@@ -227,13 +228,13 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
       timerProgressBar: true,
       didOpen: () => {
         Swal.showLoading();
-      }
+      },
     });
   }
 
   // Check if admin can modify this user (user created after admin)
   canModifyUser(user: User): boolean {
-    if (!this.currentAdmin || !this.currentAdmin["RegisteredAt"]) {
+    if (!this.currentAdmin || !this.currentAdmin['RegisteredAt']) {
       return false;
     }
 
@@ -241,7 +242,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    const adminCreationDate = new Date(this.currentAdmin["RegisteredAt"]);
+    const adminCreationDate = new Date(this.currentAdmin['RegisteredAt']);
     const userCreationDate = new Date(user.registeredAt);
 
     return userCreationDate > adminCreationDate;
@@ -249,19 +250,21 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
 
   // Get tooltip message for disabled buttons
   getDisabledTooltip(user: User): string {
-    if (!this.currentAdmin || !this.currentAdmin["RegisteredAt"]) {
+    if (!this.currentAdmin || !this.currentAdmin['RegisteredAt']) {
       return 'Unable to verify admin permissions';
     }
-    
+
     if (!user.registeredAt) {
       return 'User creation date unavailable - modification restricted';
     }
 
-    const adminCreationDate = new Date(this.currentAdmin["RegisteredAt"]);
+    const adminCreationDate = new Date(this.currentAdmin['RegisteredAt']);
     const userCreationDate = new Date(user.registeredAt);
 
     if (userCreationDate <= adminCreationDate) {
-      return `This user was created before you (${new Date(user.registeredAt).toLocaleDateString()}). You can only modify users created after ${adminCreationDate.toLocaleDateString()}.`;
+      return `This user was created before you (${new Date(
+        user.registeredAt
+      ).toLocaleDateString()}). You can only modify users created after ${adminCreationDate.toLocaleDateString()}.`;
     }
 
     return 'Modification not allowed';
@@ -284,12 +287,13 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
     if (!this.searchTerm.trim()) {
       return users;
     }
-    
+
     const searchTermLower = this.searchTerm.toLowerCase().trim();
-    return users.filter(user => 
-      user.name?.toLowerCase().includes(searchTermLower) ||
-      user.email?.toLowerCase().includes(searchTermLower) ||
-      user.customerId?.toString().includes(searchTermLower)
+    return users.filter(
+      (user) =>
+        user.name?.toLowerCase().includes(searchTermLower) ||
+        user.email?.toLowerCase().includes(searchTermLower) ||
+        user.customerId?.toString().includes(searchTermLower)
     );
   }
 
@@ -303,16 +307,22 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
 
     // Apply role filter
     if (this.selectedRoleFilter) {
-      filtered = filtered.filter(user => 
-        (user.role || '').toLowerCase() === this.selectedRoleFilter.toLowerCase()
+      filtered = filtered.filter(
+        (user) =>
+          (user.role || '').toLowerCase() ===
+          this.selectedRoleFilter.toLowerCase()
       );
     }
 
     // Apply status filter
     if (this.selectedStatusFilter) {
-      filtered = filtered.filter(user => 
-        (user.status || '').toLowerCase() === this.selectedStatusFilter.toLowerCase()
-      );
+      if (this.selectedStatusFilter === 'active') {
+        filtered = filtered.filter((user) => user.userStatus === 1);
+      }
+
+      else {
+        filtered = filtered.filter((user) => user.userStatus === 0);
+      }
     }
 
     return filtered;
@@ -371,16 +381,16 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
   // Apply all filters and sorting
   applyAllFilters(): void {
     let filtered = [...this.users];
-    
+
     // Apply search filter
     filtered = this.applySearchFilter(filtered);
-    
+
     // Apply role and status filters
     filtered = this.applyRoleStatusFilter(filtered);
-    
+
     // Apply sorting
     filtered = this.sortUsers(filtered);
-    
+
     this.filteredUsers = filtered;
   }
 
@@ -392,13 +402,13 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
     this.sortBy = 'name';
     this.sortOrder = 'asc';
     this.applyAllFilters();
-    
+
     this.showToast({
       icon: 'info',
       title: 'Filters cleared',
       text: 'All filters have been reset',
       background: '#f0f9ff',
-      color: '#0369a1'
+      color: '#0369a1',
     });
   }
 
@@ -420,14 +430,14 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
 
   // Change user role
   changeUserRole(customerId: number, newRole: string): void {
-    const user = this.users.find(u => u.customerId === customerId);
-    
+    const user = this.users.find((u) => u.customerId === customerId);
+
     if (!user) {
       this.showToast({
         icon: 'error',
         title: 'User not found',
         background: '#f8d7da',
-        color: '#721c24'
+        color: '#721c24',
       });
       return;
     }
@@ -438,7 +448,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
         title: 'Access denied',
         text: 'You can only modify users created after you',
         background: '#fff3cd',
-        color: '#856404'
+        color: '#856404',
       });
       return;
     }
@@ -446,13 +456,15 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
     // Show confirmation dialog
     Swal.fire({
       title: 'Confirm Role Change',
-      text: `Are you sure you want to change ${user.name}'s role to ${newRole.toUpperCase()}?`,
+      text: `Are you sure you want to change ${
+        user.name
+      }'s role to ${newRole.toUpperCase()}?`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#4f46e5',
       cancelButtonColor: '#ef4444',
       confirmButtonText: 'Yes, change role',
-      cancelButtonText: 'Cancel'
+      cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
         this.performRoleChange(customerId, newRole);
@@ -462,22 +474,24 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
 
   private performRoleChange(customerId: number, newRole: string): void {
     this.showLoadingToast('Updating user role...');
-    
+
     this.manageProfilesService.changeUserRole(customerId, newRole).subscribe({
       next: (response: any) => {
         // Update local user data
-        const userIndex = this.users.findIndex(u => u.customerId === customerId);
+        const userIndex = this.users.findIndex(
+          (u) => u.customerId === customerId
+        );
         if (userIndex !== -1) {
           this.users[userIndex].role = newRole;
           this.applyAllFilters();
         }
-        
+
         this.showToast({
           icon: 'success',
           title: 'Role updated successfully',
           text: `User role changed to ${newRole.toUpperCase()}`,
           background: '#d1fae5',
-          color: '#065f46'
+          color: '#065f46',
         });
       },
       error: (error: any) => {
@@ -487,22 +501,22 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
           title: 'Failed to update role',
           text: 'Please try again later',
           background: '#f8d7da',
-          color: '#721c24'
+          color: '#721c24',
         });
-      }
+      },
     });
   }
 
   // Change user status (activate/deactivate)
   changeUserStatus(customerId: number): void {
-    const user = this.users.find(u => u.customerId === customerId);
-    
+    const user = this.users.find((u) => u.customerId === customerId);
+
     if (!user) {
       this.showToast({
         icon: 'error',
         title: 'User not found',
         background: '#f8d7da',
-        color: '#721c24'
+        color: '#721c24',
       });
       return;
     }
@@ -513,7 +527,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
         title: 'Access denied',
         text: 'You can only modify users created after you',
         background: '#fff3cd',
-        color: '#856404'
+        color: '#856404',
       });
       return;
     }
@@ -531,7 +545,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
       confirmButtonColor: isActive ? '#ef4444' : '#10b981',
       cancelButtonColor: '#6b7280',
       confirmButtonText: `Yes, ${action}`,
-      cancelButtonText: 'Cancel'
+      cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
         this.performStatusChange(customerId, newStatus);
@@ -542,23 +556,26 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
   private performStatusChange(customerId: number, newStatus: number): void {
     const action = newStatus === 1 ? 'Activating' : 'Deactivating';
     this.showLoadingToast(`${action} user...`);
-    
+
     this.manageProfilesService.changeUserStatus(customerId).subscribe({
       next: (response: any) => {
         // Update local user data
-        const userIndex = this.users.findIndex(u => u.customerId === customerId);
+        const userIndex = this.users.findIndex(
+          (u) => u.customerId === customerId
+        );
         if (userIndex !== -1) {
           this.users[userIndex].userStatus = newStatus;
-          this.users[userIndex].status = newStatus === 1 ? 'active' : 'inactive';
+          this.users[userIndex].status =
+            newStatus === 1 ? 'active' : 'inactive';
           this.applyAllFilters();
         }
-        
+
         const statusText = newStatus === 1 ? 'activated' : 'deactivated';
         this.showToast({
           icon: 'success',
           title: `User ${statusText} successfully`,
           background: newStatus === 1 ? '#d1fae5' : '#fee2e2',
-          color: newStatus === 1 ? '#065f46' : '#991b1b'
+          color: newStatus === 1 ? '#065f46' : '#991b1b',
         });
       },
       error: (error: any) => {
@@ -568,9 +585,9 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
           title: 'Failed to update status',
           text: 'Please try again later',
           background: '#f8d7da',
-          color: '#721c24'
+          color: '#721c24',
         });
-      }
+      },
     });
   }
 }
