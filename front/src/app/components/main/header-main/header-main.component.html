@@ -57,6 +57,12 @@
               <span>Welcome <span class="text-gold">{{ userName }}</span></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" *ngIf="isSeller()" routerLink="/sellerdashboard">
+                <i class="fas fa-id-card me-2"></i>Go to Seller Dashboard
+              </a></li>
+              <li><a class="dropdown-item" *ngIf="isAdmin()" routerLink="/admindashboard">
+                <i class="fas fa-id-card me-2"></i>Go to Admin Dashboard
+              </a></li>
               <li><a class="dropdown-item" routerLink="/profile">
                 <i class="fas fa-id-card me-2"></i>Profile
               </a></li>

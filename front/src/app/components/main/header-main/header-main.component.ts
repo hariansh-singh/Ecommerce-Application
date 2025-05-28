@@ -1,10 +1,23 @@
-import { Component, inject, OnInit, HostListener, PLATFORM_ID, Inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  HostListener,
+  PLATFORM_ID,
+  Inject,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AuthStateService } from '../../../../services/auth-state.service';
 import { CartService } from '../../../../services/cart.service';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+} from '@angular/animations';
 
 @Component({
   selector: 'app-header-main',
@@ -13,22 +26,26 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   styleUrls: ['./header-main.component.css'],
   animations: [
     trigger('fadeInOut', [
-      state('void', style({
-        opacity: 0
-      })),
+      state(
+        'void',
+        style({
+          opacity: 0,
+        })
+      ),
       transition('void <=> *', animate('0.3s ease-in-out')),
-    ])
+    ]),
   ],
-  standalone: true
+  standalone: true,
 })
 export class HeaderMainComponent implements OnInit {
   isLoggedIn: boolean = false;
   userName: string = '';
   userEmail: string = '';
+  userRole: string = '';
   cartItemCount: number = 0;
   isScrolled: boolean = false;
   animationEnabled: boolean = true;
-  
+
   authService = inject(AuthService);
   authState = inject(AuthStateService);
   cartService = inject(CartService);
@@ -43,7 +60,7 @@ export class HeaderMainComponent implements OnInit {
     }
   }
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     // Enable initial animations only on first load
     this.animationEnabled = true;
     setTimeout(() => {
@@ -64,12 +81,17 @@ export class HeaderMainComponent implements OnInit {
       userData = this.authService.decodedTokenData();
       this.userName = this.capitalizeFirstLetter(userData?.['Name'] || '');
       this.userEmail = userData?.['Email'] || '';
+      this.userRole = userData?.['Role'] || '';
     }
 
     // Subscribe to cart item count from CartService
     this.cartService.cartItemCount$.subscribe((count: number) => {
       // Add animation to cart icon when count changes
-      if (isPlatformBrowser(this.platformId) && count > 0 && this.cartItemCount !== count) {
+      if (
+        isPlatformBrowser(this.platformId) &&
+        count > 0 &&
+        this.cartItemCount !== count
+      ) {
         const cartIcon = document.querySelector('.animate-cart i');
         if (cartIcon) {
           cartIcon.classList.remove('cart-bounce');
@@ -78,9 +100,17 @@ export class HeaderMainComponent implements OnInit {
           cartIcon.classList.add('cart-bounce');
         }
       }
-      
+
       this.cartItemCount = count;
     });
+  }
+
+  isSeller(): boolean {
+    return this.userRole === 'seller';
+  }
+
+  isAdmin(): boolean {
+    return this.userRole === 'admin';
   }
 
   // Function to capitalize the first letter of the user name
