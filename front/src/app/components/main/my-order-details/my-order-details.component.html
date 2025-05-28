@@ -1,5 +1,5 @@
 <div class="container my-5">
-  <h2 class="text-center text-primary mb-4">Orders for <span class="fw-bold">{{ email }}</span></h2>
+  <h2 class="text-center text-primary mb-4">Orders for <span class="fw-bold">{{ name }}</span></h2>
 
   <!-- No Orders Found Message -->
   <div *ngIf="orders.length === 0" class="alert alert-warning text-center">
@@ -12,7 +12,6 @@
       <thead class="table-dark text-center">
         <tr>
           <th>Order ID</th>
-          <th>User Email</th>
           <th>Order Date</th>
           <th>Total Amount</th>
           <th>Status</th>
@@ -24,11 +23,10 @@
       <tbody>
         <tr *ngFor="let order of orders">
           <td class="text-center">{{ order.orderID }}</td>
-          <td>{{ order.userEmail }}</td>
           <td>{{ order.orderDate | date:'medium' }}</td>
-          <td class="text-end text-success">{{ order.totalAmount | currency:'USD' }}</td>
+          <td class="text-end text-success">{{ order.totalAmount | currency:'INR' }}</td>
           <td class="text-center">
-            <span class="badge"
+            <span class="badge px-3 py-2"
               [ngClass]="{
                 'bg-success': order.status === 'Delivered',
                 'bg-warning': order.status === 'Pending',
@@ -53,8 +51,8 @@
                 <tr *ngFor="let item of order.orderItems">
                   <td class="text-center">{{ item.productId }}</td>
                   <td class="text-center">{{ item.quantity }}</td>
-                  <td class="text-end">{{ item.unitPrice | currency:'USD' }}</td>
-                  <td class="text-end">{{ item.subtotal | currency:'USD' }}</td>
+                  <td class="text-end">{{ item.unitPrice | currency:'INR' }}</td>
+                  <td class="text-end">{{ item.quantity*item.unitPrice | currency:'INR' }}</td>
                 </tr>
               </tbody>
             </table>

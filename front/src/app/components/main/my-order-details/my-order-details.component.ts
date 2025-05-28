@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router'; // To fetch email from route parameters
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router'; // Fetch email from route parameters
+import { OrderService } from '../../../../services/order.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-my-order-details',
@@ -11,28 +12,36 @@ import { ActivatedRoute } from '@angular/router'; // To fetch email from route p
 })
 export class MyOrderDetailsComponent implements OnInit {
   orders: any[] = [];
-  email: string = ''; // Store user email
+  id: any = '';
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  authService: any = inject(AuthService)
+  
+  userData: any = this.authService.decodedTokenData()
+  name: any = this.userData['Name']
+
+  constructor(private route: ActivatedRoute, private orderService: OrderService) {}
+
+  
 
   ngOnInit() {
-    // Fetch the email from the route parameters
-    this.route.params.subscribe(params => {
-      this.email = params['email'];
-      this.fetchOrdersByEmail(this.email);
-    });
+    this.id = this.route.snapshot.paramMap.get('id') || "";
+    this.fetchUserOrders(this.id)
   }
 
-  // Fetch orders by user email
-  fetchOrdersByEmail(email: string) {
-    this.http.get<any>(`https://localhost:7125/api/Order/byUser/${email}`).subscribe(
-      response => {
-        console.log("Orders retrieved:", response);
-        this.orders = response.data; // Populate orders array
+  // Fetch orders by user ID with error handling
+  fetchUserOrders(id: any) {
+    this.orderService.fetchOrdersById(id).subscribe({
+      next: (response) => {
+        console.log('Fetched orders:', response);
+        if (response.data && response.data.length > 0) {
+          this.orders = response.data;
+        } else {
+          console.warn('No orders found for this user');
+        }
       },
-      error => {
-        console.error("Error retrieving orders:", error);
+      error: (err) => {
+        console.error('Error fetching orders:', err);
       }
-    );
+    });
   }
 }

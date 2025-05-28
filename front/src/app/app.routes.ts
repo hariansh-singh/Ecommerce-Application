@@ -28,7 +28,7 @@ export const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'about', component: AboutComponent },
-      { path: 'myorders/:email', component: MyOrderDetailsComponent },
+      { path: 'myorders/:id', component: MyOrderDetailsComponent },
       { path: 'cart', component: ViewCartComponent },
       { path: 'product/:id', component: ProductdetailsComponent },
       { path: 'shop', component: ShopComponent },

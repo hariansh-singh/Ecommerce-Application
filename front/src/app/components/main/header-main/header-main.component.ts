@@ -42,6 +42,7 @@ export class HeaderMainComponent implements OnInit {
   userName: string = '';
   userEmail: string = '';
   userRole: string = '';
+  userId: any;
   cartItemCount: number = 0;
   isScrolled: boolean = false;
   animationEnabled: boolean = true;
@@ -82,6 +83,7 @@ export class HeaderMainComponent implements OnInit {
       this.userName = this.capitalizeFirstLetter(userData?.['Name'] || '');
       this.userEmail = userData?.['Email'] || '';
       this.userRole = userData?.['Role'] || '';
+      this.userId = userData?.['CustomerId'] || ''
     }
 
     // Subscribe to cart item count from CartService
