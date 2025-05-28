@@ -31,4 +31,7 @@ export class AuthService {
       return this.http.post(`${this.API_URL}/api/Auth/login`, data)
     }
 
+    logout() {
+      localStorage.removeItem("token")
+    }
 }

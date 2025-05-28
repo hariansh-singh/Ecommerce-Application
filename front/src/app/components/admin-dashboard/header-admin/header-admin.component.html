@@ -57,7 +57,7 @@
       <div class="d-flex align-items-center user-section">
         <div class="user-info">
           <span class="welcome-text">Welcome,</span>
-          <span class="user-name">{{adminName}}</span>
+          <span class="user-name">{{adminName.split(' ')[0]}}</span>
           <span class="admin-badge">admin</span>
         </div>
         <button class="exit-button" type="button" (click)="redirectToHome()">

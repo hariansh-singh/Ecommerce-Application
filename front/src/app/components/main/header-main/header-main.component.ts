@@ -120,10 +120,8 @@ export class HeaderMainComponent implements OnInit {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   }
   signOut(): void {
-    if (confirm('Are you sure you want to sign out?')) {
-      localStorage.removeItem('token');
-      this.authState.setLoginState(false);
-      this.router.navigate(['/login']);
-    }
+    this.authService.logout();
+    
+    this.router.navigate(['/login']);
   }
 }
