@@ -11,25 +11,39 @@ import { RouterModule } from '@angular/router';
   styleUrl: './header-seller.component.css'
 })
 export class HeaderSellerComponent implements OnInit {
-  userData: any;
+  userData: any = {};
+  userName: string = ''; // Updated to use "Name" instead of "FullName"
   authService = inject(AuthService);
   router: Router = inject(Router);
-  showLogoutDropdown: boolean = false;
 
   ngOnInit(): void {
-    let _token:any = this.authService.getToken();
-    this.userData = jwtDecode(_token);
-    console.log(this.userData);
+    const _token: any = this.authService.getToken();
+    
+    if (_token) {
+      try {
+        this.userData = jwtDecode(_token);
+        this.userName = this.capitalizeFirstLetter(this.userData?.Name || "Seller"); // Ensure capitalization
+        console.log("Decoded User Data:", this.userData); // Debugging check
+      } catch (error) {
+        console.error("Token decode error:", error);
+      }
+    }
+  }
+
+  // Function to Capitalize First Letter
+  capitalizeFirstLetter(name: string): string {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   }
 
   redirectToHome() {
-  this.router.navigate(['/']); // Redirects to homepage
-  }
+  this.router.navigate(['/']); // Redirects to homepage without logging out
+}
 
   signOut() {
     if (confirm("Are you sure you want to sign out?")) {
-      localStorage.removeItem('token'); // Remove the token
-      this.router.navigate(['/']); // Redirect to home page
+      localStorage.removeItem('token'); 
+      this.router.navigate(['/']);
     }
   }
 }
+

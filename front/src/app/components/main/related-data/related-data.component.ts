@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { ProductService } from '../../../../services/product.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../../../services/cart.service';
 import { Subject, takeUntil, finalize } from 'rxjs';
+import Swal from 'sweetalert2';
+import { AuthService } from '../../../../services/auth.service';
 
 interface Product {
   productId: string;
@@ -14,6 +16,8 @@ interface Product {
   onSale?: boolean;
   rating?: number;
   reviewCount?: number;
+  selectedQuantity?: number;
+  stockQuantity?: number;
 }
 
 @Component({
@@ -29,10 +33,13 @@ export class RelatedDataComponent implements OnInit, OnDestroy {
   
   private destroy$ = new Subject<void>();
   private cartService = inject(CartService);
+  authService = inject(AuthService);
+  decodedToken: any = this.authService.decodedTokenData();
 
   constructor(
     private productService: ProductService, 
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -54,75 +61,114 @@ export class RelatedDataComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (data: any) => {
-          console.log("API Response:", data);
           this.products = data.data || [];
           this.processProductData();
         },
-        error: (error: any) => {
-          console.error("API Error:", error);
+        error: () => {
           this.products = [];
         }
       });
   }
 
   private processProductData(): void {
-    // Only add missing data if needed, don't override existing data
     this.products = this.products.map(product => ({
       ...product,
-      rating: product.rating || 4.5,
-      reviewCount: product.reviewCount || 25
+      rating: product.rating ?? 4.5,
+      reviewCount: product.reviewCount ?? 25,
+      selectedQuantity: product.selectedQuantity ?? 1,
+      stockQuantity: product.stockQuantity ?? 10
     }));
   }
 
-  private generateMockRating(): number {
-    return Math.floor(Math.random() * 2) + 4; // 4-5 stars
+  increaseQuantity(product: Product): void {
+    if (product.selectedQuantity! < product.stockQuantity!) {
+      product.selectedQuantity!++;
+      this.cdr.markForCheck();
+    }
   }
 
-  private generateMockReviewCount(): number {
-    return Math.floor(Math.random() * 100) + 10; // 10-110 reviews
+  decreaseQuantity(product: Product): void {
+    if (product.selectedQuantity! > 1) {
+      product.selectedQuantity!--;
+      this.cdr.markForCheck();
+    }
   }
 
   addToCart(product: Product): void {
-    if (this.isAddingToCart) return;
-    
-    this.isAddingToCart = true;
-    
-    // Add to cart immediately without delay
-    this.cartService.addToCart(product);
-    console.log('Product added to cart:', product);
-    
-    // Reset button state quickly
-    setTimeout(() => {
-      this.isAddingToCart = false;
-    }, 300);
-  }
+    if (!product.selectedQuantity || product.selectedQuantity <= 0 || product.selectedQuantity > (product.stockQuantity ?? 10)) {
+      Swal.fire({
+        title: 'Warning!',
+        text: 'Invalid quantity selected!',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
 
-  private showAddToCartSuccess(): void {
-    // You can implement toast notification here
-    console.log('Item added to cart successfully!');
+    if (!this.decodedToken?.CustomerId) {
+      Swal.fire({
+        title: 'Login Required',
+        text: 'Please login to add items to your cart',
+        icon: 'info',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    const cartItem = {
+      customerId: this.decodedToken.CustomerId,
+      productId: product.productId,
+      quantity: product.selectedQuantity
+    };
+
+    this.isAddingToCart = true;
+
+    this.cartService.addToCart(cartItem).subscribe({
+      next: () => {
+        Swal.fire({
+          title: 'Success!',
+          text: `${product.productName} added to cart!`,
+          icon: 'success',
+          confirmButtonText: 'Continue Shopping',
+          timer: 2000,
+          timerProgressBar: true
+        });
+        this.animateCartIcon();
+        this.isAddingToCart = false;
+      },
+      error: () => {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Failed to add product to cart. Please try again later.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        this.isAddingToCart = false;
+      }
+    });
   }
 
   onCardHover(event: Event, isHovering: boolean): void {
     const card = event.currentTarget as HTMLElement;
-    if (isHovering) {
-      card.style.transform = 'translateY(-8px)';
-      card.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
-    } else {
-      card.style.transform = 'translateY(0)';
-      card.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
-    }
+    card.style.transform = isHovering ? 'translateY(-8px)' : 'translateY(0)';
+    card.style.boxShadow = isHovering ? '0 20px 40px rgba(0, 0, 0, 0.15)' : '0 8px 25px rgba(0, 0, 0, 0.1)';
   }
 
   onImageError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    img.src = 'assets/images/placeholder-product.jpg'; // Fallback image
+    (event.target as HTMLImageElement).src = 'assets/images/placeholder-product.jpg';
   }
 
   getStarArray(rating: number): number[] {
     return Array.from({ length: 5 }, (_, i) => i + 1);
   }
 
-  trackByProductId(index: number, product: Product): string {
-    return product.productId;
+  animateCartIcon(): void {
+    const cartIcon = document.querySelector('.cart-icon');
+    if (cartIcon) {
+      cartIcon.classList.add('cart-animation');
+      setTimeout(() => {
+        cartIcon.classList.remove('cart-animation');
+      }, 600);
+    }
   }
 }

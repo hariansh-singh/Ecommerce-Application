@@ -88,14 +88,19 @@ export class RegisterComponent {
 
   onSubmitRegister(): void {
     if (this.myForm.invalid) {
+      console.log(this.myForm.errors);
       this.markFormGroupTouched();
       return;
     }
 
     this.isLoading = true;
-    const formData = { ...this.myForm.value };
-    delete formData.ConfirmPassword; // Remove confirm password before sending
-    delete formData.AgreeTerms; // Remove terms checkbox
+    const formData = { Name: `${this.myForm.value.FirstName+' '+this.myForm.value.LastName}`, 
+      Email: this.myForm.value.Email, 
+      Password: this.myForm.value.Password 
+
+ };
+    // delete formData.ConfirmPassword; 
+    // delete formData.AgreeTerms; 
 
     this.authService.signUp(formData)
       .subscribe({
