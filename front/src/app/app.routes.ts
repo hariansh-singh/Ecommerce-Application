@@ -38,6 +38,7 @@ export const routes: Routes = [
   {
     path: 'sellerdashboard',
     component: SellerDashboardComponent,
+    canActivate: [authGuard],
     children: [
       { path: '', component: HomeSellerComponent },
       { path: 'addProduct', component: AddProductComponent },
@@ -49,6 +50,7 @@ export const routes: Routes = [
   {
     path: 'admindashboard',
     component: AdminDashboardComponent,
+    canActivate: [authGuard],
     children: [
       { path: '', component: HomeAdminComponent },
       { path: 'manageprofile', component: ManageProfilesAdminComponent },

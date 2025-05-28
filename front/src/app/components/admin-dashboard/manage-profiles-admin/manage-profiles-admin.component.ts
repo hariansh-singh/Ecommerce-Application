@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../../../../services/auth.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 interface User {
   customerId: number;
@@ -49,8 +50,12 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
   isRefreshing = false;
 
   authService: any = inject(AuthService);
+  adminData: any = this.authService.decodedTokenData();
 
-  constructor(private manageProfilesService: ManageProfilesService) {
+  constructor(
+    private manageProfilesService: ManageProfilesService,
+    private router: Router
+  ) {
     // Setup search debouncing
     this.searchSubject
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
@@ -100,12 +105,11 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
   // Load current admin information from localStorage or session
   loadCurrentAdminInfo(): void {
     try {
-      const adminData: any = this.authService.decodedTokenData();
-      if (adminData) {
-        this.currentAdmin = adminData;
-        this.currentAdminId = adminData['customerId'];
+      if (this.adminData) {
+        this.currentAdmin = this.adminData;
+        this.currentAdminId = this.adminData['customerId'];
         console.log('Current admin loaded from storage:', this.currentAdmin);
-        console.log('User status is: ', adminData['UserStatus']);
+        console.log('User status is: ', this.adminData['UserStatus']);
       } else {
         console.warn('No admin data found in storage');
       }
@@ -318,9 +322,7 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
     if (this.selectedStatusFilter) {
       if (this.selectedStatusFilter === 'active') {
         filtered = filtered.filter((user) => user.userStatus === 1);
-      }
-
-      else {
+      } else {
         filtered = filtered.filter((user) => user.userStatus === 0);
       }
     }
@@ -493,7 +495,29 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
           background: '#d1fae5',
           color: '#065f46',
         });
+        console.log(
+          typeof customerId,
+          typeof Number(this.adminData['CustomerId'])
+        );
+        console.log(customerId, Number(this.adminData['CustomerId']));
+
+        if (customerId === Number(this.adminData['CustomerId'])) {
+          // If the current admin's role is changed, redirect to login
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        }
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'You have to login again.',
+          toast: true, // Makes it small
+          position: 'bottom-end', // Places it at the bottom
+          timer: 3000, // Auto-closes after 3 seconds
+          timerProgressBar: true,
+          showConfirmButton: false, // Removes "OK" button
+        });
       },
+
       error: (error: any) => {
         console.error('Error changing user role:', error);
         this.showToast({
@@ -510,6 +534,8 @@ export class ManageProfilesAdminComponent implements OnInit, OnDestroy {
   // Change user status (activate/deactivate)
   changeUserStatus(customerId: number): void {
     const user = this.users.find((u) => u.customerId === customerId);
+
+    // this.router.navigate(['/login']);
 
     if (!user) {
       this.showToast({

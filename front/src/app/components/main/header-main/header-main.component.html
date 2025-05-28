@@ -54,7 +54,7 @@
             <button class="btn dropdown-toggle fw-bold ms-3 user-dropdown" type="button" 
                     data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-user-circle me-1 text-warning"></i>
-              <span>Welcome <span class="text-gold">{{ userName }}</span></span>
+              <span>Welcome <span class="text-gold">{{ userName.split(' ')[0] }}</span></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" *ngIf="isSeller()" routerLink="/sellerdashboard">

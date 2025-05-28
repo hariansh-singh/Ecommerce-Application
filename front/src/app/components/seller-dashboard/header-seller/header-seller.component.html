@@ -49,8 +49,10 @@
       <!-- User Profile Section -->
       <div class="d-flex align-items-center">
         <div class="user-info me-4">
+
           <div class="welcome-text">Welcome,</div>
-          <div class="user-name">{{ userName }}</div>
+          <div class="user-name">{{ userName.split(' ')[0] }}</div>
+
           <span class="badge seller-badge">
             <i class="fas fa-crown me-1"></i>Seller
           </span>
