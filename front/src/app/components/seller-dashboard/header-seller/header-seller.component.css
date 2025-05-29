@@ -3,7 +3,7 @@
   background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #2d2d2d 100%);
   border-bottom: 2px solid #d4af37;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  padding: 1.2rem 0;
+  padding: 0.8rem 0;
   position: relative;
 }
 
@@ -75,7 +75,7 @@
 .premium-nav-link {
   color: #b8b8b8 !important;
   font-weight: 500;
-  padding: 0.9rem 1.4rem !important;
+  padding: 0.6rem 1.2rem !important;
   border-radius: 10px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 0 0.3rem;
@@ -96,25 +96,40 @@
   transition: opacity 0.4s ease;
 }
 
-.premium-nav-link:hover {
+/* .premium-nav-link:hover {
   color: #ffffff !important;
   background: linear-gradient(145deg, rgba(212, 175, 55, 0.15), rgba(244, 208, 63, 0.1));
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
-}
+} */
 
 .premium-nav-link:hover::before {
   opacity: 1;
 }
 
-.premium-nav-link.active {
-  color: #d4af37 !important;
-  background: linear-gradient(145deg, rgba(212, 175, 55, 0.2), rgba(244, 208, 63, 0.1));
+/* .premium-nav-link.active {
+   color: #d4af37 !important;
+  background: none !important;
   font-weight: 600;
+  box-shadow: none !important;
+  position: relative;
+} */
+
+
+.premium-nav-link.active {
+ color: #d4af37 !important;
+  background: linear-gradient(145deg, rgba(212, 175, 55, 0.2), rgba(244, 208, 63, 0.15));
   box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  font-weight: 600;
 }
 
-.premium-nav-link.active::after {
+.premium-nav-link:not(.active):hover {
+   color: #ffffff !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* .premium-nav-link.active::after {
   content: '';
   position: absolute;
   bottom: -10px;
@@ -125,7 +140,9 @@
   background: linear-gradient(45deg, #d4af37, #f4d03f);
   border-radius: 50%;
   box-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
-}
+   content: none !important;
+  display: none !important;
+} */
 
 /* Premium Dropdown */
 .premium-dropdown {
@@ -178,12 +195,10 @@
 
 /* User Info Section */
 .user-info {
-  text-align: right;
+   text-align: left;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.3rem;
-  padding: 0.5rem 0;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .welcome-text {
@@ -202,33 +217,28 @@
 }
 
 .seller-badge {
-  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%) !important;
+   display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  background: linear-gradient(to right, #d4af37, #f4d03f);
   color: #1a1a1a;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0.4rem 1rem;
-  border-radius: 25px;
-  margin-top: 0.3rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-  border: 1px solid rgba(244, 208, 63, 0.3);
+  box-shadow: 0 2px 6px rgba(212, 175, 55, 0.4);
+  animation: pulse 2s infinite;
 }
 
 /* Premium Exit Button */
 .premium-btn {
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  border: 2px solid #d4af37;
-  color: #d4af37;
-  padding: 0.9rem 2rem;
-  border-radius: 12px;
-  font-weight: 600;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  position: relative;
-  overflow: hidden;
+ background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
 }
 
 .premium-btn::before {
@@ -243,11 +253,10 @@
 }
 
 .premium-btn:hover {
-  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
-  border-color: #f4d03f;
-  color: #1a1a1a;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+   background: rgba(212, 175, 55, 0.15);
+  color: rgba(255, 255, 255, 1);
+  border-color: rgba(244, 208, 63, 0.7);
+  transform: scale(1.05);
 }
 
 .premium-btn:hover::before {
@@ -255,13 +264,13 @@
 }
 
 .premium-btn:active {
-  transform: translateY(-1px);
+   transform: scale(0.98);
 }
 
 /* Responsive Design */
 @media (max-width: 991.98px) {
   .premium-navbar {
-    padding: 1rem 0;
+    padding: 0.7rem 0;
   }
   
   .brand-primary {
@@ -291,6 +300,7 @@
     margin: 0.2rem;
     padding: 0.6rem 1rem !important;
     font-size: 0.9rem;
+    transition: all 0.3s ease-in-out;
   }
 }
 

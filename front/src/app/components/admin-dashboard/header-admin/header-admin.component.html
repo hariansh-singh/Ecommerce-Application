@@ -2,7 +2,7 @@
   <div class="container-fluid d-flex align-items-center">
    
     <!-- Modern Animated Logo -->
-    <a class="navbar-brand fw-bold d-flex align-items-center logo-container" routerLink="/">
+    <a class="navbar-brand fw-bold d-flex align-items-center logo-container" routerLink="/admindashboard">
       <div class="logo-animation">
         <i class="fas fa-globe logo-icon"></i>
       </div>
@@ -57,7 +57,7 @@
       <div class="d-flex align-items-center user-section">
         <div class="user-info">
           <span class="welcome-text">Welcome,</span>
-          <span class="user-name">{{adminName}}</span>
+          <span class="user-name">{{adminName.split(' ')[0]}}</span>
           <span class="admin-badge">admin</span>
         </div>
         <button class="exit-button" type="button" (click)="redirectToHome()">
