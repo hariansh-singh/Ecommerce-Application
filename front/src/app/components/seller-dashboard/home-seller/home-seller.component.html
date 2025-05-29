@@ -1,42 +1,174 @@
-<div class="container mt-5">
-  <h2 class="text-center text-primary mb-4">Product Inventory</h2>
- 
-  <div class="table-responsive">
-    <table class="table table-striped table-hover table-bordered align-middle">
-      <thead class="table-dark text-center">
-        <tr>
-          <th>Product ID</th>
-          <th>Product Name</th>
-         
-          <th>Quantity</th>
-          <th>Price</th>
-          <th>Features</th>
-          <th>Image</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let product of products">
-          <td class="text-center">{{ product.productId }}</td>
-          <!-- <td class="text-center">{{ product.productCategory }}</td> -->
-          <td>{{ product.productName }}</td>
-          <td class="text-center">{{ product.stockQuantity }}</td>
-          <td class="text-end text-success fw-bold">{{ product.productPrice | currency }}</td>
-          <td>{{ product.description }}</td>
-          <td class="text-center">
-            <img [src]="'https://localhost:7116/' + product.productImagePath" alt="{{ product.productName }}" class="img-fluid img-thumbnail" style="max-width: 100px;">
-          </td>
-          <td class="text-center">
-            <button class="btn btn-warning btn-sm me-2" [routerLink]="['/sellerdashboard/editpro', product.productId]">
-              <i class="bi bi-pencil-square"></i> Edit
-            </button>
-            <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.productId)">
-              <i class="bi bi-trash"></i> Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<div class="inventory-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="bi bi-box-seam"></i>
+        Product Inventory
+      </h1>
+      <p class="page-subtitle">Manage your product catalog efficiently</p>
+    </div>
+    
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <div class="search-container">
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Search products, ID, or description..."
+          (input)="onSearch($event)"
+        >
+      </div>
+      
+      <button class="btn-add-product" [routerLink]="['addProduct']">
+        Add Product
+      </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon total">
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ totalProducts }}</div>
+          <div class="stat-label">Total Products</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon in-stock">
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ inStockCount }}</div>
+          <div class="stat-label">In Stock</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon low-stock">
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ lowStockCount }}</div>
+          <div class="stat-label">Low Stock</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon out-stock">
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ outOfStockCount }}</div>
+          <div class="stat-label">Out of Stock</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading products...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && filteredProducts.length === 0" class="empty-state">
+    <i class="bi bi-box-seam empty-icon"></i>
+    <h3>No Products Found</h3>
+    <p *ngIf="searchTerm">No products match your search criteria. Try different keywords.</p>
+    <p *ngIf="!searchTerm">You haven't added any products yet. Start by adding your first product.</p>
+    <button class="btn-primary" [routerLink]="['addProduct']">
+      <i class="bi bi-plus"></i>
+      Add Your First Product
+    </button>
+  </div>
+
+  <!-- Products Table -->
+  <div *ngIf="!loading && filteredProducts.length > 0" class="table-container">
+    <div class="table-wrapper">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th (click)="sortProducts('productId')" class="sortable">
+              Product ID
+              <i class="bi bi-arrow-up-down sort-icon"></i>
+            </th>
+            <th (click)="sortProducts('productName')" class="sortable">
+              Product Details
+              <i class="bi bi-arrow-up-down sort-icon"></i>
+            </th>
+            <th (click)="sortProducts('stockQuantity')" class="sortable text-center">
+              Stock Status
+              <i class="bi bi-arrow-up-down sort-icon"></i>
+            </th>
+            <th (click)="sortProducts('productPrice')" class="sortable text-center">
+              Price
+              <i class="bi bi-arrow-up-down sort-icon"></i>
+            </th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of filteredProducts; trackBy: trackByProductId" class="product-row">
+            <td class="product-id">
+              #{{ product.productId }}
+            </td>
+            
+            <td class="product-details">
+              <div class="product-info">
+                <div class="product-image">
+                  <img 
+                    [src]="'https://localhost:7116/' + product.productImagePath" 
+                    [alt]="product.productName"
+                    class="product-thumb"
+                    onerror="this.src='assets/images/placeholder.jpg'"
+                  >
+                </div>
+                <div class="product-text">
+                  <h4 class="product-name">{{ product.productName }}</h4>
+                  <p class="product-description">{{ product.description }}</p>
+                </div>
+              </div>
+            </td>
+            
+            <td class="text-center">
+              <div class="stock-info">
+                <span class="stock-badge" [ngClass]="getStockStatus(product.stockQuantity)">
+                  {{ getStockStatusText(product.stockQuantity) }}
+                </span>
+                <div class="quantity">{{ product.stockQuantity }} units</div>
+              </div>
+            </td>
+            
+            <td class="text-center">
+              <div class="price-info">
+                <span class="price-amount">{{ product.productPrice | currency }}</span>
+              </div>
+            </td>
+            
+            <td class="text-center">
+              <div class="action-buttons">
+                <a 
+                  class="btn-action btn-edit" 
+                  [routerLink]="['/sellerdashboard/editpro', product.productId]"
+                  title="Edit Product"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                  Edit
+                </a>
+                <button 
+                  class="btn-action btn-delete" 
+                  (click)="deleteProduct(product.productId)"
+                  title="Delete Product"
+                >
+                  <i class="bi bi-trash"></i>
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
- 
