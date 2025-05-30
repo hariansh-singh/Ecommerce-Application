@@ -16,11 +16,12 @@
         <div class="search-box">
           <input
             type="text"
-            [(ngModel)]="searchTerm"
-            (ngModelChange)="applyFilters()"
-            placeholder="Search products..."
             class="search-input"
+            placeholder="Search products..."
+            [(ngModel)]="searchTerm"
+            (input)="searchQuery = searchTerm; applyFilters()"
           />
+
           <button class="search-button">
             <i class="fas fa-search"></i>
           </button>
@@ -167,13 +168,16 @@
                   class="fas"
                   [class.fa-star]="star <= getProductRating(product)"
                   [class.fa-star-half-alt]="
-                    star - 0.5 <= getProductRating(product) && star > getProductRating(product)
+                    star - 0.5 <= getProductRating(product) &&
+                    star > getProductRating(product)
                   "
                   [class.fa-star-o]="star > getProductRating(product)"
                 ></i>
               </div>
               <span class="rating-text">{{ getProductRating(product) }}</span>
-              <span class="rating-count">({{ getProductRatingCount(product) }})</span>
+              <span class="rating-count"
+                >({{ getProductRatingCount(product) }})</span
+              >
             </div>
 
             <div class="product-actions">
@@ -181,7 +185,9 @@
               <div class="quantity-control" *ngIf="isInCart(product.id)">
                 <button
                   class="quantity-btn minus"
-                  (click)="updateQuantity(product, getCartQuantity(product.id) - 1)"
+                  (click)="
+                    updateQuantity(product, getCartQuantity(product.id) - 1)
+                  "
                   [disabled]="getCartQuantity(product.id) <= 1"
                 >
                   <i class="fas fa-minus"></i>
@@ -196,7 +202,9 @@
                 />
                 <button
                   class="quantity-btn plus"
-                  (click)="updateQuantity(product, getCartQuantity(product.id) + 1)"
+                  (click)="
+                    updateQuantity(product, getCartQuantity(product.id) + 1)
+                  "
                 >
                   <i class="fas fa-plus"></i>
                 </button>
@@ -214,11 +222,16 @@
                   [class.fa-shopping-cart]="!isInCart(product.id)"
                   [class.fa-check]="isInCart(product.id)"
                 ></i>
-                <span>{{ isInCart(product.id) ? "Added" : "Add to Cart" }}</span>
+                <span>{{
+                  isInCart(product.id) ? "Added" : "Add to Cart"
+                }}</span>
               </button>
 
               <!-- View details button -->
-              <button class="view-details-btn" routerLink="/product/{{ product.id }}">
+              <button
+                class="view-details-btn"
+                routerLink="/product/{{ product.id }}"
+              >
                 <i class="fas fa-eye"></i>
                 <span>View Details</span>
               </button>

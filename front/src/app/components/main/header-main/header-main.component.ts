@@ -18,10 +18,13 @@ import {
   animate,
   transition,
 } from '@angular/animations';
+import { ProductService } from '../../../../services/product.service';
+import { FormsModule } from '@angular/forms';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-header-main',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './header-main.component.html',
   styleUrls: ['./header-main.component.css'],
   animations: [
@@ -46,13 +49,16 @@ export class HeaderMainComponent implements OnInit {
   cartItemCount: number = 0;
   isScrolled: boolean = false;
   animationEnabled: boolean = true;
+  searchQuery: string = '';
+
+  searchQueryUpdated = new Subject<string>();
 
   authService = inject(AuthService);
   authState = inject(AuthStateService);
   cartService = inject(CartService);
   router: Router = inject(Router);
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private productService: ProductService) {}
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -83,7 +89,7 @@ export class HeaderMainComponent implements OnInit {
       this.userName = this.capitalizeFirstLetter(userData?.['Name'] || '');
       this.userEmail = userData?.['Email'] || '';
       this.userRole = userData?.['Role'] || '';
-      this.userId = userData?.['CustomerId'] || ''
+      this.userId = userData?.['CustomerId'] || '';
     }
 
     // Subscribe to cart item count from CartService
@@ -105,6 +111,17 @@ export class HeaderMainComponent implements OnInit {
 
       this.cartItemCount = count;
     });
+
+    this.searchQueryUpdated.pipe(debounceTime(300)).subscribe(query => {
+    this.onSearch(query);
+  });
+
+
+  }
+
+  onSearch(query: string) {
+    this.productService.setSearchQuery(query);
+    this.router.navigate(['/shop']) 
   }
 
   isSeller(): boolean {
@@ -121,7 +138,7 @@ export class HeaderMainComponent implements OnInit {
   }
   signOut(): void {
     this.authService.logout();
-    
+
     this.router.navigate(['/login']);
   }
 }
