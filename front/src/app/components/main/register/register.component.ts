@@ -17,9 +17,11 @@ export class RegisterComponent {
   authService = inject(AuthService);
   authState = inject(AuthStateService);
   router = inject(Router);
+
   isLoading = false;
   showPassword = false;
   showConfirmPassword = false;
+  headingText: string = "Create Account"; // Default heading
 
   myForm: FormGroup = new FormGroup({
     FirstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
@@ -27,12 +29,19 @@ export class RegisterComponent {
     Email: new FormControl('', [Validators.required, Validators.email]),
     Password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     ConfirmPassword: new FormControl('', [Validators.required]),
+    Role: new FormControl('', [Validators.required]),  // Add this line
     AgreeTerms: new FormControl(false, [Validators.requiredTrue])
   }, { validators: this.passwordMatchValidator });
 
   constructor() {
     // Add input focus animations
     this.setupInputAnimations();
+
+    // Listen for role changes and update heading
+    this.myForm.get('Role')?.valueChanges.subscribe(role => {
+      this.updateHeading(role);
+    });
+
   }
 
   private setupInputAnimations(): void {
@@ -63,18 +72,18 @@ export class RegisterComponent {
     const formGroup = control as FormGroup;
     const password = formGroup.get('Password');
     const confirmPassword = formGroup.get('ConfirmPassword');
-    
+
     if (password && confirmPassword && password.value !== confirmPassword.value) {
       confirmPassword.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     }
-    
+
     if (confirmPassword?.hasError('passwordMismatch')) {
       const errors = { ...confirmPassword.errors };
       delete errors['passwordMismatch'];
       confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
     }
-    
+
     return null;
   }
 
@@ -86,6 +95,15 @@ export class RegisterComponent {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 
+  setRole(event: any) {
+    this.myForm.patchValue({ Role: event.target.value });
+  }
+
+  updateHeading(role: string): void {
+    this.headingText = role === 'seller' ? "Registering You As A Seller" : "Register";
+  }
+
+
   onSubmitRegister(): void {
     if (this.myForm.invalid) {
       console.log(this.myForm.errors);
@@ -94,11 +112,14 @@ export class RegisterComponent {
     }
 
     this.isLoading = true;
-    const formData = { Name: `${this.myForm.value.FirstName+' '+this.myForm.value.LastName}`, 
-      Email: this.myForm.value.Email, 
-      Password: this.myForm.value.Password 
+    const formData = {
+      Name: `${this.myForm.value.FirstName + ' ' + this.myForm.value.LastName}`,
+      Email: this.myForm.value.Email,
+      Password: this.myForm.value.Password,
+      Role: this.myForm.value.Role  // Added Role for debugging
+    };
 
- };
+    console.log("Role being sent:", formData.Role); // Debugging log
     // delete formData.ConfirmPassword; 
     // delete formData.AgreeTerms; 
 
@@ -107,15 +128,15 @@ export class RegisterComponent {
         next: (data: any) => {
           this.isLoading = false;
           console.log(data);
-          
+
           if (data.err === 0) {
             // Show success message with animation
             this.showSuccessMessage();
-            
+            alert(`Registration successful as ${formData.Role}!`); // Added role-based alert
             // Navigate to login after successful registration
             setTimeout(() => {
-              this.router.navigate(['/login'], { 
-                queryParams: { registered: 'true' } 
+              this.router.navigate(['/login'], {
+                queryParams: { registered: 'true' }
               });
             }, 2000);
 
