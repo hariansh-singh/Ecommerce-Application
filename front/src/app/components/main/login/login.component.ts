@@ -72,12 +72,12 @@ export class LoginComponent {
           if (data.err === 0 && data.token) {
             localStorage.setItem('token', data.token);
 
-            const decodedToken: any = jwtDecode(data.token);
+            const decodedToken: any = this.authService.decodedTokenData()
             console.log('Decoded Token:', decodedToken);
 
             this.authState.setLoginState(true);
 
-            const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            const userRole = decodedToken["Role"];
             
             // Show success message with animation
             this.showSuccessMessage();
@@ -85,8 +85,12 @@ export class LoginComponent {
             // Navigate after a brief delay for better UX
             setTimeout(() => {
               if (userRole === 'admin') {
-                this.router.navigate(['/dashboard']);
-              } else {
+                this.router.navigate(['/admindashboard']);
+              } 
+              else if(userRole === 'seller') {
+                this.router.navigate(['/sellerdashboard']);
+              }
+              else {
                 this.router.navigate(['/']);
               }
             }, 1000);
