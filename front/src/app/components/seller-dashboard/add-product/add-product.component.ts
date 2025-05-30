@@ -19,12 +19,14 @@ export class AddProductComponent {
     Description: new FormControl('', [Validators.required]),
     StockQuantity: new FormControl('', [Validators.required])
   });
-  imagePreview: string | undefined;
+ 
+   imagePreview: string | undefined;
   imageName: any;
 
 
   constructor(private productService: ProductService) {}
-handleFileUpload(event: any) {
+
+  handleFileUpload(event: any) {
   if (event.target.files.length > 0) {
     const file = event.target.files[0];
     if (file) {
