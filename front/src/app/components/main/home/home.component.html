@@ -16,7 +16,7 @@
     </div>
     
     <div class="row">
-      <div class="col-md-6 col-lg-4 mb-4" *ngFor="let product of products; trackBy: trackByProductId">
+      <div class="col-md-6 col-lg-4 mb-4" *ngFor="let product of products.slice(0, 6); trackBy: trackByProductId">
         <div class="card product-card" [attr.data-product-id]="product.productId">
           <!-- Important: Using div with class card-header instead of d-flex -->
           <div class="card-header d-flex justify-content-between align-items-start">
