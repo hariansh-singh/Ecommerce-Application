@@ -189,25 +189,42 @@
   margin-bottom: 10px;
   text-align: center;
 }
-
-/* Style for the image preview text */
-.image-preview-container p {
-  font-size: 16px;
-  font-weight: bold;
-  color: #fbbf24; /* Yellow shade */
-  text-align: center;
-  margin-bottom: 10px;
+/* Container for image preview */
+.image-preview-container {
+  margin-top: 15px;
+  padding: 20px; /* Added more padding */
+  border: 2px solid rgba(71, 85, 105, 0.6); /* Darker border to fit the theme */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers content */
+  justify-content: center; /* Ensures vertical centering */
+  background: rgba(30, 41, 59, 0.8); /* Darker transparent background */
+  backdrop-filter: blur(10px); /* Adds a subtle blur effect */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  max-width: 350px; /* Adjusts size */
+  margin-left: auto; /* Centers horizontally */
+  margin-right: auto; /* Centers horizontally */
 }
 
 /* Style for the preview image */
 .image-preview {
-  width: 200px;
+  width: 250px; /* Slightly larger */
   height: auto;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 5px 15px rgba(251, 191, 36, 0.2); /* Soft glow effect */
   transition: transform 0.3s ease-in-out;
 }
 
 .image-preview:hover {
   transform: scale(1.05); /* Slight zoom-in effect on hover */
+}
+
+/* Centered text inside the container */
+.image-preview-container p {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fbbf24; /* Yellow shade */
+  text-align: center;
+  margin-bottom: 10px;
 }
