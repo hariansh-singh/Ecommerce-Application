@@ -1,20 +1,25 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services/auth.service';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { AuthStateService } from '../../../../services/auth-state.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [RouterLink, ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
-
   authService = inject(AuthService);
   authState = inject(AuthStateService);
   router = inject(Router);
@@ -22,7 +27,7 @@ export class LoginComponent {
 
   myForm: FormGroup = new FormGroup({
     Email: new FormControl('', [Validators.required, Validators.email]),
-    Password: new FormControl('', [Validators.required])
+    Password: new FormControl('', [Validators.required]),
   });
 
   constructor() {
@@ -33,7 +38,7 @@ export class LoginComponent {
   private setupInputAnimations(): void {
     setTimeout(() => {
       const inputs = document.querySelectorAll('.form-input');
-      inputs.forEach(input => {
+      inputs.forEach((input) => {
         input.addEventListener('focus', this.handleInputFocus);
         input.addEventListener('blur', this.handleInputBlur);
       });
@@ -44,7 +49,7 @@ export class LoginComponent {
     const input = event.target as HTMLInputElement;
     const wrapper = input.closest('.input-wrapper');
     wrapper?.classList.add('focused');
-  }
+  };
 
   private handleInputBlur = (event: Event): void => {
     const input = event.target as HTMLInputElement;
@@ -52,7 +57,7 @@ export class LoginComponent {
     if (!input.value) {
       wrapper?.classList.remove('focused');
     }
-  }
+  };
 
   onSubmitLogin(): void {
     if (this.myForm.invalid) {
@@ -63,53 +68,57 @@ export class LoginComponent {
     this.isLoading = true;
     const formData = this.myForm.value;
 
-    this.authService.signIn(formData)
-      .subscribe({
-        next: (data: any) => {
-          this.isLoading = false;
-          console.log(data);
-          
-          if (data.err === 0 && data.token) {
-            localStorage.setItem('token', data.token);
+    this.authService.signIn(formData).subscribe({
+      next: (data: any) => {
+        this.isLoading = false;
+        console.log(data);
 
-            const decodedToken: any = this.authService.decodedTokenData()
-            console.log('Decoded Token:', decodedToken);
+        if (data.err === 0 && data.token) {
+          localStorage.setItem('token', data.token);
 
-            this.authState.setLoginState(true);
+          const decodedToken: any = this.authService.decodedTokenData();
+          console.log('Decoded Token:', decodedToken);
 
-            const userRole = decodedToken["Role"];
-            
-            // Show success message with animation
-            this.showSuccessMessage();
-            
-            // Navigate after a brief delay for better UX
-            setTimeout(() => {
-              if (userRole === 'admin') {
-                this.router.navigate(['/admindashboard']);
-              } 
-              else if(userRole === 'seller') {
-                this.router.navigate(['/sellerdashboard']);
-              }
-              else {
-                this.router.navigate(['/']);
-              }
-            }, 1000);
+          this.authState.setLoginState(true);
 
-          } else {
-            console.error('Login failed:', data.msg);
-            this.showErrorMessage(data.msg || 'Login failed. Please try again.');
-          }
-        },
-        error: (err: any) => {
-          this.isLoading = false;
-          console.error('Error during login:', err);
-          this.showErrorMessage('An error occurred. Please try again.');
+          const userRole = decodedToken['Role'];
+
+          // Show success message with animation
+          this.showSuccessMessage();
+
+          // Navigate after a brief delay for better UX
+          setTimeout(() => {
+            if (userRole === 'admin') {
+              this.router.navigate(['/admindashboard']);
+            } else if (userRole === 'seller') {
+              this.router.navigate(['/sellerdashboard']);
+            } else {
+              this.router.navigate(['/']);
+            }
+          }, 1000);
+        } 
+        else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Login failed',
+            text: data.msg || 'Please try again.',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+          });
         }
-      });
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        console.error('Error during login:', err);
+        this.showErrorMessage('An error occurred. Please try again.');
+      },
+    });
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.myForm.controls).forEach(key => {
+    Object.keys(this.myForm.controls).forEach((key) => {
       const control = this.myForm.get(key);
       control?.markAsTouched();
     });
