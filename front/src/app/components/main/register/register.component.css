@@ -684,3 +684,69 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
+
+
+
+
+/* Role Selection Field */
+.role-selection {
+  position: relative;
+  width: 100%;
+}
+
+.role-dropdown {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 2px solid #475569;
+  border-radius: 15px;
+  font-size: 1rem;
+  background: #1e293b;
+  color: #f1f5f9;
+  transition: all 0.3s ease;
+  appearance: none;
+}
+
+/* Dropdown Arrow Styling */
+.role-dropdown::-ms-expand {
+  display: none;
+}
+
+.role-dropdown:focus {
+  border-color: #fbbf24;
+  background: #334155;
+}
+
+/* Floating Label for Dropdown */
+.role-label {
+  position: absolute;
+  left: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1e293b;
+  padding: 0 0.5rem;
+  color: #94a3b8;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.role-dropdown:focus + .role-label,
+.role-dropdown:not(:placeholder-shown) + .role-label {
+  top: 0;
+  font-size: 0.85rem;
+  color: #fbbf24;
+}
+
+
+
+/* Hover Effect for Heading */
+.register-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.register-title:hover {
+  color: #fbbf24; /* Highlight with a golden shade */
+  transform: scale(1.05); /* Slightly enlarge the heading */
+}

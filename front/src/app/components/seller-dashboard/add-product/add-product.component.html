@@ -55,21 +55,31 @@
                       <label for="stockQuantity" class="form-label">Stock Quantity</label>
                     </div>
                   </div>
-
+                  
                   <div class="form-group upload-group">
                     <label class="upload-label">Upload Product Image</label>
                     <div class="upload-wrapper">
                       <input type="file" class="file-input" (change)="handleFileUpload($event)" required>
                       <div class="upload-area">
                         <i class="fas fa-upload upload-icon"></i>
-                        <span class="upload-text">Choose a file or drag it here</span>
+                        <span class="upload-text">{{ imageName ? imageName : 'Choose a file or drag it here' }}</span>
                       </div>
                     </div>
                   </div>
 
+                  <!-- Display Image Preview -->
+                  <div *ngIf="imagePreview" class="image-preview-container">
+                    <p>Image Preview:</p>
+                    <img [src]="imagePreview" alt="Product Image Preview" width="200">
+                  </div>
+
+
+               
+
+
                   <!-- Submit Button -->
                   <div class="submit-section">
-                    <button class="submit-btn" type="submit" [disabled]="productForm.invalid">
+                    <button class="submit-btn" type="submit" [disabled]="productForm.invalid" routerLink="['/sellerdashboard']">
                       <span class="btn-text">Submit Product</span>
                     </button>
                   </div>

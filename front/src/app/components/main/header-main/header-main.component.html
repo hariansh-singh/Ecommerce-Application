@@ -1,20 +1,33 @@
-<nav class="navbar navbar-expand-lg shadow-lg" [ngClass]="{'scrolled': isScrolled}">
+<nav
+  class="navbar navbar-expand-lg shadow-lg"
+  [ngClass]="{ scrolled: isScrolled }"
+>
   <div class="container-fluid d-flex align-items-center">
-
     <!-- Enhanced Logo with Animation -->
-    <a class="navbar-brand fw-bold text-white d-flex align-items-center" routerLink="/" 
-       [ngClass]="{'animate__animated animate__fadeInLeft': animationEnabled}">
+    <a
+      class="navbar-brand fw-bold text-white d-flex align-items-center"
+      routerLink="/"
+      [ngClass]="{ 'animate__animated animate__fadeInLeft': animationEnabled }"
+    >
       <div class="logo-container position-relative">
         <i class="fas fa-shopping-bag fs-3 me-2 text-warning"></i>
         <div class="logo-glow"></div>
       </div>
-      <span class="text-light brand-name">Sha<span class="brand-sub">.in</span></span>
+      <span class="text-light brand-name"
+        >Sha<span class="brand-sub">.in</span></span
+      >
     </a>
 
     <!-- Hamburger Menu for Mobile -->
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" 
-            data-bs-target="#navbarContent" aria-controls="navbarContent" 
-            aria-expanded="false" aria-label="Toggle navigation">
+    <button
+      class="navbar-toggler border-0"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarContent"
+      aria-controls="navbarContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <i class="fas fa-bars text-light"></i>
     </button>
 
@@ -22,11 +35,24 @@
     <div class="collapse navbar-collapse" id="navbarContent">
       <!-- Enhanced Search Bar -->
       <div class="d-flex flex-grow-1 justify-content-center my-2 my-lg-0">
-        <div class="input-group animate-search" 
-             [ngClass]="{'animate__animated animate__fadeInDown': animationEnabled}">
-          <input type="text" class="form-control search-input" 
-                 placeholder="Search for products...">
-          <button class="btn search-button d-flex align-items-center" type="submit">
+        <div
+          class="input-group animate-search"
+          [ngClass]="{
+            'animate__animated animate__fadeInDown': animationEnabled
+          }"
+        >
+          <input
+            type="text"
+            class="form-control search-input"
+            placeholder="Search for products..."
+            [(ngModel)]="searchQuery"
+            (input)="searchQueryUpdated.next(searchQuery)" 
+          />
+          <button
+            class="btn search-button d-flex align-items-center"
+            type="submit"
+            (click)="onSearch(searchQuery)"
+          >
             <i class="fas fa-search"></i>
             <span class="ms-1 d-none d-md-inline">Search</span>
           </button>
@@ -37,12 +63,22 @@
       <div class="d-flex align-items-center ms-auto">
         <!-- Not Logged In -->
         <ng-container *ngIf="!isLoggedIn">
-          <a class="nav-link text-light fw-bold px-3" routerLink="/login"
-             [ngClass]="{'animate__animated animate__fadeIn': animationEnabled}">
+          <a
+            class="nav-link text-light fw-bold px-3"
+            routerLink="/login"
+            [ngClass]="{
+              'animate__animated animate__fadeIn': animationEnabled
+            }"
+          >
             <i class="fas fa-user-circle fs-5 text-warning"></i>
           </a>
-          <a class="nav-link text-light fw-bold px-3" routerLink="/register"
-             [ngClass]="{'animate__animated animate__fadeIn': animationEnabled}">
+          <a
+            class="nav-link text-light fw-bold px-3"
+            routerLink="/register"
+            [ngClass]="{
+              'animate__animated animate__fadeIn': animationEnabled
+            }"
+          >
             <i class="fas fa-user-plus fs-5 text-warning"></i>
           </a>
         </ng-container>
@@ -50,39 +86,85 @@
         <!-- Logged In User -->
         <ng-container *ngIf="isLoggedIn">
           <!-- User Dropdown Menu -->
-          <div class="dropdown" [ngClass]="{'animate__animated animate__fadeIn': animationEnabled}">
-            <button class="btn dropdown-toggle fw-bold ms-3 user-dropdown" type="button" 
-                    data-bs-toggle="dropdown" aria-expanded="false">
+          <div
+            class="dropdown"
+            [ngClass]="{
+              'animate__animated animate__fadeIn': animationEnabled
+            }"
+          >
+            <button
+              class="btn dropdown-toggle fw-bold ms-3 user-dropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
               <i class="fas fa-user-circle me-1 text-warning"></i>
-              <span>Welcome <span class="text-gold">{{ userName.split(' ')[0] }}</span></span>
+              <span
+                >Welcome
+                <span class="text-gold">{{
+                  userName.split(" ")[0]
+                }}</span></span
+              >
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" *ngIf="isSeller()" routerLink="/sellerdashboard">
-                <i class="fas fa-id-card me-2"></i>Go to Seller Dashboard
-              </a></li>
-              <li><a class="dropdown-item" *ngIf="isAdmin()" routerLink="/admindashboard">
-                <i class="fas fa-id-card me-2"></i>Go to Admin Dashboard
-              </a></li>
-              <li><a class="dropdown-item" routerLink="/profile">
-                <i class="fas fa-id-card me-2"></i>Profile
-              </a></li>
-              <li><a class="dropdown-item" [routerLink]="['/myorders', userId]">
-                <i class="fas fa-box me-2"></i>My Orders
-              </a></li>
-              <li><a class="dropdown-item" routerLink="/wishlist">
-                <i class="fas fa-heart me-2"></i>Wishlist
-              </a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><button class="dropdown-item text-danger fw-bold" (click)="signOut()">
-                <i class="fas fa-sign-out-alt me-2"></i>Logout
-              </button></li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  *ngIf="isSeller()"
+                  routerLink="/sellerdashboard"
+                >
+                  <i class="fas fa-id-card me-2"></i>Go to Seller Dashboard
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  *ngIf="isAdmin()"
+                  routerLink="/admindashboard"
+                >
+                  <i class="fas fa-id-card me-2"></i>Go to Admin Dashboard
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/profile">
+                  <i class="fas fa-id-card me-2"></i>Profile
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/myorders', userId]">
+                  <i class="fas fa-box me-2"></i>My Orders
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/wishlist">
+                  <i class="fas fa-heart me-2"></i>Wishlist
+                </a>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <button
+                  class="dropdown-item text-danger fw-bold"
+                  (click)="signOut()"
+                >
+                  <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </button>
+              </li>
             </ul>
           </div>
 
           <!-- Cart Icon with Badge Positioned Above -->
-          <a class="nav-link text-light fw-bold px-3 animate-cart position-relative" 
-             routerLink="/cart" [ngClass]="{'animate__animated animate__fadeIn': animationEnabled}">
-            <span *ngIf="cartItemCount > 0" class="badge cart-badge bg-danger">{{ cartItemCount }}</span>
+          <a
+            class="nav-link text-light fw-bold px-3 animate-cart position-relative"
+            routerLink="/cart"
+            [ngClass]="{
+              'animate__animated animate__fadeIn': animationEnabled
+            }"
+          >
+            <span
+              *ngIf="cartItemCount > 0"
+              class="badge cart-badge bg-danger"
+              >{{ cartItemCount }}</span
+            >
             <i class="fas fa-shopping-cart fs-5 text-warning"></i>
           </a>
         </ng-container>
@@ -92,14 +174,16 @@
 </nav>
 
 <!-- Category Navigation (Optional) -->
-<div class="category-nav py-2 px-3 d-none d-lg-block" 
-     [ngClass]="{'animate__animated animate__fadeIn': animationEnabled}">
+<div
+  class="category-nav py-2 px-3 d-none d-lg-block"
+  [ngClass]="{ 'animate__animated animate__fadeIn': animationEnabled }"
+>
   <div class="container-fluid">
     <ul class="nav justify-content-center">
       <li class="nav-item">
         <a class="cat-link" routerLink="/">Home</a>
       </li>
-       <li class="nav-item">
+      <li class="nav-item">
         <a class="cat-link" routerLink="/shop">Shop</a>
       </li>
       <li class="nav-item">
@@ -122,7 +206,6 @@
       <li class="nav-item">
         <a class="cat-link" routerLink="/category/sports">Sports</a>
       </li>
-      
     </ul>
   </div>
 </div>
