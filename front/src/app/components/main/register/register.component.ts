@@ -46,7 +46,7 @@ export class RegisterComponent {
         Validators.minLength(6),
       ]),
       ConfirmPassword: new FormControl('', [Validators.required]),
-      Role: new FormControl('', [Validators.required]), // Add this line
+      Role: new FormControl('user', [Validators.required]), // Default to 'user'
       AgreeTerms: new FormControl(false, [Validators.requiredTrue]),
     },
     { validators: this.passwordMatchValidator }
@@ -125,7 +125,7 @@ export class RegisterComponent {
 
   updateHeading(role: string): void {
     this.headingText =
-      role === 'seller' ? 'Registering You As A Seller' : 'Register';
+      role === 'seller' ? 'Join as a Seller' : 'Create Account';
   }
 
   onSubmitRegister(): void {
@@ -140,12 +140,10 @@ export class RegisterComponent {
       Name: `${this.myForm.value.FirstName + ' ' + this.myForm.value.LastName}`,
       Email: this.myForm.value.Email,
       Password: this.myForm.value.Password,
-      Role: this.myForm.value.Role, // Added Role for debugging
+      Role: this.myForm.value.Role,
     };
 
-    console.log('Role being sent:', formData.Role); // Debugging log
-    // delete formData.ConfirmPassword;
-    // delete formData.AgreeTerms;
+    console.log('Role being sent:', formData.Role);
 
     this.authService.signUp(formData).subscribe({
       next: (data: any) => {
@@ -263,6 +261,10 @@ export class RegisterComponent {
 
   get confirmPasswordControl() {
     return this.myForm.get('ConfirmPassword');
+  }
+
+  get roleControl() {
+    return this.myForm.get('Role');
   }
 
   get agreeTermsControl() {
