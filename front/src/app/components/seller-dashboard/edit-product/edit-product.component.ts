@@ -79,7 +79,7 @@ export class EditProductComponent implements OnInit {
     this.proser.editProduct(this.id, formData).subscribe({
       next: () => {
         alert("Product Updated Successfully!");
-        this.router.navigateByUrl("/dashboard");
+        this.router.navigateByUrl("/sellerdashboard");
       },
       error: (err) => {
         console.error("Error Updating Product:", err);
