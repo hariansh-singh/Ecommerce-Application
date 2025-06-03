@@ -50,6 +50,7 @@ export class ViewCartComponent implements OnInit {
   promoCode: string = '';
   promoApplied: boolean = false;
   discount: number = 0;
+  shippingAddress: string = '';
   
   selectedPayment: string = 'card';
   
@@ -177,7 +178,7 @@ export class ViewCartComponent implements OnInit {
       customerId: this.decodedToken.CustomerId,
       orderDate: new Date().toISOString(),
       totalPrice: this.getFinalTotal(),
-      shippingAddress: 'Your shipping address here', // In a real app, get this from a form
+      shippingAddress: this.shippingAddress, // In a real app, get this from a form
       paymentMethod: this.selectedPayment,
       orderItems: this.cartItems.map((item) => ({
         orderId: 0,
