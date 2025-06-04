@@ -20,9 +20,16 @@ export class ProductService {
     return this.searchQuery$.getValue(); // Retrieve the latest value
   }
 
-
   getAllProducts() {
     return this.http.get(`${this.API_URL}/api/Product`);
+  }
+
+  getSellerProducts(sellerId: number) {
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${localStorage.getItem('token')}`
+    );
+    return this.http.get(`${this.API_URL}/api/Product/myproducts/${sellerId}`, { headers });
   }
 
   addProduct(data: any) {

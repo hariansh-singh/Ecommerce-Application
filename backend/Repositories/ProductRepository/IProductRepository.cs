@@ -7,6 +7,7 @@ namespace backend.Repositories.ProductRepository
         Task<bool> AddProduct(ProductUIModel product);
         Task<List<ProductDBModel>> GetAllProducts();
         Task<ProductDBModel?> GetProductById(int productId);
+        Task<List<ProductDBModel>?> GetSellerProducts(int sellerId);
         Task<bool> UpdateProduct(int productId, ProductUIModel product);
         Task<bool> DeleteProduct(int productId);
     }
