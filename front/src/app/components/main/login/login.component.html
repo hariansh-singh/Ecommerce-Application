@@ -12,7 +12,7 @@
           </div>
           <h2 class="login-title">Welcome Back</h2>
           <p class="login-subtitle">
-            Ready to continue your journey? 
+            Ready to continue your journey?
             <a class="signup-link" routerLink="/register">Join us instead</a>
           </p>
         </div>
@@ -24,7 +24,7 @@
       <div class="col-12 col-lg-10 col-xl-8">
         <div class="login-container">
           <div class="row gy-4 justify-content-center align-items-center">
-            
+
             <!-- Login Form -->
             <div class="col-12 col-lg-5">
               <div class="form-container">
@@ -32,19 +32,13 @@
                   <h3 class="form-title">Sign In</h3>
                   <p class="form-subtitle">Enter your credentials to access your account</p>
                 </div>
-                
+
                 <form [formGroup]="myForm" (ngSubmit)="onSubmitLogin()" class="login-form">
-                  
+
                   <!-- Email Field -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input 
-                        type="email" 
-                        class="form-input" 
-                        id="email" 
-                        placeholder=" " 
-                        formControlName="Email" 
-                        required
+                      <input type="email" class="form-input" id="email" placeholder=" " formControlName="Email" required
                         [class.error]="myForm.get('Email')?.invalid && myForm.get('Email')?.touched">
                       <label for="email" class="form-label">Email Address</label>
                       <div class="input-icon">
@@ -65,21 +59,16 @@
                   <!-- Password Field -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input 
-                        type="password" 
-                        class="form-input" 
-                        id="password" 
-                        placeholder=" " 
-                        formControlName="Password" 
-                        required
-                        [class.error]="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
+                      <input type="password" class="form-input" id="password" placeholder=" " formControlName="Password"
+                        required [class.error]="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
                       <label for="password" class="form-label">Password</label>
                       <div class="input-icon">
                         <i class="fas fa-lock"></i>
                       </div>
                       <div class="input-border"></div>
                     </div>
-                    <div class="error-message" *ngIf="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
+                    <div class="error-message"
+                      *ngIf="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
                       <small *ngIf="myForm.get('Password')?.errors?.['required']">
                         <i class="fas fa-exclamation-triangle"></i> Password is required
                       </small>
@@ -89,121 +78,118 @@
                   <!-- Remember Me & Forgot Password -->
                   <div class="form-options">
                     <div class="checkbox-wrapper">
-                      <input class="custom-checkbox" type="checkbox" id="remember_me">
+                      <input class="custom-checkbox" type="checkbox" id="remember_me" formControlName="RememberMe">
                       <label class="checkbox-label" for="remember_me">
                         <span class="checkmark">
                           <i class="fas fa-check"></i>
                         </span>
                         Remember me
                       </label>
-                    </div>
-                    <a class="forgot-link">
-                      <i class="fas fa-key"></i>
-                      Forgot password?
-                    </a>
-                  </div>
-
-                  <!-- Submit Button -->
-                  <div class="submit-section">
-                    <button 
-                      class="login-btn" 
-                      type="submit" 
-                      [disabled]="isLoading"
-                      [class.loading]="isLoading">
-                      <span class="btn-text">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Sign In
-                      </span>
-                      <div class="btn-loader" *ngIf="isLoading">
-                        <div class="spinner"></div>
-                      </div>
-                      <div class="btn-shine"></div>
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-
-            <!-- Divider -->
-            <div class="col-12 col-lg-2 divider-section">
-              <div class="divider-container">
-                <div class="divider-line"></div>
-                <div class="divider-text">
-                  <i class="fas fa-grip-lines-vertical"></i>
-                </div>
-                <div class="divider-line"></div>
-              </div>
-            </div>
-
-            <!-- Social Login -->
-            <div class="col-12 col-lg-5">
-              <div class="social-container">
-                <div class="social-header">
-                  <h6 class="social-title">Quick Access</h6>
-                  <p class="social-subtitle">Continue with your favorite platform</p>
-                </div>
-                
-                <div class="social-buttons">
-                  <button class="social-btn google-btn">
-                    <div class="social-icon">
-                      <i class="fab fa-google"></i>
-                    </div>
-                    <div class="social-content">
-                      <span class="social-name">Google</span>
-                      <small class="social-desc">Sign in with Google</small>
-                    </div>
-                    <div class="social-arrow">
-                      <i class="fas fa-chevron-right"></i>
-                    </div>
-                  </button>
                   
-                  <button class="social-btn apple-btn">
-                    <div class="social-icon">
-                      <i class="fab fa-apple"></i>
-                    </div>
-                    <div class="social-content">
-                      <span class="social-name">Apple</span>
-                      <small class="social-desc">Sign in with Apple ID</small>
-                    </div>
-                    <div class="social-arrow">
-                      <i class="fas fa-chevron-right"></i>
-                    </div>
-                  </button>
-                  
-                  <button class="social-btn microsoft-btn">
-                    <div class="social-icon">
-                      <i class="fab fa-microsoft"></i>
-                    </div>
-                    <div class="social-content">
-                      <span class="social-name">Microsoft</span>
-                      <small class="social-desc">Sign in with Microsoft</small>
-                    </div>
-                    <div class="social-arrow">
-                      <i class="fas fa-chevron-right"></i>
-                    </div>
-                  </button>
-                </div>
+                  </div>
 
-                <!-- Quick Stats -->
-                <div class="quick-stats">
-                  <div class="stat-item">
-                    <div class="stat-icon">
-                      <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <span>Secure Login</span>
+                  <a class="forgot-link">
+                    <i class="fas fa-key"></i>
+                    Forgot password?
+                  </a>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="submit-section">
+                <button class="login-btn" type="submit" [disabled]="isLoading" [class.loading]="isLoading">
+                  <span class="btn-text">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                  </span>
+                  <div class="btn-loader" *ngIf="isLoading">
+                    <div class="spinner"></div>
                   </div>
-                  <div class="stat-item">
-                    <div class="stat-icon">
-                      <i class="fas fa-clock"></i>
-                    </div>
-                    <span>Quick Access</span>
+                  <div class="btn-shine"></div>
+                </button>
+              </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="col-12 col-lg-2 divider-section">
+            <div class="divider-container">
+              <div class="divider-line"></div>
+              <div class="divider-text">
+                <i class="fas fa-grip-lines-vertical"></i>
+              </div>
+              <div class="divider-line"></div>
+            </div>
+          </div>
+
+          <!-- Social Login -->
+          <div class="col-12 col-lg-5">
+            <div class="social-container">
+              <div class="social-header">
+                <h6 class="social-title">Quick Access</h6>
+                <p class="social-subtitle">Continue with your favorite platform</p>
+              </div>
+
+              <div class="social-buttons">
+                <button class="social-btn google-btn">
+                  <div class="social-icon">
+                    <i class="fab fa-google"></i>
                   </div>
-                  <div class="stat-item">
-                    <div class="stat-icon">
-                      <i class="fas fa-users"></i>
-                    </div>
-                    <span>Trusted by 10K+</span>
+                  <div class="social-content">
+                    <span class="social-name">Google</span>
+                    <small class="social-desc">Sign in with Google</small>
                   </div>
+                  <div class="social-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                </button>
+
+                <button class="social-btn apple-btn">
+                  <div class="social-icon">
+                    <i class="fab fa-apple"></i>
+                  </div>
+                  <div class="social-content">
+                    <span class="social-name">Apple</span>
+                    <small class="social-desc">Sign in with Apple ID</small>
+                  </div>
+                  <div class="social-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                </button>
+
+                <button class="social-btn microsoft-btn">
+                  <div class="social-icon">
+                    <i class="fab fa-microsoft"></i>
+                  </div>
+                  <div class="social-content">
+                    <span class="social-name">Microsoft</span>
+                    <small class="social-desc">Sign in with Microsoft</small>
+                  </div>
+                  <div class="social-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Quick Stats -->
+              <div class="quick-stats">
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <span>Secure Login</span>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <span>Quick Access</span>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                  </div>
+                  <span>Trusted by 10K+</span>
                 </div>
               </div>
             </div>
@@ -211,6 +197,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <!-- Animated Background Elements -->

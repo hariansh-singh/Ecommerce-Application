@@ -9,29 +9,53 @@ export class AuthService {
 
   private API_URL = "https://localhost:7116"
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-    getToken() {  
-      return localStorage.getItem("token")
-    }
+  //properly verify expiration before returning a token
+  getToken() {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  const expiration = localStorage.getItem("tokenExpiration") || sessionStorage.getItem("tokenExpiration");
 
-    decodedTokenData() {
-      var token = localStorage.getItem("token")
-      if(token) {
-        return jwtDecode(token)
-      }
-      return 
+  if (token && expiration) {
+    const expirationDate = new Date(expiration);
+    if (expirationDate > new Date()) {
+      return token; // Valid token
+    } else {
+      this.logout(); // Token expired, log out user
+      return null;
     }
+  }
+  return null;
+}
 
-    signUp(data:any) {
-      return this.http.post(`${this.API_URL}/api/Auth/register`, data)
-    }
 
-    signIn(data:any) {
-      return this.http.post(`${this.API_URL}/api/Auth/login`, data)
+decodedTokenData() {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) {
+    try {
+      return jwtDecode(token); // Decode token safely
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return null; // Return null instead of undefined
     }
+  }
+  return null; // Explicitly return null if no token exists
+}
 
-    logout() {
-      localStorage.removeItem("token")
-    }
+
+  signUp(data: any) {
+    return this.http.post(`${this.API_URL}/api/Auth/register`, data)
+  }
+
+ signIn(data: any) {
+  return this.http.post(`${this.API_URL}/api/Auth/login`, data);
+}
+
+
+
+ logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("tokenExpiration");
+  sessionStorage.removeItem("token");
+}
 }
