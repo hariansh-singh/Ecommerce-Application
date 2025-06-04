@@ -316,6 +316,78 @@
   color: var(--text-primary);
 }
 
+/* Quantity Control */
+.quantity-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #f8f9ff, #e3e7fc);
+  border-radius: var(--border-radius);
+  padding: 0.5rem 0.8rem;
+  box-shadow: var(--shadow-lg);
+  width: fit-content;
+  transition: var(--transition);
+  margin: 0 auto; 
+}
+
+/* Quantity Buttons */
+.quantity-btn {
+  background: #b0b0b0; /* 🔹 Soft grey for sleek appearance */
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-md);
+}
+
+.quantity-btn i {
+  font-size: 1rem;
+  color: white; /* Ensures icon visibility */
+}
+
+.quantity-btn:hover {
+  background: #909090; /* Slightly darker grey for hover effect */
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+
+.quantity-btn:disabled {
+  background: #cfcfcf; /* Lighter grey for disabled state */
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: scale(1);
+}
+
+.quantity-btn:disabled i {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Quantity Display */
+.quantity-display {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  width: 50px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  transition: var(--transition);
+}
+
+.quantity-display:focus {
+  outline: none;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .related-products-section {
@@ -364,6 +436,30 @@
   .btn-cart {
     padding: 0.7rem;
   }
+
+
+  .quantity-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+
+  .quantity-display {
+    font-size: 1rem;
+    width: 40px;
+  }
+}
+
+
+/* Animation for smooth interactions */
+@keyframes bounceButton {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.quantity-btn:active {
+  animation: bounceButton 0.2s ease-in-out;
 }
 
 /* Animation for adding to cart */
