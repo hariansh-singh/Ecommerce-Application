@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 export class EditProductComponent implements OnInit {
   id: any;
   filePathRef: any;
+  filePreviewUrl: string | null = null; // Stores preview URL
   productDetails: any;
 
   constructor(private aroute: ActivatedRoute, private proser: ProductService, private router: Router) {}
@@ -29,13 +30,26 @@ export class EditProductComponent implements OnInit {
 
   uploadFile(event: any) {
     if (event.target.files.length > 0) {
-      this.filePathRef = event.target.files[0];
+      const file = event.target.files[0];
+
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(file.type)) {
+        alert("Invalid file type. Please upload a JPEG or PNG.");
+        return;
+      }
+
+      this.filePathRef = file;  // Store actual file
+      this.filePreviewUrl = URL.createObjectURL(file);  // Create preview URL
+
+      console.log("Generated preview URL:", this.filePreviewUrl);
       console.log("Selected File:", this.filePathRef);
     }
   }
 
   ngOnInit(): void {
-    this.id = this.aroute.snapshot.paramMap.get('id'); // Get ID from route params
+     window.scrollTo(0, 0); // Ensures the page opens from the top
+    this.id = this.aroute.snapshot.paramMap.get('id');
     console.log("Product ID:", this.id);
 
     this.proser.getProductById(this.id).subscribe({
@@ -50,11 +64,11 @@ export class EditProductComponent implements OnInit {
             Description: data.data.description
           });
 
-          this.productDetails = data.data; // Store product details
+          this.productDetails = data.data;
 
           if (data.data.productImagePath) {
             this.filePathRef = `https://localhost:7116/${data.data.productImagePath}`;
-            console.log(data.data.productImagePath);
+            console.log("Existing Image Path:", this.filePathRef);
           }
         }
       },
@@ -73,10 +87,18 @@ postData() {
   formData.append("StockQuantity", fData.StockQuantity);
   formData.append("Description", fData.Description);
 
-  // Append image only if a new one is selected
-  if (this.filePathRef instanceof File) {
-    formData.append("ProductImage", this.filePathRef, this.filePathRef.name);
-  }
+    if (this.filePathRef instanceof File) {
+      formData.append("ProductImage", this.filePathRef, this.filePathRef.name);
+    } else if (this.productDetails.productImagePath) {
+      formData.append("ProductImage", this.productDetails.productImagePath);
+    } else {
+      console.warn("No new or existing image provided.");
+    }
+
+    console.log("Submitting FormData:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
 
    this.proser.editProduct(this.id, formData).subscribe({
     next: () => {
