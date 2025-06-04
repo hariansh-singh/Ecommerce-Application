@@ -4,6 +4,8 @@ import { Router, RouterModule } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { ProductService } from '../../../../services/product.service';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-home-seller',
@@ -42,20 +44,42 @@ export class HomeSellerComponent implements OnInit {
       });
   }
 
-  deleteProduct(id: number): void {
-    if (confirm("Are you sure you want to delete this product?")) {
+deleteProduct(id: number): void {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "This action cannot be undone!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
       this.productService.deleteProduct(id).subscribe({
         next: () => {
           this.products = this.products.filter((product: any) => product.productId !== id);
           this.filteredProducts = this.filteredProducts.filter((product: any) => product.productId !== id);
-          console.log(`Product with ID ${id} deleted`);
+
+          Swal.fire(
+            'Deleted!',
+            'The product has been deleted.',
+            'success'
+          );
         },
         error: (error) => {
           console.error("Error deleting product:", error);
+          Swal.fire(
+            'Error!',
+            'Something went wrong while deleting the product.',
+            'error'
+          );
         }
       });
     }
-  }
+  });
+}
+
 
   onSearch(event: any): void {
     this.searchTerm = event.target.value.toLowerCase();
