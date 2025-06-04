@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using backend.Models.CustomerModels;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace backend.Models.ProductModels
 {
@@ -23,6 +25,9 @@ namespace backend.Models.ProductModels
 
         [Required]
         public int StockQuantity { get; set; }
+
+        [Required]
+        public int SellerId { get; set; }
 
 
         [Required]

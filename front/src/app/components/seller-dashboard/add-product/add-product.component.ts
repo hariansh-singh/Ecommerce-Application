@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductService } from '../../../../services/product.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-add-product',
@@ -11,13 +12,19 @@ import { CommonModule } from '@angular/common';
 })
 export class AddProductComponent {
   selectedFile: File | null = null;
-    router: any;
+  router: any;
+
+  authService = inject(AuthService)
+  userData:any = this.authService.decodedTokenData()
+
+  sellerId:any = this.userData['CustomerId']
 
   productForm: FormGroup = new FormGroup({
     ProductName: new FormControl('', [Validators.required]),
     ProductPrice: new FormControl('', [Validators.required]),
     Description: new FormControl('', [Validators.required]),
-    StockQuantity: new FormControl('', [Validators.required])
+    StockQuantity: new FormControl('', [Validators.required]),
+    SellerId: new FormControl(this.sellerId, [Validators.required])
   });
  
    imagePreview: string | undefined;
@@ -52,6 +59,7 @@ export class AddProductComponent {
     formData.append("ProductPrice", this.productForm.value.ProductPrice);
     formData.append("Description", this.productForm.value.Description);
     formData.append("StockQuantity", this.productForm.value.StockQuantity);
+    formData.append("SellerId", this.productForm.value.SellerId);
     formData.append("ProductImage", this.selectedFile, this.selectedFile.name);
 
    

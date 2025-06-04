@@ -83,6 +83,11 @@ namespace backend.Repositories.ProductRepository
             return await dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
         }
 
+        public async Task<List<ProductDBModel>?> GetSellerProducts(int sellerId)
+        {
+            return await dbContext.Products.Where(p => p.SellerId == sellerId).ToListAsync();
+        }
+
         public async Task<bool> UpdateProduct(int productId, ProductUIModel product)
         {
             var existingProduct = await dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == productId);

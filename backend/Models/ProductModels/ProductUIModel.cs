@@ -23,6 +23,9 @@ namespace backend.Models.ProductModels
 
 
         [Required]
+        public int SellerId { get; set; }
+
+        [Required]
         public IFormFile? ProductImage { get; set; }
     }
 }

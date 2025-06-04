@@ -39,6 +39,27 @@ namespace backend.Controllers
             });
         }
 
+        [HttpGet("myproducts/{sellerId}")]
+        [Authorize(Roles = "seller,admin")]
+        public async Task<IActionResult> GetSellerProducts(int sellerId)
+        {
+            var allProducts = await productRepository.GetSellerProducts(sellerId);
+            if (allProducts.IsNullOrEmpty())
+            {
+                return NotFound(new
+                {
+                    err = 1,
+                    msg = "No product found",
+                });
+            }
+            return Ok(new
+            {
+                err = 0,
+                msg = "Products fetched successfully",
+                data = allProducts,
+            });
+        }
+
 
         [HttpGet("{productId}")]
         public async Task<IActionResult> GetProductById(int productId)
@@ -62,7 +83,7 @@ namespace backend.Controllers
 
 
         [HttpPost]
-        //[Authorize(Roles = "seller")]
+        [Authorize(Roles = "seller")]
         public async Task<IActionResult> AddProduct([FromForm] ProductUIModel product)
         {
             var result = await productRepository.AddProduct(product);
@@ -83,7 +104,7 @@ namespace backend.Controllers
 
 
         [HttpPut("{productId}")]
-        //[Authorize(Roles = "seller")]
+        [Authorize(Roles = "seller")]
         public async Task<IActionResult> UpdateProduct(int productId, [FromForm] ProductUIModel product)
         {
             var result = await productRepository.UpdateProduct(productId, product);
@@ -100,7 +121,7 @@ namespace backend.Controllers
 
 
         [HttpDelete("{productId}")]
-        //[Authorize(Roles = "seller")]
+        [Authorize(Roles = "seller,admin")]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
             var result = await productRepository.DeleteProduct(productId);

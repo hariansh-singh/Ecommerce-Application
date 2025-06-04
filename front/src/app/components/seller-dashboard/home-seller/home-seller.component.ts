@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
-import { Router, RouterModule } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
+import { RouterModule } from '@angular/router';
 import { ProductService } from '../../../../services/product.service';
 import { CommonModule } from '@angular/common';
 
@@ -19,7 +18,11 @@ export class HomeSellerComponent implements OnInit {
   sortBy: string = 'productName';
   sortOrder: 'asc' | 'desc' = 'asc';
 
+  authService = inject(AuthService);
   productService = inject(ProductService);
+
+  userData:any = this.authService.decodedTokenData()
+  sellerId:number = this.userData['CustomerId']
 
   ngOnInit(): void {
     this.loadProducts();
@@ -27,7 +30,7 @@ export class HomeSellerComponent implements OnInit {
 
   loadProducts(): void {
     this.loading = true;
-    this.productService.getAllProducts()
+    this.productService.getSellerProducts(this.sellerId)
       .subscribe({
         next: (data: any) => {
           console.log("API Response:", data);
