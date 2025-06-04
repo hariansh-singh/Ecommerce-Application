@@ -3,6 +3,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ProductService } from '../../../../services/product.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services/auth.service';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-product',
@@ -12,7 +14,6 @@ import { AuthService } from '../../../../services/auth.service';
 })
 export class AddProductComponent {
   selectedFile: File | null = null;
-  router: any;
 
   authService = inject(AuthService)
   userData:any = this.authService.decodedTokenData()
@@ -31,7 +32,7 @@ export class AddProductComponent {
   imageName: any;
 
 
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService,private router: Router) {}
 
   handleFileUpload(event: any) {
   if (event.target.files.length > 0) {
@@ -44,10 +45,6 @@ export class AddProductComponent {
     }
   }
 }
-
-
-
-
   submitProduct() {
     if (!this.selectedFile) {
       console.error("Please select an image.");
@@ -66,6 +63,24 @@ export class AddProductComponent {
   this.productService.addProduct(formData).subscribe({
     next: (response) => {
       console.log("Product added successfully", response);
+
+      Swal.fire({
+        title: 'Product Added!',
+        text: 'Do you want to go to the dashboard or add another product?',
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonText: 'Go to Dashboard',
+        cancelButtonText: 'Add More Products'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/sellerdashboard']); // Navigate to Dashboard
+        } else {
+          this.productForm.reset(); // Clear Form
+          this.selectedFile = null;
+          this.imagePreview = undefined;
+          this.imageName = null;
+        }
+      });
     },
     error: (error) => console.error("Error adding product", error),
   });
