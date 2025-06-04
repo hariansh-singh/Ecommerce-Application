@@ -22,9 +22,9 @@
       </thead>
       <tbody>
         <tr *ngFor="let order of orders">
-          <td class="text-center">{{ order.orderID }}</td>
+          <td class="text-center">{{ order.orderId }}</td>
           <td>{{ order.orderDate | date:'medium' }}</td>
-          <td class="text-end text-success">{{ order.totalAmount | currency:'INR' }}</td>
+          <td class="text-end text-success">{{ order.totalPrice | currency:'INR' }}</td>
           <td class="text-center">
             <span class="badge px-3 py-2"
               [ngClass]="{
