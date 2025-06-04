@@ -22,6 +22,7 @@ export class HomeSellerComponent implements OnInit {
   productService = inject(ProductService);
 
   ngOnInit(): void {
+     window.scrollTo(0, 0); // Ensures the page opens from the top
     this.loadProducts();
   }
 

@@ -58,6 +58,7 @@ export class HomeAdminComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.fetchDashboardData();
+     window.scrollTo(0, 0); // Ensures the page opens from the top
   }
 
   ngAfterViewInit(): void {
