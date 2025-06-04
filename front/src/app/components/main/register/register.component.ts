@@ -1,19 +1,26 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services/auth.service';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthStateService } from '../../../../services/auth-state.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [RouterLink, ReactiveFormsModule, CommonModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrl: './register.component.css',
 })
 export class RegisterComponent {
-
   authService = inject(AuthService);
   authState = inject(AuthStateService);
   router = inject(Router);
@@ -21,33 +28,44 @@ export class RegisterComponent {
   isLoading = false;
   showPassword = false;
   showConfirmPassword = false;
-  headingText: string = "Create Account"; // Default heading
+  headingText: string = 'Create Account'; // Default heading
 
-  myForm: FormGroup = new FormGroup({
-    FirstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    LastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    Email: new FormControl('', [Validators.required, Validators.email]),
-    Password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    ConfirmPassword: new FormControl('', [Validators.required]),
-    Role: new FormControl('', [Validators.required]),  // Add this line
-    AgreeTerms: new FormControl(false, [Validators.requiredTrue])
-  }, { validators: this.passwordMatchValidator });
+  myForm: FormGroup = new FormGroup(
+    {
+      FirstName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(2),
+      ]),
+      LastName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(2),
+      ]),
+      Email: new FormControl('', [Validators.required, Validators.email]),
+      Password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
+      ConfirmPassword: new FormControl('', [Validators.required]),
+      Role: new FormControl('user', [Validators.required]), // Default to 'user'
+      AgreeTerms: new FormControl(false, [Validators.requiredTrue]),
+    },
+    { validators: this.passwordMatchValidator }
+  );
 
   constructor() {
     // Add input focus animations
     this.setupInputAnimations();
 
     // Listen for role changes and update heading
-    this.myForm.get('Role')?.valueChanges.subscribe(role => {
+    this.myForm.get('Role')?.valueChanges.subscribe((role) => {
       this.updateHeading(role);
     });
-
   }
 
   private setupInputAnimations(): void {
     setTimeout(() => {
       const inputs = document.querySelectorAll('.form-input');
-      inputs.forEach(input => {
+      inputs.forEach((input) => {
         input.addEventListener('focus', this.handleInputFocus);
         input.addEventListener('blur', this.handleInputBlur);
       });
@@ -58,7 +76,7 @@ export class RegisterComponent {
     const input = event.target as HTMLInputElement;
     const wrapper = input.closest('.input-wrapper');
     wrapper?.classList.add('focused');
-  }
+  };
 
   private handleInputBlur = (event: Event): void => {
     const input = event.target as HTMLInputElement;
@@ -66,14 +84,20 @@ export class RegisterComponent {
     if (!input.value) {
       wrapper?.classList.remove('focused');
     }
-  }
+  };
 
-  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  private passwordMatchValidator(
+    control: AbstractControl
+  ): ValidationErrors | null {
     const formGroup = control as FormGroup;
     const password = formGroup.get('Password');
     const confirmPassword = formGroup.get('ConfirmPassword');
 
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
+    if (
+      password &&
+      confirmPassword &&
+      password.value !== confirmPassword.value
+    ) {
       confirmPassword.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     }
@@ -100,9 +124,9 @@ export class RegisterComponent {
   }
 
   updateHeading(role: string): void {
-    this.headingText = role === 'seller' ? "Registering You As A Seller" : "Register";
+    this.headingText =
+      role === 'seller' ? 'Join as a Seller' : 'Create Account';
   }
-
 
   onSubmitRegister(): void {
     if (this.myForm.invalid) {
@@ -116,45 +140,55 @@ export class RegisterComponent {
       Name: `${this.myForm.value.FirstName + ' ' + this.myForm.value.LastName}`,
       Email: this.myForm.value.Email,
       Password: this.myForm.value.Password,
-      Role: this.myForm.value.Role  // Added Role for debugging
+      Role: this.myForm.value.Role,
     };
 
-    console.log("Role being sent:", formData.Role); // Debugging log
-    // delete formData.ConfirmPassword; 
-    // delete formData.AgreeTerms; 
+    console.log('Role being sent:', formData.Role);
 
-    this.authService.signUp(formData)
-      .subscribe({
-        next: (data: any) => {
-          this.isLoading = false;
-          console.log(data);
+    this.authService.signUp(formData).subscribe({
+      next: (data: any) => {
+        this.isLoading = false;
+        console.log(data);
 
-          if (data.err === 0) {
-            // Show success message with animation
-            this.showSuccessMessage();
-            alert(`Registration successful as ${formData.Role}!`); // Added role-based alert
-            // Navigate to login after successful registration
-            setTimeout(() => {
-              this.router.navigate(['/login'], {
-                queryParams: { registered: 'true' }
-              });
-            }, 2000);
-
-          } else {
-            console.error('Registration failed:', data.msg);
-            this.showErrorMessage(data.msg || 'Registration failed. Please try again.');
-          }
-        },
-        error: (err: any) => {
-          this.isLoading = false;
-          console.error('Error during registration:', err);
-          this.showErrorMessage('An error occurred. Please try again.');
+        if (data.err === 0) {
+          // Show success message with animation
+          this.showSuccessMessage();
+          Swal.fire({
+            icon: 'success',
+            title: `Registration successful as ${formData.Role}!`,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+          });
+          // Navigate to login after successful registration
+          setTimeout(() => {
+            this.router.navigate(['/login'], {
+              queryParams: { registered: 'true' },
+            });
+          }, 2000);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration failed',
+            text: data.msg || 'Please try again.',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+          });
         }
-      });
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        console.error('Error during registration:', err);
+        this.showErrorMessage('An error occurred. Please try again.');
+      },
+    });
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.myForm.controls).forEach(key => {
+    Object.keys(this.myForm.controls).forEach((key) => {
       const control = this.myForm.get(key);
       control?.markAsTouched();
     });
@@ -227,6 +261,10 @@ export class RegisterComponent {
 
   get confirmPasswordControl() {
     return this.myForm.get('ConfirmPassword');
+  }
+
+  get roleControl() {
+    return this.myForm.get('Role');
   }
 
   get agreeTermsControl() {

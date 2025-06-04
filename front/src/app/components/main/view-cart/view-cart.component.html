@@ -290,6 +290,21 @@
               </div>
             </div>
 
+            <!-- Shipping Address Section -->
+            <div class="address-section">
+              <h5>Shipping Address</h5>
+              <div class="form-floating mb-3">
+                <textarea
+                  class="form-control"
+                  id="shippingAddress"
+                  placeholder="Enter your complete address"
+                  [(ngModel)]="shippingAddress"
+                  style="height: 100px"
+                ></textarea>
+                <label for="shippingAddress">Complete Address</label>
+              </div>
+            </div>
+
             <!-- Place Order Button -->
             <button
               class="btn btn-primary checkout-btn"

@@ -1,14 +1,19 @@
-<!-- Enhanced Login Component -->
+<!-- Modern Bright Login Component -->
 <section class="login-section">
   <div class="container">
     <!-- Header Section -->
     <div class="row">
       <div class="col-12 text-center header-section">
         <div class="login-header">
+          <div class="logo-container">
+            <div class="logo-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+          </div>
           <h2 class="login-title">Welcome Back</h2>
           <p class="login-subtitle">
-            Don't have an account? 
-            <a class="signup-link" routerLink="/register">Create one here</a>
+            Ready to continue your journey? 
+            <a class="signup-link" routerLink="/register">Join us instead</a>
           </p>
         </div>
       </div>
@@ -23,6 +28,11 @@
             <!-- Login Form -->
             <div class="col-12 col-lg-5">
               <div class="form-container">
+                <div class="form-header">
+                  <h3 class="form-title">Sign In</h3>
+                  <p class="form-subtitle">Enter your credentials to access your account</p>
+                </div>
+                
                 <form [formGroup]="myForm" (ngSubmit)="onSubmitLogin()" class="login-form">
                   
                   <!-- Email Field -->
@@ -40,10 +50,15 @@
                       <div class="input-icon">
                         <i class="fas fa-envelope"></i>
                       </div>
+                      <div class="input-border"></div>
                     </div>
                     <div class="error-message" *ngIf="myForm.get('Email')?.invalid && myForm.get('Email')?.touched">
-                      <small *ngIf="myForm.get('Email')?.errors?.['required']">Email is required</small>
-                      <small *ngIf="myForm.get('Email')?.errors?.['email']">Please enter a valid email</small>
+                      <small *ngIf="myForm.get('Email')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Email is required
+                      </small>
+                      <small *ngIf="myForm.get('Email')?.errors?.['email']">
+                        <i class="fas fa-exclamation-triangle"></i> Please enter a valid email
+                      </small>
                     </div>
                   </div>
 
@@ -62,9 +77,12 @@
                       <div class="input-icon">
                         <i class="fas fa-lock"></i>
                       </div>
+                      <div class="input-border"></div>
                     </div>
                     <div class="error-message" *ngIf="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
-                      <small *ngIf="myForm.get('Password')?.errors?.['required']">Password is required</small>
+                      <small *ngIf="myForm.get('Password')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Password is required
+                      </small>
                     </div>
                   </div>
 
@@ -73,11 +91,16 @@
                     <div class="checkbox-wrapper">
                       <input class="custom-checkbox" type="checkbox" id="remember_me">
                       <label class="checkbox-label" for="remember_me">
-                        <span class="checkmark"></span>
+                        <span class="checkmark">
+                          <i class="fas fa-check"></i>
+                        </span>
                         Remember me
                       </label>
                     </div>
-                    <a class="forgot-link">Forgot password?</a>
+                    <a class="forgot-link">
+                      <i class="fas fa-key"></i>
+                      Forgot password?
+                    </a>
                   </div>
 
                   <!-- Submit Button -->
@@ -85,12 +108,16 @@
                     <button 
                       class="login-btn" 
                       type="submit" 
-                      [disabled]="myForm.invalid"
+                      [disabled]="isLoading"
                       [class.loading]="isLoading">
-                      <span class="btn-text">Sign In</span>
+                      <span class="btn-text">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                      </span>
                       <div class="btn-loader" *ngIf="isLoading">
                         <div class="spinner"></div>
                       </div>
+                      <div class="btn-shine"></div>
                     </button>
                   </div>
                 </form>
@@ -101,7 +128,9 @@
             <div class="col-12 col-lg-2 divider-section">
               <div class="divider-container">
                 <div class="divider-line"></div>
-                <span class="divider-text">or</span>
+                <div class="divider-text">
+                  <i class="fas fa-grip-lines-vertical"></i>
+                </div>
                 <div class="divider-line"></div>
               </div>
             </div>
@@ -109,28 +138,72 @@
             <!-- Social Login -->
             <div class="col-12 col-lg-5">
               <div class="social-container">
-                <h6 class="social-title">Continue with</h6>
+                <div class="social-header">
+                  <h6 class="social-title">Quick Access</h6>
+                  <p class="social-subtitle">Continue with your favorite platform</p>
+                </div>
+                
                 <div class="social-buttons">
                   <button class="social-btn google-btn">
                     <div class="social-icon">
                       <i class="fab fa-google"></i>
                     </div>
-                    <span>Google</span>
+                    <div class="social-content">
+                      <span class="social-name">Google</span>
+                      <small class="social-desc">Sign in with Google</small>
+                    </div>
+                    <div class="social-arrow">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
                   </button>
                   
                   <button class="social-btn apple-btn">
                     <div class="social-icon">
                       <i class="fab fa-apple"></i>
                     </div>
-                    <span>Apple</span>
+                    <div class="social-content">
+                      <span class="social-name">Apple</span>
+                      <small class="social-desc">Sign in with Apple ID</small>
+                    </div>
+                    <div class="social-arrow">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
                   </button>
                   
-                  <button class="social-btn facebook-btn">
+                  <button class="social-btn microsoft-btn">
                     <div class="social-icon">
-                      <i class="fab fa-facebook-f"></i>
+                      <i class="fab fa-microsoft"></i>
                     </div>
-                    <span>Facebook</span>
+                    <div class="social-content">
+                      <span class="social-name">Microsoft</span>
+                      <small class="social-desc">Sign in with Microsoft</small>
+                    </div>
+                    <div class="social-arrow">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
                   </button>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                  <div class="stat-item">
+                    <div class="stat-icon">
+                      <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <span>Secure Login</span>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-icon">
+                      <i class="fas fa-clock"></i>
+                    </div>
+                    <span>Quick Access</span>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-icon">
+                      <i class="fas fa-users"></i>
+                    </div>
+                    <span>Trusted by 10K+</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -140,10 +213,17 @@
     </div>
   </div>
 
-  <!-- Background Elements -->
+  <!-- Animated Background Elements -->
   <div class="bg-elements">
-    <div class="bg-circle circle-1"></div>
-    <div class="bg-circle circle-2"></div>
-    <div class="bg-circle circle-3"></div>
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+    <div class="bg-shape shape-4"></div>
+    <div class="floating-icons">
+      <i class="fas fa-bolt icon-1"></i>
+      <i class="fas fa-star icon-2"></i>
+      <i class="fas fa-heart icon-3"></i>
+      <i class="fas fa-gem icon-4"></i>
+    </div>
   </div>
 </section>

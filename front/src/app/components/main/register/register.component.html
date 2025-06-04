@@ -1,13 +1,18 @@
-<!-- Enhanced Register Component -->
+<!-- Modern Bright Register Component -->
 <section class="register-section">
   <div class="container">
     <!-- Header Section -->
     <div class="row">
       <div class="col-12 text-center header-section">
         <div class="register-header">
+          <div class="logo-container">
+            <div class="logo-icon">
+              <i class="fas fa-user-plus"></i>
+            </div>
+          </div>
           <h2 class="register-title">{{ headingText }}</h2>
           <p class="register-subtitle">
-            Already have an account?
+            Already have an account? 
             <a class="signin-link" routerLink="/login">Sign in here</a>
           </p>
         </div>
@@ -19,31 +24,45 @@
       <div class="col-12 col-lg-10 col-xl-9">
         <div class="register-container">
           <div class="row gy-4 justify-content-center align-items-center">
-
+            
             <!-- Registration Form -->
             <div class="col-12 col-lg-6">
               <div class="form-container">
+                <div class="form-header">
+                  <h3 class="form-title">Create Your Account</h3>
+                  <p class="form-subtitle">Fill in your details to get started</p>
+                </div>
+                
                 <form [formGroup]="myForm" (ngSubmit)="onSubmitRegister()" class="register-form">
-
+                  
                   <!-- Name Fields Row -->
                   <div class="row gy-3">
                     <!-- First Name Field -->
                     <div class="col-12 col-md-6">
                       <div class="form-group">
                         <div class="input-wrapper">
-                          <input type="text" class="form-input" id="firstName" placeholder=" "
-                            formControlName="FirstName" required
+                          <input 
+                            type="text" 
+                            class="form-input" 
+                            id="firstName" 
+                            placeholder=" "
+                            formControlName="FirstName" 
+                            required
                             [class.error]="myForm.get('FirstName')?.invalid && myForm.get('FirstName')?.touched">
                           <label for="firstName" class="form-label">First Name</label>
                           <div class="input-icon">
                             <i class="fas fa-user"></i>
                           </div>
+                          <div class="input-border"></div>
                         </div>
-                        <div class="error-message"
+                        <div class="error-message" 
                           *ngIf="myForm.get('FirstName')?.invalid && myForm.get('FirstName')?.touched">
-                          <small *ngIf="myForm.get('FirstName')?.errors?.['required']">First name is required</small>
-                          <small *ngIf="myForm.get('FirstName')?.errors?.['minlength']">First name must be at least 2
-                            characters</small>
+                          <small *ngIf="myForm.get('FirstName')?.errors?.['required']">
+                            <i class="fas fa-exclamation-triangle"></i> First name is required
+                          </small>
+                          <small *ngIf="myForm.get('FirstName')?.errors?.['minlength']">
+                            <i class="fas fa-exclamation-triangle"></i> First name must be at least 2 characters
+                          </small>
                         </div>
                       </div>
                     </div>
@@ -52,18 +71,28 @@
                     <div class="col-12 col-md-6">
                       <div class="form-group">
                         <div class="input-wrapper">
-                          <input type="text" class="form-input" id="lastName" placeholder=" " formControlName="LastName"
-                            required [class.error]="myForm.get('LastName')?.invalid && myForm.get('LastName')?.touched">
+                          <input 
+                            type="text" 
+                            class="form-input" 
+                            id="lastName" 
+                            placeholder=" " 
+                            formControlName="LastName"
+                            required 
+                            [class.error]="myForm.get('LastName')?.invalid && myForm.get('LastName')?.touched">
                           <label for="lastName" class="form-label">Last Name</label>
                           <div class="input-icon">
                             <i class="fas fa-user"></i>
                           </div>
+                          <div class="input-border"></div>
                         </div>
                         <div class="error-message"
                           *ngIf="myForm.get('LastName')?.invalid && myForm.get('LastName')?.touched">
-                          <small *ngIf="myForm.get('LastName')?.errors?.['required']">Last name is required</small>
-                          <small *ngIf="myForm.get('LastName')?.errors?.['minlength']">Last name must be at least 2
-                            characters</small>
+                          <small *ngIf="myForm.get('LastName')?.errors?.['required']">
+                            <i class="fas fa-exclamation-triangle"></i> Last name is required
+                          </small>
+                          <small *ngIf="myForm.get('LastName')?.errors?.['minlength']">
+                            <i class="fas fa-exclamation-triangle"></i> Last name must be at least 2 characters
+                          </small>
                         </div>
                       </div>
                     </div>
@@ -72,24 +101,40 @@
                   <!-- Email Field -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input type="email" class="form-input" id="email" placeholder=" " formControlName="Email" required
+                      <input 
+                        type="email" 
+                        class="form-input" 
+                        id="email" 
+                        placeholder=" " 
+                        formControlName="Email" 
+                        required
                         [class.error]="myForm.get('Email')?.invalid && myForm.get('Email')?.touched">
                       <label for="email" class="form-label">Email Address</label>
                       <div class="input-icon">
                         <i class="fas fa-envelope"></i>
                       </div>
+                      <div class="input-border"></div>
                     </div>
                     <div class="error-message" *ngIf="myForm.get('Email')?.invalid && myForm.get('Email')?.touched">
-                      <small *ngIf="myForm.get('Email')?.errors?.['required']">Email is required</small>
-                      <small *ngIf="myForm.get('Email')?.errors?.['email']">Please enter a valid email</small>
+                      <small *ngIf="myForm.get('Email')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Email is required
+                      </small>
+                      <small *ngIf="myForm.get('Email')?.errors?.['email']">
+                        <i class="fas fa-exclamation-triangle"></i> Please enter a valid email
+                      </small>
                     </div>
                   </div>
 
                   <!-- Password Field -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input [type]="showPassword ? 'text' : 'password'" class="form-input" id="password"
-                        placeholder=" " formControlName="Password" required
+                      <input 
+                        [type]="showPassword ? 'text' : 'password'" 
+                        class="form-input" 
+                        id="password"
+                        placeholder=" " 
+                        formControlName="Password" 
+                        required
                         [class.error]="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
                       <label for="password" class="form-label">Password</label>
                       <div class="input-icon">
@@ -98,20 +143,29 @@
                       <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
                         <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                       </button>
+                      <div class="input-border"></div>
                     </div>
                     <div class="error-message"
                       *ngIf="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
-                      <small *ngIf="myForm.get('Password')?.errors?.['required']">Password is required</small>
-                      <small *ngIf="myForm.get('Password')?.errors?.['minlength']">Password must be at least 6
-                        characters</small>
+                      <small *ngIf="myForm.get('Password')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Password is required
+                      </small>
+                      <small *ngIf="myForm.get('Password')?.errors?.['minlength']">
+                        <i class="fas fa-exclamation-triangle"></i> Password must be at least 6 characters
+                      </small>
                     </div>
                   </div>
 
                   <!-- Confirm Password Field -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-input" id="confirmPassword"
-                        placeholder=" " formControlName="ConfirmPassword" required
+                      <input 
+                        [type]="showConfirmPassword ? 'text' : 'password'" 
+                        class="form-input" 
+                        id="confirmPassword"
+                        placeholder=" " 
+                        formControlName="ConfirmPassword" 
+                        required
                         [class.error]="myForm.get('ConfirmPassword')?.invalid && myForm.get('ConfirmPassword')?.touched">
                       <label for="confirmPassword" class="form-label">Confirm Password</label>
                       <div class="input-icon">
@@ -120,64 +174,81 @@
                       <button type="button" class="password-toggle" (click)="toggleConfirmPasswordVisibility()">
                         <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                       </button>
+                      <div class="input-border"></div>
                     </div>
                     <div class="error-message"
                       *ngIf="myForm.get('ConfirmPassword')?.invalid && myForm.get('ConfirmPassword')?.touched">
-                      <small *ngIf="myForm.get('ConfirmPassword')?.errors?.['required']">Please confirm your
-                        password</small>
-                      <small *ngIf="myForm.get('ConfirmPassword')?.errors?.['passwordMismatch']">Passwords do not
-                        match</small>
+                      <small *ngIf="myForm.get('ConfirmPassword')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Please confirm your password
+                      </small>
+                      <small *ngIf="myForm.get('ConfirmPassword')?.errors?.['passwordMismatch']">
+                        <i class="fas fa-exclamation-triangle"></i> Passwords do not match
+                      </small>
                     </div>
                   </div>
 
-
-
-                  <!-- Role Selection -->
-                  <!-- <div class="form-floating mb-3">
-                    <select class="form-control border-bottom rounded-0" id="role" formControlName="Role"
-                      (change)="setRole($event)">
-                      <option value="user" selected>Buyer</option>
-                      <option value="seller">Seller</option>
-                    </select>
-                    <label for="role">Register As</label>
-                  </div> -->
-
-                  <!-- Role Selection -->
-                  <div class="form-group role-selection">
+                  <!-- Enhanced Role Selection Dropdown -->
+                  <div class="form-group">
                     <div class="input-wrapper">
-                      <select class="form-input role-dropdown" id="role" formControlName="Role"
-                        (change)="setRole($event)">
-                        <option value="user" selected>Buyer</option>
-                        <option value="seller">Seller</option>
+                      <select 
+                        class="form-input role-select" 
+                        id="role" 
+                        formControlName="Role"
+                        (change)="setRole($event)"
+                        required
+                        [class.error]="myForm.get('Role')?.invalid && myForm.get('Role')?.touched">
+                        <option value="" disabled>Choose your account type</option>
+                        <option value="buyer">Join as Buyer</option>
+                        <option value="seller">Join as Seller</option>
                       </select>
-                      <label for="role" class="form-label role-label">Register As</label>
+                      <label for="role" class="form-label role-label">Account Type</label>
+                      <div class="input-icon">
+                        <i class="fas fa-users"></i>
+                      </div>
+                      <div class="input-border"></div>
+                    </div>
+                    <div class="error-message"
+                      *ngIf="myForm.get('Role')?.invalid && myForm.get('Role')?.touched">
+                      <small *ngIf="myForm.get('Role')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Please select an account type
+                      </small>
                     </div>
                   </div>
-
 
                   <!-- Terms & Conditions -->
                   <div class="form-group">
                     <div class="checkbox-wrapper">
                       <input class="custom-checkbox" type="checkbox" id="agree_terms" formControlName="AgreeTerms">
                       <label class="checkbox-label" for="agree_terms">
-                        <span class="checkmark"></span>
-                        I agree to the <a href="#" class="terms-link">Terms & Conditions</a> and <a href="#"
-                          class="terms-link">Privacy Policy</a>
+                        <span class="checkmark">
+                          <i class="fas fa-check"></i>
+                        </span>
+                        I agree to the <a href="#" class="terms-link">Terms & Conditions</a> and <a href="#" class="terms-link">Privacy Policy</a>
                       </label>
                     </div>
                     <div class="error-message"
                       *ngIf="myForm.get('AgreeTerms')?.invalid && myForm.get('AgreeTerms')?.touched">
-                      <small>You must agree to the terms and conditions</small>
+                      <small>
+                        <i class="fas fa-exclamation-triangle"></i> You must agree to the terms and conditions
+                      </small>
                     </div>
                   </div>
 
                   <!-- Submit Button -->
                   <div class="submit-section">
-                    <button class="register-btn" type="submit" [disabled]="myForm.invalid" [class.loading]="isLoading">
-                      <span class="btn-text">Create Account</span>
+                    <button 
+                      class="register-btn" 
+                      type="submit" 
+                      [disabled]="myForm.invalid || isLoading" 
+                      [class.loading]="isLoading">
+                      <span class="btn-text">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                      </span>
                       <div class="btn-loader" *ngIf="isLoading">
                         <div class="spinner"></div>
                       </div>
+                      <div class="btn-shine"></div>
                     </button>
                   </div>
                 </form>
@@ -188,7 +259,9 @@
             <div class="col-12 col-lg-1 divider-section">
               <div class="divider-container">
                 <div class="divider-line"></div>
-                <span class="divider-text">or</span>
+                <div class="divider-text">
+                  <i class="fas fa-grip-lines-vertical"></i>
+                </div>
                 <div class="divider-line"></div>
               </div>
             </div>
@@ -196,51 +269,83 @@
             <!-- Social Registration -->
             <div class="col-12 col-lg-5">
               <div class="social-container">
-                <h6 class="social-title">Quick Sign Up</h6>
+                <div class="social-header">
+                  <h6 class="social-title">Quick Sign Up</h6>
+                  <p class="social-subtitle">Get started instantly with your favorite platform</p>
+                </div>
+                
                 <div class="social-buttons">
                   <button class="social-btn google-btn">
                     <div class="social-icon">
                       <i class="fab fa-google"></i>
                     </div>
-                    <span>Continue with Google</span>
+                    <div class="social-content">
+                      <span class="social-name">Google</span>
+                      <small class="social-desc">Continue with Google</small>
+                    </div>
+                    <div class="social-arrow">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
                   </button>
-
+                  
                   <button class="social-btn apple-btn">
                     <div class="social-icon">
                       <i class="fab fa-apple"></i>
                     </div>
-                    <span>Continue with Apple</span>
+                    <div class="social-content">
+                      <span class="social-name">Apple</span>
+                      <small class="social-desc">Continue with Apple ID</small>
+                    </div>
+                    <div class="social-arrow">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
                   </button>
-
+                  
                   <button class="social-btn facebook-btn">
                     <div class="social-icon">
                       <i class="fab fa-facebook-f"></i>
                     </div>
-                    <span>Continue with Facebook</span>
+                    <div class="social-content">
+                      <span class="social-name">Facebook</span>
+                      <small class="social-desc">Continue with Facebook</small>
+                    </div>
+                    <div class="social-arrow">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
                   </button>
                 </div>
 
                 <!-- Features List -->
                 <div class="features-list">
-                  <h6 class="features-title">Why join us?</h6>
-                  <ul class="features">
-                    <li class="feature-item">
-                      <i class="fas fa-check-circle"></i>
+                  <div class="feature-header">
+                    <h6 class="features-title">Why join us?</h6>
+                  </div>
+                  <div class="features">
+                    <div class="feature-item">
+                      <div class="feature-icon">
+                        <i class="fas fa-check-circle"></i>
+                      </div>
                       <span>Free account setup</span>
-                    </li>
-                    <li class="feature-item">
-                      <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-item">
+                      <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                      </div>
                       <span>Secure data protection</span>
-                    </li>
-                    <li class="feature-item">
-                      <i class="fas fa-users"></i>
+                    </div>
+                    <div class="feature-item">
+                      <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                      </div>
                       <span>Join our community</span>
-                    </li>
-                    <li class="feature-item">
-                      <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="feature-item">
+                      <div class="feature-icon">
+                        <i class="fas fa-rocket"></i>
+                      </div>
                       <span>Access premium features</span>
-                    </li>
-                  </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -250,11 +355,17 @@
     </div>
   </div>
 
-  <!-- Background Elements -->
+  <!-- Animated Background Elements -->
   <div class="bg-elements">
-    <div class="bg-circle circle-1"></div>
-    <div class="bg-circle circle-2"></div>
-    <div class="bg-circle circle-3"></div>
-    <div class="bg-circle circle-4"></div>
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+    <div class="bg-shape shape-4"></div>
+    <div class="floating-icons">
+      <i class="fas fa-user-plus icon-1"></i>
+      <i class="fas fa-star icon-2"></i>
+      <i class="fas fa-heart icon-3"></i>
+      <i class="fas fa-gem icon-4"></i>
+    </div>
   </div>
 </section>
