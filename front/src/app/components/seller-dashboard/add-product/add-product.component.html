@@ -20,6 +20,15 @@
               <div class="form-container">
                 <form [formGroup]="productForm" (ngSubmit)="submitProduct()" enctype="multipart/form-data">
 
+                  <!-- Product Category -->
+                  <div class="form-group">
+                    <div class="input-wrapper">
+                      <input type="text" class="form-input" id="productCategory" placeholder=" "
+                        formControlName="ProductCategory" required>
+                      <label for="productCategory" class="form-label">Product Category</label>
+                    </div>
+                  </div>
+
                   <!-- Product Name -->
                   <div class="form-group">
                     <div class="input-wrapper">
