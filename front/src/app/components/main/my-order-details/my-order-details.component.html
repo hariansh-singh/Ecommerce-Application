@@ -28,11 +28,11 @@
           <td class="text-center">
             <span class="badge px-3 py-2"
               [ngClass]="{
-                'bg-success': order.status === 'Delivered',
-                'bg-warning': order.status === 'Pending',
-                'bg-danger': order.status === 'Cancelled'
+                'bg-success': order.orderStatus === 'Delivered',
+                'bg-warning': order.orderStatus === 'Preparing',
+                'bg-danger': order.orderStatus === 'Cancelled'
               }">
-              {{ order.status }}
+              {{ order.orderStatus }}
             </span>
           </td>
           <td>{{ order.paymentMethod }}</td>

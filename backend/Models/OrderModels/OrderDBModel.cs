@@ -33,6 +33,9 @@ namespace backend.Models.OrderModels
         public string? PaymentMethod { get; set; }
 
         [Required]
+        public string? OrderStatus { get; set; } = "Preparing";
+
+        [Required]
         public ICollection<OrderItemDBModel>? OrderItems { get; set; }
 
         [JsonIgnore]

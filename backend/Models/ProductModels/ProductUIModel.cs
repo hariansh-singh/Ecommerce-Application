@@ -5,6 +5,8 @@ namespace backend.Models.ProductModels
 {
     public class ProductUIModel
     {
+        [Required]
+        public string? ProductCategory { get; set; }
 
         [Required]
         public string? ProductName { get; set; }
