@@ -102,12 +102,7 @@ namespace backend.Repositories.OrderRepository
             }
         }
 
-        //public async Task<OrderDBModel?> GetOrderById(int orderId)
-        //{
-        //    return await dbContext.Orders
-        //        .Include(o => o.OrderItems) // Include associated OrderItems
-        //        .FirstOrDefaultAsync(o => o.OrderId == orderId);
-        //}
+        
 
         public async Task<List<OrderDBModel>> GetAllOrders()
         {

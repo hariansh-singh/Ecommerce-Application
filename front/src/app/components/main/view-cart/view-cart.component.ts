@@ -181,7 +181,6 @@ export class ViewCartComponent implements OnInit {
       shippingAddress: this.shippingAddress, // In a real app, get this from a form
       paymentMethod: this.selectedPayment,
       orderItems: this.cartItems.map((item) => ({
-        orderId: 0,
         productId: item.productId,
         quantity: item.quantity,
         unitPrice: item.products.productPrice

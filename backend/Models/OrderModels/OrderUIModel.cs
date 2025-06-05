@@ -24,6 +24,9 @@ namespace backend.Models.OrderModels
         public string? ShippingAddress { get; set; }
 
         [Required]
+        public string? PaymentMethod { get; set; }
+
+        [Required]
         public List<OrderItemUIModel> OrderItems { get; set; } = new List<OrderItemUIModel>();
     }
 }
