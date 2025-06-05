@@ -115,7 +115,8 @@ namespace backend.Repositories.OrderRepository
         public async Task<List<OrderDBModel>> GetOrdersById(int customerId)
         {
             return await dbContext.Orders
-                .Include(o => o.OrderItems) // Include associated OrderItems
+                .Include(o => o.OrderItems!) // Include associated OrderItems
+                    .ThenInclude(oi => oi.Products) // Include Product details for each OrderItem
                 .Where(o => o.CustomerId == customerId)
                 .ToListAsync();
         }
