@@ -35,6 +35,7 @@ export class RegisterComponent {
       FirstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
       LastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
       Email: new FormControl('', [Validators.required, Validators.email]),
+      PhoneNumber: new FormControl('', [Validators.required]), // Assuming 10-digit phone number
       Password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       ConfirmPassword: new FormControl('', [Validators.required]),
       Role: new FormControl('user', [Validators.required]), // Default to 'user'
@@ -152,6 +153,7 @@ export class RegisterComponent {
     const formData = {
       Name: `${this.myForm.value.FirstName + ' ' + this.myForm.value.LastName}`,
       Email: this.myForm.value.Email,
+      PhoneNumber: this.myForm.value.PhoneNumber,
       Password: this.myForm.value.Password,
       Role: this.myForm.value.Role,
     };
