@@ -27,7 +27,7 @@ export class ProductService {
   getSellerProducts(sellerId: number) {
     const headers = new HttpHeaders().set(
       'Authorization',
-      `Bearer ${localStorage.getItem('token')}`
+      `Bearer ${localStorage.getItem('token') || sessionStorage.getItem("token")}`
     );
     return this.http.get(`${this.API_URL}/api/Product/myproducts/${sellerId}`, { headers });
   }
