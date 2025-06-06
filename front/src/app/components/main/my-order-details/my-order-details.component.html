@@ -2,20 +2,34 @@
   <!-- Header -->
   <div class="page-header">
     <h1 class="page-title">My Orders</h1>
-    <p class="welcome-text">Hello, <span class="user-name">{{ name }}</span></p>
+    <p class="welcome-text">
+      Hello, <span class="user-name">{{ name }}</span>
+    </p>
   </div>
 
   <!-- Empty State -->
   <div *ngIf="orders.length === 0" class="empty-state">
     <div class="empty-icon">
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+      <svg
+        width="64"
+        height="64"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+      >
         <circle cx="9" cy="21" r="1"></circle>
         <circle cx="20" cy="21" r="1"></circle>
-        <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        <path
+          d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+        ></path>
       </svg>
     </div>
     <h2>No orders found</h2>
-    <p>You haven't placed any orders yet. Start shopping to see your order history here.</p>
+    <p>
+      You haven't placed any orders yet. Start shopping to see your order
+      history here.
+    </p>
   </div>
 
   <!-- Orders List -->
@@ -25,16 +39,23 @@
     </div>
 
     <div class="order-cards">
-      <div *ngFor="let order of orders; trackBy: trackByOrderId" class="order-card">
-        
+      <div
+        *ngFor="let order of orders; trackBy: trackByOrderId"
+        class="order-card"
+      >
         <!-- Order Header -->
         <div class="order-card-header">
           <div class="order-main-info">
             <h3 class="order-number">Order #{{ order.orderId }}</h3>
-            <span class="order-date">{{ order.orderDate | date:'MMM dd, yyyy' }}</span>
+            <span class="order-date">{{
+              order.orderDate | date : "MMM dd, yyyy"
+            }}</span>
           </div>
           <div class="order-status-container">
-            <span class="order-status" [ngClass]="'status-' + order.orderStatus.toLowerCase()">
+            <span
+              class="order-status"
+              [ngClass]="'status-' + order.orderStatus.toLowerCase()"
+            >
               {{ order.orderStatus }}
             </span>
           </div>
@@ -44,7 +65,9 @@
         <div class="order-details-grid">
           <div class="detail-item">
             <span class="detail-label">Total</span>
-            <span class="detail-value total-price">{{ order.totalPrice | currency:'INR':'symbol':'1.0-0' }}</span>
+            <span class="detail-value total-price">{{
+              order.totalPrice | currency : "INR" : "symbol" : "1.0-0"
+            }}</span>
           </div>
           <div class="detail-item">
             <span class="detail-label">Payment</span>
@@ -59,21 +82,48 @@
         <!-- Order Items -->
         <div class="order-items-section">
           <div class="items-header">
-            <h4>Items ({{ order.orderItems.length }})</h4>
+            <h4>
+              <button
+                class="btn btn-light"
+                (click)="order.showItems = !order.showItems"
+              >
+                {{ order.showItems ? "▼ Hide Items" : "▶ Show Items" }} ({{
+                  order.orderItems.length
+                }})
+              </button>
+            </h4>
           </div>
-          <div class="items-list">
-            <div *ngFor="let item of order.orderItems; trackBy: trackByItemId" class="item">
+
+          <div class="items-list" *ngIf="order.showItems">
+            <div
+              *ngFor="let item of order.orderItems; trackBy: trackByItemId"
+              class="item"
+            >
               <div class="item-details">
-                <span class="item-name">Product #{{ item.productId }}</span>
+                <img
+                  class="cart-item-image"
+                  [src]="
+                    'https://localhost:7116/' + item.products?.productImagePath
+                  "
+                  alt="Product Image"
+                />
+                <br />
+                <a
+                  class="item-name text-decoration-none"
+                  [routerLink]="['/product', item.productId]"
+                  >Product {{ item.products?.productName }}</a
+                >
                 <span class="item-quantity">Qty: {{ item.quantity }}</span>
               </div>
               <div class="item-price">
-                <span class="price">{{ (item.quantity * item.unitPrice) | currency:'INR':'symbol':'1.0-0' }}</span>
+                <span class="price">{{
+                  item.quantity * item.unitPrice
+                    | currency : "INR" : "symbol" : "1.0-0"
+                }}</span>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
