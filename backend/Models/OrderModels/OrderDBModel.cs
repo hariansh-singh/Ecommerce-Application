@@ -29,10 +29,14 @@ namespace backend.Models.OrderModels
         [Required]
         public string? ShippingAddress { get; set; }
 
+        [Required]
+        public string? PaymentMethod { get; set; }
+
+        [Required]
+        public string? OrderStatus { get; set; } = "Preparing";
 
         [Required]
         public ICollection<OrderItemDBModel>? OrderItems { get; set; }
-
 
         [JsonIgnore]
         [ForeignKey(nameof(CustomerId))]

@@ -131,7 +131,7 @@ export class ShopComponent implements OnInit, OnChanges {
           id: product.id || product.productId,
           name: product.name || product.productName || 'Unnamed Product',
           price: product.price || product.productPrice || 0,
-          category: product.category || 'Uncategorized',
+          category: product.productCategory || 'Uncategorized',
           description: product.description || '',
           productImagePath: product.productImagePath || product.imageUrl || '',
         }));

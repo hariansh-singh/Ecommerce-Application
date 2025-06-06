@@ -21,6 +21,7 @@ export class AddProductComponent {
   sellerId:any = this.userData['CustomerId']
 
   productForm: FormGroup = new FormGroup({
+    ProductCategory: new FormControl('', [Validators.required]),
     ProductName: new FormControl('', [Validators.required]),
     ProductPrice: new FormControl('', [Validators.required]),
     Description: new FormControl('', [Validators.required]),
@@ -52,6 +53,7 @@ export class AddProductComponent {
     }
 
     const formData = new FormData();
+    formData.append("ProductCategory", this.productForm.value.ProductCategory);
     formData.append("ProductName", this.productForm.value.ProductName);
     formData.append("ProductPrice", this.productForm.value.ProductPrice);
     formData.append("Description", this.productForm.value.Description);

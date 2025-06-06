@@ -10,6 +10,8 @@ namespace backend.Models.ProductModels
         [Key]
         public int ProductId { get; set; }
 
+        [Required]
+        public string? ProductCategory { get; set; }
 
         [Required]
         public string? ProductName { get; set; }

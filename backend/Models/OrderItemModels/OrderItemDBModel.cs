@@ -34,7 +34,7 @@ namespace backend.Models.OrderItemModels
         public OrderDBModel? Orders { get; set; }
 
 
-        [JsonIgnore]
+        //[JsonIgnore]
         [ForeignKey(nameof(ProductId))]
         public ProductDBModel? Products { get; set; }
     }
