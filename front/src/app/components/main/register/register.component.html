@@ -185,9 +185,9 @@
                   <div *ngIf="myForm.get('Role')?.value === 'seller'">
                     <div class="form-group">
                       <div class="input-wrapper">
+                        <input type="text" id="storeName" class="form-input" formControlName="StoreName" placeholder=" "
+                          required [class.error]="myForm.get('StoreName')?.invalid && myForm.get('StoreName')?.touched">
                         <label for="storeName" class="form-label">Store Name</label>
-                        <input id="storeName" class="form-input" formControlName="StoreName" type="text" required
-                          [class.error]="myForm.get('StoreName')?.invalid && myForm.get('StoreName')?.touched" />
                         <div class="input-icon">
                           <i class="fas fa-store"></i>
                         </div>
@@ -201,10 +201,10 @@
 
                     <div class="form-group">
                       <div class="input-wrapper">
+                        <input type="text" id="gstNumber" class="form-input" formControlName="GSTNumber" placeholder=" "
+                          required pattern="\d{15}"
+                          [class.error]="myForm.get('GSTNumber')?.invalid && myForm.get('GSTNumber')?.touched">
                         <label for="gstNumber" class="form-label">GST Number</label>
-                        <input id="gstNumber" class="form-input" formControlName="GSTNumber" type="text" required
-                          pattern="\d{15}"
-                          [class.error]="myForm.get('GSTNumber')?.invalid && myForm.get('GSTNumber')?.touched" />
                         <div class="input-icon">
                           <i class="fas fa-file-invoice"></i>
                         </div>
@@ -219,11 +219,11 @@
 
                     <div class="form-group">
                       <div class="input-wrapper">
-                        <label for="businessAddress" class="form-label">Business Address</label>
-                        <textarea id="businessAddress" class="form-input" formControlName="BusinessAddress" required
-                          minlength="10"
+                        <textarea id="businessAddress" class="form-input" formControlName="BusinessAddress"
+                          placeholder=" " required minlength="10"
                           [class.error]="myForm.get('BusinessAddress')?.invalid && myForm.get('BusinessAddress')?.touched">
       </textarea>
+                        <label for="businessAddress" class="form-label">Business Address</label>
                         <div class="input-icon">
                           <i class="fas fa-map-marker-alt"></i>
                         </div>
