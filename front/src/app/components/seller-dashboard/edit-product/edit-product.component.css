@@ -1,40 +1,48 @@
-/* Dark-Themed Edit Product Page */
+/* Modern Bright Edit Product Page */
 .edit-product-section {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe, #fff);
   display: flex;
   align-items: center;
-  position: relative;
-  overflow: hidden;
+  justify-content: center;
   padding: 3rem 0;
 }
 
-/* Header Section */
+/* Product Header */
 .product-header {
-  background: rgba(30, 41, 59, 0.8);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(15px);
   border-radius: 20px;
-  padding: 2rem;
+  padding: 1rem 1.5rem;
   display: inline-block;
+  width: fit-content;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
 }
 
+/* Elegant & Classic Heading Title */
 .product-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #f1f5f9;
+  font-size: 2.8rem;
+  font-weight: 900;
+  text-align: center;
+  color: #374151 !important; /* Deep classic gray for better contrast */
+}
+
+.product-subtitle {
+  font-size: 1.2rem;
+  color: #64748b;
+  font-weight: 500;
 }
 
 /* Main Container */
 .product-container {
-  background: rgba(30, 41, 59, 0.9);
-  backdrop-filter: blur(20px);
-  border-radius: 25px;
-  padding: 3rem 2rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(71, 85, 105, 0.4);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(25px);
+  border-radius: 30px;
+  padding: 3rem;
+  box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15);
 }
 
-/* Form Styles */
+/* Form Styling */
 .form-container {
   padding: 1rem;
 }
@@ -43,84 +51,60 @@
   margin-bottom: 1.5rem;
 }
 
+/* Input Wrapper */
 .input-wrapper {
   position: relative;
 }
 
 .form-input {
   width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
-  border: 2px solid #475569;
-  border-radius: 15px;
+  padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
   font-size: 1rem;
-  background: #1e293b;
-  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1e293b;
   transition: all 0.3s ease;
 }
 
 .form-input:focus {
-  border-color: #fbbf24;
-  background: #334155;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  background: white;
 }
 
 /* Floating Labels */
 .form-label {
   position: absolute;
-  left: 3rem;
+  left: 3.5rem;
   top: 50%;
   transform: translateY(-50%);
-  background: #1e293b;
+  background: white;
   padding: 0 0.5rem;
-  color: #94a3b8;
+  color: #64748b;
   font-size: 1rem;
   transition: all 0.3s ease;
 }
 
-.form-input:focus + .form-label,
-.form-input:not(:placeholder-shown) + .form-label {
+.form-input:focus+.form-label,
+.form-input:not(:placeholder-shown)+.form-label {
   top: 0;
   font-size: 0.85rem;
-  color: #fbbf24;
-}
-
-/* Upload Field */
-.upload-label {
-  font-size: 1rem;
-  color: #fbbf24;
-}
-
-.file-input {
-  padding: 0.75rem;
-  background: #1e293b;
-  border: 2px solid #475569;
-  border-radius: 15px;
-  color: #f1f5f9;
-}
-
-/* Submit Button */
-.submit-btn {
-  width: 100%;
-  padding: 1rem;
-  background: #fbbf24;
-  border: none;
-  border-radius: 15px;
-  font-size: 1.1rem;
+  color: #3b82f6;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
-.submit-btn:hover:not(:disabled) {
-  background: #f59e0b;
-  box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);
+/* Select Dropdown */
+.role-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 1rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em;
+  padding-right: 4rem;
 }
 
-.submit-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Enhanced File Upload Section */
+/* Upload Section */
 .upload-group {
   display: flex;
   flex-direction: column;
@@ -129,12 +113,12 @@
 
 .upload-label {
   font-size: 1rem;
-  color: #fbbf24;
+  color: #3b82f6;
   font-weight: 600;
+  text-align: center;
 }
 
 .upload-wrapper {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -155,10 +139,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1e293b;
-  border: 2px dashed #475569;
+  background: white;
+  border: 2px dashed #cbd5e1;
   border-radius: 15px;
-  color: #cbd5e1;
+  color: #64748b;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -166,34 +150,203 @@
 }
 
 .upload-area:hover {
-  background: #334155;
-  border-color: #fbbf24;
+  background: rgba(59, 130, 246, 0.1);
 }
 
-.upload-icon {
-  font-size: 1.5rem;
-  margin-right: 0.5rem;
-  color: #fbbf24;
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.upload-text {
-  color: #cbd5e1;
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(34, 197, 94, 0.3);
 }
 
-/* Existing Image Preview */
-.existing-image-group {
+/* Animated Heading */
+.product-header {
+  animation: slideFadeIn 1.5s ease-out forwards;
+}
+
+.product-title {
+  font-size: 3rem;
+  font-weight: 900;
+  text-align: center;
+  background-image: linear-gradient(135deg, #2c3e50, #34495e, #1f2937);
+  color: transparent;
+  display: inline-block;
+  background-clip: text;
+}
+
+/* Parallax Effect */
+.bg-icons {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.bg-icons i {
+  position: absolute;
+  font-size: 2.5rem;
+  opacity: 0.07;
+  animation: floatEffect 10s ease-in-out infinite;
+}
+
+@keyframes floatEffect {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.07;
+  }
+  50% {
+    transform: translateY(-20px);
+    opacity: 0.12;
+  }
+}
+
+/* Hover Effects */
+.product-title:hover {
+  transform: scale(1.05);
+  text-shadow: 0px 0px 50px rgba(168, 85, 247, 0.7);
+}
+
+.input-icon {
+  position: absolute;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.input-wrapper.focused .input-icon,
+.form-input:focus~.input-icon {
+  color: #3b82f6;
+  animation: bounce 0.6s ease;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.1);
+  }
+}
+
+.image-preview-container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  margin-top: 1rem;
 }
 
 .image-preview {
-  width: 200px;
-}
-
-.image-preview img {
-  width: 100%;
+  display: block;
+  margin: 0 auto; /* Centers horizontally */
+  max-width: 200px; /* Limit image size */
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
+.existing-image-group label.upload-label {
+  text-align: center;
+  display: block;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+/* Page Entry Animation */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply Animation on Page Load */
+.edit-product-section {
+  animation: fadeInScale 1s ease-out forwards;
+}
+
+.product-container {
+  animation: slideUp 1.2s ease-out forwards;
+}
+
+/* Staggered Animation for Form Fields */
+.form-group {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUp 1s ease-out forwards;
+  animation-delay: 0.3s;
+}
+
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.image-preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  margin-top: 1rem;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.image-preview-container.show {
+  opacity: 1;
+  transform: scale(1);
+  animation: fadeInScale 0.8s ease-out forwards;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
