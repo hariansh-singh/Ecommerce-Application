@@ -19,13 +19,14 @@ export class EditProductComponent implements OnInit {
   filePreviewUrl: string | null = null; // Stores preview URL
   productDetails: any;
 
-  constructor(private aroute: ActivatedRoute, private proser: ProductService, private router: Router) {}
+  constructor(private aroute: ActivatedRoute, private proser: ProductService, private router: Router) { }
 
   myForm: FormGroup = new FormGroup({
     ProductName: new FormControl('', [Validators.required]),
     ProductPrice: new FormControl('', [Validators.required]),
     StockQuantity: new FormControl('', [Validators.required]),
     Description: new FormControl('', [Validators.required]),
+    ProductCategory: new FormControl('', [Validators.required]),
   });
 
   uploadFile(event: any) {
@@ -42,13 +43,14 @@ export class EditProductComponent implements OnInit {
       this.filePathRef = file;  // Store actual file
       this.filePreviewUrl = URL.createObjectURL(file);  // Create preview URL
 
+
       console.log("Generated preview URL:", this.filePreviewUrl);
       console.log("Selected File:", this.filePathRef);
     }
   }
 
   ngOnInit(): void {
-     window.scrollTo(0, 0); // Ensures the page opens from the top
+    window.scrollTo(0, 0);
     this.id = this.aroute.snapshot.paramMap.get('id');
     console.log("Product ID:", this.id);
 
@@ -58,10 +60,11 @@ export class EditProductComponent implements OnInit {
 
         if (data && data.data) {
           this.myForm.patchValue({
-            ProductName: data.data.productName,  
+            ProductName: data.data.productName,
             ProductPrice: data.data.productPrice,
             StockQuantity: data.data.stockQuantity,
-            Description: data.data.description
+            Description: data.data.description,
+            ProductCategory: data.data.productCategory ?? '',  // ✅ Default to empty string if null
           });
 
           this.productDetails = data.data;
@@ -78,14 +81,15 @@ export class EditProductComponent implements OnInit {
     });
   }
 
-postData() {
-  const fData = this.myForm.value;
-  const formData = new FormData();
+  postData() {
+    const fData = this.myForm.value;
+    const formData = new FormData();
 
-  formData.append("ProductName", fData.ProductName);
-  formData.append("ProductPrice", fData.ProductPrice);
-  formData.append("StockQuantity", fData.StockQuantity);
-  formData.append("Description", fData.Description);
+    formData.append("ProductName", fData.ProductName);
+    formData.append("ProductPrice", fData.ProductPrice);
+    formData.append("StockQuantity", fData.StockQuantity);
+    formData.append("Description", fData.Description);
+    formData.append("ProductCategory", fData.ProductCategory ?? ''); // Ensure it's not undefined
 
     if (this.filePathRef instanceof File) {
       formData.append("ProductImage", this.filePathRef, this.filePathRef.name);
@@ -95,37 +99,37 @@ postData() {
       console.warn("No new or existing image provided.");
     }
 
+    // 🔍 Debugging - Check if `ProductCategory` is correctly included before sending
     console.log("Submitting FormData:");
     for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
+      console.log(pair[0], pair[1]);  // This will log all form fields
     }
 
-   this.proser.editProduct(this.id, formData).subscribe({
-    next: () => {
-      Swal.fire({
-        icon: 'success',
-        title: 'Product Updated!',
-        text: 'Redirecting...',
-        showConfirmButton: false, // Removes "OK" button
-        timer: 2000, // Auto-close alert after 2 seconds
-        timerProgressBar: true // Show progress bar for timer
-      });
+    this.proser.editProduct(this.id, formData).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Product Updated!',
+          text: 'Redirecting...',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true
+        });
 
-      // Navigate after alert disappears
-      setTimeout(() => {
-        this.router.navigateByUrl("/sellerdashboard");
-      }, 2000);
-    },
-    error: (err) => {
-      console.error("Error Updating Product:", err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Update Failed!',
-        text: 'Something went wrong, please try again.',
-        showConfirmButton: true,
-        confirmButtonText: 'Retry'
-      });
-    }
-  });
-}
+        setTimeout(() => {
+          this.router.navigateByUrl("/sellerdashboard");
+        }, 2000);
+      },
+      error: (err) => {
+        console.error("Error Updating Product:", err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed!',
+          text: 'Something went wrong, please try again.',
+          showConfirmButton: true,
+          confirmButtonText: 'Retry'
+        });
+      }
+    });
+  }
 }

@@ -1,13 +1,6 @@
 <section class="edit-product-section">
   <div class="container">
-    <!-- Header Section -->
-    <div class="row">
-      <div class="col-12 text-center header-section">
-        <div class="product-header">
-          <h2 class="product-title">Edit Product</h2>
-        </div>
-      </div>
-    </div>
+
 
     <!-- Main Content -->
     <div class="row justify-content-center">
@@ -23,18 +16,50 @@
                   <!-- Product Name -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input type="text" class="form-input" id="ProductName" placeholder=" " 
+                      <input type="text" class="form-input" id="ProductName" placeholder=" "
                         formControlName="ProductName" required>
                       <label for="ProductName" class="form-label">Product Name</label>
+                       <div class="input-icon">
+                        <i class="fas fa-tag"></i>
+                      </div>
                     </div>
                   </div>
+
+
+                  <!-- Product Category Dropdown -->
+                  <div class="form-group">
+                    <div class="input-wrapper">
+                      <select class="form-input role-select" id="ProductCategory" formControlName="ProductCategory"
+                        required>
+                        <option value="" disabled>Select a Category</option>
+                        <option value="mobiles" [selected]="myForm.get('ProductCategory')?.value === 'mobiles'">Mobiles
+                        </option>
+                        <option value="laptops" [selected]="myForm.get('ProductCategory')?.value === 'laptops'">Laptops
+                        </option>
+                        <option value="accessories" [selected]="myForm.get('ProductCategory')?.value === 'accessories'">
+                          Accessories</option>
+                        <option value="cameras" [selected]="myForm.get('ProductCategory')?.value === 'cameras'">Cameras
+                        </option>
+                      </select>
+                      <label for="ProductCategory" class="form-label">Product Category</label>
+                      <div class="input-icon">
+                        <i class="fas fa-box"></i>
+                      </div>
+                    </div>
+                  </div>
+
+
+
 
                   <!-- Product Price -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input type="number" class="form-input" id="ProductPrice" placeholder=" " 
+                      <input type="number" class="form-input" id="ProductPrice" placeholder=" "
                         formControlName="ProductPrice" required>
                       <label for="ProductPrice" class="form-label">Product Price</label>
+                      <div class="input-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                      </div>
                     </div>
                   </div>
 
@@ -44,15 +69,21 @@
                       <textarea class="form-input textarea-input" id="Description" placeholder=" "
                         formControlName="Description" required></textarea>
                       <label for="Description" class="form-label">Description</label>
+                      <div class="input-icon">
+                        <i class="fas fa-align-left"></i> <!-- Added missing icon -->
+                      </div>
                     </div>
                   </div>
 
                   <!-- Stock Quantity -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input type="number" class="form-input" id="StockQuantity" placeholder=" " 
+                      <input type="number" class="form-input" id="StockQuantity" placeholder=" "
                         formControlName="StockQuantity" required>
                       <label for="StockQuantity" class="form-label">Stock Quantity</label>
+                       <div class="input-icon">
+                        <i class="fas fa-cubes"></i>
+                      </div>
                     </div>
                   </div>
 
@@ -72,14 +103,15 @@
                   <div class="form-group existing-image-group">
                     <label class="upload-label">Current Image</label>
                     <div class="image-preview">
-                      <img [src]="filePreviewUrl || filePathRef" alt="Product Image" 
-                        class="img-thumbnail shadow-sm" width="200">
+                      <img [src]="filePreviewUrl || filePathRef" alt="Product Image" class="img-thumbnail shadow-sm"
+                        width="200">
                     </div>
                   </div>
-                  
+
                   <!-- Submit Button -->
                   <div class="submit-section">
-                    <button class="submit-btn" type="submit" [disabled]="myForm.invalid" routerLink="['/sellerdashboard']">
+                    <button class="submit-btn" type="submit" [disabled]="myForm.invalid"
+                      routerLink="['/sellerdashboard']">
                       <span class="btn-text">Update Product</span>
                     </button>
                   </div>
