@@ -17,6 +17,7 @@ import { HomeAdminComponent } from './components/admin-dashboard/home-admin/home
 import { ShopComponent } from './components/main/shop/shop.component';
 import { SellerDashboardComponent } from './components/seller-dashboard/seller-dashboard.component';
 import { HomeSellerComponent } from './components/seller-dashboard/home-seller/home-seller.component';
+import { UserProfileComponent } from './components/main/user-profile/user-profile.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -32,6 +33,7 @@ export const routes: Routes = [
       { path: 'cart', component: ViewCartComponent },
       { path: 'product/:id', component: ProductdetailsComponent },
       { path: 'shop', component: ShopComponent },
+      { path: 'profile', component: UserProfileComponent }, // User profile route
     ],
   },
 
