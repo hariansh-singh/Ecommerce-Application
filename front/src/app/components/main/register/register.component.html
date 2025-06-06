@@ -107,6 +107,29 @@
                       </small>
                     </div>
                   </div>
+                  <!-- Phone Number Field -->
+                  <div class="form-group">
+                    <div class="input-wrapper">
+                      <input type="tel" class="form-input" id="phoneNumber" placeholder=" "
+                        formControlName="PhoneNumber" required
+                        [class.error]="myForm.get('PhoneNumber')?.invalid && myForm.get('PhoneNumber')?.touched">
+                      <label for="phoneNumber" class="form-label">Phone Number</label>
+                      <div class="input-icon">
+                        <i class="fas fa-phone"></i>
+                      </div>
+                      <div class="input-border"></div>
+                    </div>
+                    <div class="error-message"
+                      *ngIf="myForm.get('PhoneNumber')?.invalid && myForm.get('PhoneNumber')?.touched">
+                      <small *ngIf="myForm.get('PhoneNumber')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Phone number is required
+                      </small>
+                      <small *ngIf="myForm.get('PhoneNumber')?.errors?.['pattern']">
+                        <i class="fas fa-exclamation-triangle"></i> Please enter a valid phone number
+                      </small>
+                    </div>
+                  </div>
+
 
                   <!-- Password Field -->
                   <div class="form-group">

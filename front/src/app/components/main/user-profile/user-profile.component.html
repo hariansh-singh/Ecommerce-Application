@@ -1,0 +1,62 @@
+<div class="user-profile">
+  <h2>User Profile</h2>
+
+  <!-- Basic User Information -->
+  <section>
+    <h3>Basic Information</h3>
+    <label>Name:</label>
+    <input type="text" [(ngModel)]="user.name">
+    
+    <label>Email:</label>
+    <input type="email" [(ngModel)]="user.email" disabled>
+
+    <label>Phone Number:</label>
+    <input type="text" [(ngModel)]="user.phoneNumber">
+  </section>
+
+  <!-- Shipping Addresses -->
+  <section>
+    <h3>Shipping Addresses</h3>
+    <ul>
+      <li *ngFor="let address of addresses">
+        {{ address.addressLine1 }}, {{ address.city }} - {{ address.postalCode }}
+      </li>
+    </ul>
+  </section>
+
+  <!-- Saved Payment Methods -->
+  <section>
+    <h3>Saved Payment Methods</h3>
+    <ul>
+      <li *ngFor="let method of user.paymentMethods">
+        {{ method }}
+      </li>
+    </ul>
+  </section>
+
+  <!-- Order History -->
+  <section>
+    <h3>Order History</h3>
+    <ul>
+      <li *ngFor="let order of orders">
+        Order #{{ order.orderId }} - {{ order.orderStatus }} 
+      </li>
+    </ul>
+  </section>
+
+  <!-- Reviews & Ratings -->
+  <section>
+    <h3>Reviews & Ratings</h3>
+    <ul>
+      <li *ngFor="let review of reviews">
+        {{ review.productName }} - {{ review.rating }}★ - "{{ review.reviewText }}"
+      </li>
+    </ul>
+  </section>
+
+  <!-- Support & Help -->
+  <section>
+    <h3>Support & Help</h3>
+    <button (click)="contactSupport()">Contact Support</button>
+  </section>
+</div>
