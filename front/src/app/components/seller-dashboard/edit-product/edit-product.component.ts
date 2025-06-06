@@ -27,7 +27,6 @@ export class EditProductComponent implements OnInit {
     ProductPrice: new FormControl('', [Validators.required]),
     StockQuantity: new FormControl('', [Validators.required]),
     Description: new FormControl('', [Validators.required]),
-    ProductCategory: new FormControl('', [Validators.required]),
   });
 
   uploadFile(event: any) {
@@ -62,12 +61,11 @@ export class EditProductComponent implements OnInit {
         if (data && data.data) {
           this.myForm.patchValue({
 
-            ProductCategory: data.data.productName,
+            ProductCategory: data.data.productCategory,
             ProductName: data.data.productName,  
             ProductPrice: data.data.productPrice,
             StockQuantity: data.data.stockQuantity,
             Description: data.data.description,
-            ProductCategory: data.data.productCategory ?? '',  // ✅ Default to empty string if null
           });
 
           this.productDetails = data.data;
@@ -89,7 +87,7 @@ export class EditProductComponent implements OnInit {
     const formData = new FormData();
 
 
-  formData.append("ProductCategory", fData.ProductName);
+  formData.append("ProductCategory", fData.ProductCategory);
   formData.append("ProductName", fData.ProductName);
   formData.append("ProductPrice", fData.ProductPrice);
   formData.append("StockQuantity", fData.StockQuantity);
