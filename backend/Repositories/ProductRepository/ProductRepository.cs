@@ -93,6 +93,7 @@ namespace backend.Repositories.ProductRepository
             var existingProduct = await dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
             if (existingProduct != null)
             {
+                existingProduct.ProductCategory = product.ProductCategory;
                 existingProduct.StockQuantity = product.StockQuantity;
                 existingProduct.ProductPrice = product.ProductPrice;
                 existingProduct.Description = product.Description;

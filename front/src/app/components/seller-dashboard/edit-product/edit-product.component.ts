@@ -22,6 +22,7 @@ export class EditProductComponent implements OnInit {
   constructor(private aroute: ActivatedRoute, private proser: ProductService, private router: Router) {}
 
   myForm: FormGroup = new FormGroup({
+    ProductCategory: new FormControl('', [Validators.required]),
     ProductName: new FormControl('', [Validators.required]),
     ProductPrice: new FormControl('', [Validators.required]),
     StockQuantity: new FormControl('', [Validators.required]),
@@ -58,6 +59,7 @@ export class EditProductComponent implements OnInit {
 
         if (data && data.data) {
           this.myForm.patchValue({
+            ProductCategory: data.data.productName,
             ProductName: data.data.productName,  
             ProductPrice: data.data.productPrice,
             StockQuantity: data.data.stockQuantity,
@@ -82,6 +84,7 @@ postData() {
   const fData = this.myForm.value;
   const formData = new FormData();
 
+  formData.append("ProductCategory", fData.ProductName);
   formData.append("ProductName", fData.ProductName);
   formData.append("ProductPrice", fData.ProductPrice);
   formData.append("StockQuantity", fData.StockQuantity);
