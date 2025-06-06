@@ -1,14 +1,6 @@
 <section class="add-product-section">
   <div class="container">
-    <!-- Header Section -->
-    <div class="row">
-      <div class="col-12 text-center header-section">
-        <div class="product-header">
-          <h2 class="product-title">Add a New Product</h2>
-        </div>
-      </div>
-    </div>
-
+    
     <!-- Main Content -->
     <div class="row justify-content-center">
       <div class="col-12 col-lg-10 col-xl-8">
@@ -20,21 +12,35 @@
               <div class="form-container">
                 <form [formGroup]="productForm" (ngSubmit)="submitProduct()" enctype="multipart/form-data">
 
-                  <!-- Product Category -->
-                  <div class="form-group">
-                    <div class="input-wrapper">
-                      <input type="text" class="form-input" id="productCategory" placeholder=" "
-                        formControlName="ProductCategory" required>
-                      <label for="productCategory" class="form-label">Product Category</label>
-                    </div>
-                  </div>
-
                   <!-- Product Name -->
                   <div class="form-group">
                     <div class="input-wrapper">
                       <input type="text" class="form-input" id="productName" placeholder=" "
                         formControlName="ProductName" required>
                       <label for="productName" class="form-label">Product Name</label>
+                      <div class="input-icon">
+                        <i class="fas fa-tag"></i>
+                      </div>
+                      <div class="input-border"></div>
+                    </div>
+                  </div>
+
+                  <!-- Product Category -->
+                  <div class="form-group">
+                    <div class="input-wrapper">
+                      <select class="form-input role-select" id="productCategory" formControlName="ProductCategory"
+                        required>
+                        <option value="" disabled selected>Choose a Category</option>
+                        <option value="mobiles">Mobiles</option>
+                        <option value="laptops">Laptops</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="cameras">Cameras
+                      </select>
+                      <label for="productCategory" class="form-label role-label">Product Category</label>
+                      <div class="input-icon">
+                        <i class="fas fa-box"></i>
+                      </div>
+                      <div class="input-border"></div>
                     </div>
                   </div>
 
@@ -43,7 +49,11 @@
                     <div class="input-wrapper">
                       <input type="number" class="form-input" id="productPrice" placeholder=" "
                         formControlName="ProductPrice" required>
-                      <label for="productPrice" class="form-label">Product Price</label>
+                      <label for="productPrice" class="form-label">Product Price ($)</label>
+                      <div class="input-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                      </div>
+                      <div class="input-border"></div>
                     </div>
                   </div>
 
@@ -52,46 +62,54 @@
                     <div class="input-wrapper">
                       <textarea class="form-input textarea-input" id="description" placeholder=" "
                         formControlName="Description" required></textarea>
-                      <label for="description" class="form-label">Description</label>
+                      <label for="description" class="form-label">Product Description</label>
+                      <div class="input-icon">
+                        <i class="fas fa-align-left"></i> <!-- Added missing icon -->
+                      </div>
+                      <div class="input-border"></div>
                     </div>
                   </div>
-
                   <!-- Stock Quantity -->
                   <div class="form-group">
                     <div class="input-wrapper">
                       <input type="number" class="form-input" id="stockQuantity" placeholder=" "
                         formControlName="StockQuantity" required>
                       <label for="stockQuantity" class="form-label">Stock Quantity</label>
+                      <div class="input-icon">
+                        <i class="fas fa-cubes"></i>
+                      </div>
+                      <div class="input-border"></div>
                     </div>
                   </div>
-                  
+
+                  <!-- Upload Product Image -->
                   <div class="form-group upload-group">
                     <label class="upload-label">Upload Product Image</label>
                     <div class="upload-wrapper">
                       <input type="file" class="file-input" (change)="handleFileUpload($event)" required>
                       <div class="upload-area">
                         <i class="fas fa-upload upload-icon"></i>
-                        <span class="upload-text">{{ imageName ? imageName : 'Choose a file or drag it here' }}</span>
+                        <span class="upload-text">Choose a file or drag it here</span>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Display Image Preview -->
+                  <!-- Image Preview -->
                   <div *ngIf="imagePreview" class="image-preview-container">
                     <p>Image Preview:</p>
-                    <img [src]="imagePreview" alt="Product Image Preview" width="200">
+                    <img [src]="imagePreview" alt="Product Image Preview" class="image-preview">
                   </div>
-
-
-               
-
 
                   <!-- Submit Button -->
                   <div class="submit-section">
-                    <button class="submit-btn" type="submit" [disabled]="productForm.invalid" routerLink="['/sellerdashboard']">
-                      <span class="btn-text">Submit Product</span>
+                    <button class="submit-btn" type="submit" [disabled]="productForm.invalid">
+                      <span class="btn-text">
+                        <i class="fas fa-check-circle"></i> Submit Product
+                      </span>
+                      <div class="btn-shine"></div>
                     </button>
                   </div>
+
                 </form>
               </div>
             </div>
