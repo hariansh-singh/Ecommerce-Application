@@ -32,22 +32,17 @@ export class RegisterComponent {
 
   myForm: FormGroup = new FormGroup(
     {
-      FirstName: new FormControl('', [
-        Validators.required,
-        Validators.minLength(2),
-      ]),
-      LastName: new FormControl('', [
-        Validators.required,
-        Validators.minLength(2),
-      ]),
+      FirstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      LastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
       Email: new FormControl('', [Validators.required, Validators.email]),
-      Password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(6),
-      ]),
+      Password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       ConfirmPassword: new FormControl('', [Validators.required]),
       Role: new FormControl('user', [Validators.required]), // Default to 'user'
       AgreeTerms: new FormControl(false, [Validators.requiredTrue]),
+      // Seller-specific fields (conditionally validated)
+      StoreName: new FormControl(''),
+      GSTNumber: new FormControl(''),
+      BusinessAddress: new FormControl(''),
     },
     { validators: this.passwordMatchValidator }
   );
@@ -56,10 +51,30 @@ export class RegisterComponent {
     // Add input focus animations
     this.setupInputAnimations();
 
-    // Listen for role changes and update heading
+    // Listen for role changes and update heading dynamically
     this.myForm.get('Role')?.valueChanges.subscribe((role) => {
       this.updateHeading(role);
+      this.toggleSellerFields(role);
     });
+  }
+
+  toggleSellerFields(role: string) {
+    if (role === 'seller') {
+      this.myForm.get('StoreName')?.setValidators([Validators.required]);
+      this.myForm.get('GSTNumber')?.setValidators([Validators.required, Validators.pattern(/^\d{15}$/)]);
+      this.myForm.get('BusinessAddress')?.setValidators([Validators.required, Validators.minLength(10)]);
+    } else {
+      this.myForm.get('StoreName')?.clearValidators();
+      this.myForm.get('GSTNumber')?.clearValidators();
+      this.myForm.get('BusinessAddress')?.clearValidators();
+    }
+    this.myForm.get('StoreName')?.updateValueAndValidity();
+    this.myForm.get('GSTNumber')?.updateValueAndValidity();
+    this.myForm.get('BusinessAddress')?.updateValueAndValidity();
+  }
+
+  updateHeading(role: string): void {
+    this.headingText = role === 'seller' ? 'Join as a Seller' : 'Create Account';
   }
 
   private setupInputAnimations(): void {
@@ -71,7 +86,7 @@ export class RegisterComponent {
       });
     }, 100);
   }
-
+  
   private handleInputFocus = (event: Event): void => {
     const input = event.target as HTMLInputElement;
     const wrapper = input.closest('.input-wrapper');
@@ -85,6 +100,7 @@ export class RegisterComponent {
       wrapper?.classList.remove('focused');
     }
   };
+
 
   private passwordMatchValidator(
     control: AbstractControl
@@ -123,10 +139,7 @@ export class RegisterComponent {
     this.myForm.patchValue({ Role: event.target.value });
   }
 
-  updateHeading(role: string): void {
-    this.headingText =
-      role === 'seller' ? 'Join as a Seller' : 'Create Account';
-  }
+  
 
   onSubmitRegister(): void {
     if (this.myForm.invalid) {
@@ -243,6 +256,8 @@ export class RegisterComponent {
   }
 
   // Getter methods for easier template access
+
+ 
   get firstNameControl() {
     return this.myForm.get('FirstName');
   }

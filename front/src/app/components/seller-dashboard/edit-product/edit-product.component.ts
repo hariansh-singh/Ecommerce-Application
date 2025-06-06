@@ -22,6 +22,7 @@ export class EditProductComponent implements OnInit {
   constructor(private aroute: ActivatedRoute, private proser: ProductService, private router: Router) { }
 
   myForm: FormGroup = new FormGroup({
+    ProductCategory: new FormControl('', [Validators.required]),
     ProductName: new FormControl('', [Validators.required]),
     ProductPrice: new FormControl('', [Validators.required]),
     StockQuantity: new FormControl('', [Validators.required]),
@@ -60,7 +61,9 @@ export class EditProductComponent implements OnInit {
 
         if (data && data.data) {
           this.myForm.patchValue({
-            ProductName: data.data.productName,
+
+            ProductCategory: data.data.productName,
+            ProductName: data.data.productName,  
             ProductPrice: data.data.productPrice,
             StockQuantity: data.data.stockQuantity,
             Description: data.data.description,
@@ -85,11 +88,12 @@ export class EditProductComponent implements OnInit {
     const fData = this.myForm.value;
     const formData = new FormData();
 
-    formData.append("ProductName", fData.ProductName);
-    formData.append("ProductPrice", fData.ProductPrice);
-    formData.append("StockQuantity", fData.StockQuantity);
-    formData.append("Description", fData.Description);
-    formData.append("ProductCategory", fData.ProductCategory ?? ''); // Ensure it's not undefined
+
+  formData.append("ProductCategory", fData.ProductName);
+  formData.append("ProductName", fData.ProductName);
+  formData.append("ProductPrice", fData.ProductPrice);
+  formData.append("StockQuantity", fData.StockQuantity);
+  formData.append("Description", fData.Description);
 
     if (this.filePathRef instanceof File) {
       formData.append("ProductImage", this.filePathRef, this.filePathRef.name);

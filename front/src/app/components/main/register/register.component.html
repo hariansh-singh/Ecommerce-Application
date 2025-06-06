@@ -12,7 +12,7 @@
           </div>
           <h2 class="register-title">{{ headingText }}</h2>
           <p class="register-subtitle">
-            Already have an account? 
+            Already have an account?
             <a class="signin-link" routerLink="/login">Sign in here</a>
           </p>
         </div>
@@ -24,7 +24,7 @@
       <div class="col-12 col-lg-10 col-xl-9">
         <div class="register-container">
           <div class="row gy-4 justify-content-center align-items-center">
-            
+
             <!-- Registration Form -->
             <div class="col-12 col-lg-6">
               <div class="form-container">
@@ -32,22 +32,17 @@
                   <h3 class="form-title">Create Your Account</h3>
                   <p class="form-subtitle">Fill in your details to get started</p>
                 </div>
-                
+
                 <form [formGroup]="myForm" (ngSubmit)="onSubmitRegister()" class="register-form">
-                  
+
                   <!-- Name Fields Row -->
                   <div class="row gy-3">
                     <!-- First Name Field -->
                     <div class="col-12 col-md-6">
                       <div class="form-group">
                         <div class="input-wrapper">
-                          <input 
-                            type="text" 
-                            class="form-input" 
-                            id="firstName" 
-                            placeholder=" "
-                            formControlName="FirstName" 
-                            required
+                          <input type="text" class="form-input" id="firstName" placeholder=" "
+                            formControlName="FirstName" required
                             [class.error]="myForm.get('FirstName')?.invalid && myForm.get('FirstName')?.touched">
                           <label for="firstName" class="form-label">First Name</label>
                           <div class="input-icon">
@@ -55,7 +50,7 @@
                           </div>
                           <div class="input-border"></div>
                         </div>
-                        <div class="error-message" 
+                        <div class="error-message"
                           *ngIf="myForm.get('FirstName')?.invalid && myForm.get('FirstName')?.touched">
                           <small *ngIf="myForm.get('FirstName')?.errors?.['required']">
                             <i class="fas fa-exclamation-triangle"></i> First name is required
@@ -71,14 +66,8 @@
                     <div class="col-12 col-md-6">
                       <div class="form-group">
                         <div class="input-wrapper">
-                          <input 
-                            type="text" 
-                            class="form-input" 
-                            id="lastName" 
-                            placeholder=" " 
-                            formControlName="LastName"
-                            required 
-                            [class.error]="myForm.get('LastName')?.invalid && myForm.get('LastName')?.touched">
+                          <input type="text" class="form-input" id="lastName" placeholder=" " formControlName="LastName"
+                            required [class.error]="myForm.get('LastName')?.invalid && myForm.get('LastName')?.touched">
                           <label for="lastName" class="form-label">Last Name</label>
                           <div class="input-icon">
                             <i class="fas fa-user"></i>
@@ -101,13 +90,7 @@
                   <!-- Email Field -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input 
-                        type="email" 
-                        class="form-input" 
-                        id="email" 
-                        placeholder=" " 
-                        formControlName="Email" 
-                        required
+                      <input type="email" class="form-input" id="email" placeholder=" " formControlName="Email" required
                         [class.error]="myForm.get('Email')?.invalid && myForm.get('Email')?.touched">
                       <label for="email" class="form-label">Email Address</label>
                       <div class="input-icon">
@@ -128,13 +111,8 @@
                   <!-- Password Field -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input 
-                        [type]="showPassword ? 'text' : 'password'" 
-                        class="form-input" 
-                        id="password"
-                        placeholder=" " 
-                        formControlName="Password" 
-                        required
+                      <input [type]="showPassword ? 'text' : 'password'" class="form-input" id="password"
+                        placeholder=" " formControlName="Password" required
                         [class.error]="myForm.get('Password')?.invalid && myForm.get('Password')?.touched">
                       <label for="password" class="form-label">Password</label>
                       <div class="input-icon">
@@ -159,13 +137,8 @@
                   <!-- Confirm Password Field -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input 
-                        [type]="showConfirmPassword ? 'text' : 'password'" 
-                        class="form-input" 
-                        id="confirmPassword"
-                        placeholder=" " 
-                        formControlName="ConfirmPassword" 
-                        required
+                      <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-input" id="confirmPassword"
+                        placeholder=" " formControlName="ConfirmPassword" required
                         [class.error]="myForm.get('ConfirmPassword')?.invalid && myForm.get('ConfirmPassword')?.touched">
                       <label for="confirmPassword" class="form-label">Confirm Password</label>
                       <div class="input-icon">
@@ -190,13 +163,8 @@
                   <!-- Enhanced Role Selection Dropdown -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <select 
-                        class="form-input role-select" 
-                        id="role" 
-                        formControlName="Role"
-                        (change)="setRole($event)"
-                        required
-                        [class.error]="myForm.get('Role')?.invalid && myForm.get('Role')?.touched">
+                      <select class="form-input role-select" id="role" formControlName="Role" (change)="setRole($event)"
+                        required [class.error]="myForm.get('Role')?.invalid && myForm.get('Role')?.touched">
                         <option value="" disabled>Choose your account type</option>
                         <option value="buyer">Join as Buyer</option>
                         <option value="seller">Join as Seller</option>
@@ -207,13 +175,68 @@
                       </div>
                       <div class="input-border"></div>
                     </div>
-                    <div class="error-message"
-                      *ngIf="myForm.get('Role')?.invalid && myForm.get('Role')?.touched">
+                    <div class="error-message" *ngIf="myForm.get('Role')?.invalid && myForm.get('Role')?.touched">
                       <small *ngIf="myForm.get('Role')?.errors?.['required']">
                         <i class="fas fa-exclamation-triangle"></i> Please select an account type
                       </small>
                     </div>
                   </div>
+                  <!-- Seller-Specific Fields -->
+                  <div *ngIf="myForm.get('Role')?.value === 'seller'">
+                    <div class="form-group">
+                      <div class="input-wrapper">
+                        <input type="text" id="storeName" class="form-input" formControlName="StoreName" placeholder=" "
+                          required [class.error]="myForm.get('StoreName')?.invalid && myForm.get('StoreName')?.touched">
+                        <label for="storeName" class="form-label">Store Name</label>
+                        <div class="input-icon">
+                          <i class="fas fa-store"></i>
+                        </div>
+                        <div class="input-border"></div>
+                      </div>
+                      <div class="error-message"
+                        *ngIf="myForm.get('StoreName')?.invalid && myForm.get('StoreName')?.touched">
+                        <small><i class="fas fa-exclamation-triangle"></i> Store Name is required</small>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="input-wrapper">
+                        <input type="text" id="gstNumber" class="form-input" formControlName="GSTNumber" placeholder=" "
+                          required pattern="\d{15}"
+                          [class.error]="myForm.get('GSTNumber')?.invalid && myForm.get('GSTNumber')?.touched">
+                        <label for="gstNumber" class="form-label">GST Number</label>
+                        <div class="input-icon">
+                          <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="input-border"></div>
+                      </div>
+                      <div class="error-message"
+                        *ngIf="myForm.get('GSTNumber')?.invalid && myForm.get('GSTNumber')?.touched">
+                        <small><i class="fas fa-exclamation-triangle"></i> A valid 15-digit GST Number is
+                          required</small>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="input-wrapper">
+                        <textarea id="businessAddress" class="form-input" formControlName="BusinessAddress"
+                          placeholder=" " required minlength="10"
+                          [class.error]="myForm.get('BusinessAddress')?.invalid && myForm.get('BusinessAddress')?.touched">
+      </textarea>
+                        <label for="businessAddress" class="form-label">Business Address</label>
+                        <div class="input-icon">
+                          <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="input-border"></div>
+                      </div>
+                      <div class="error-message"
+                        *ngIf="myForm.get('BusinessAddress')?.invalid && myForm.get('BusinessAddress')?.touched">
+                        <small><i class="fas fa-exclamation-triangle"></i> Business Address must be at least 10
+                          characters</small>
+                      </div>
+                    </div>
+                  </div>
+
 
                   <!-- Terms & Conditions -->
                   <div class="form-group">
@@ -223,7 +246,8 @@
                         <span class="checkmark">
                           <i class="fas fa-check"></i>
                         </span>
-                        I agree to the <a href="#" class="terms-link">Terms & Conditions</a> and <a href="#" class="terms-link">Privacy Policy</a>
+                        I agree to the <a href="#" class="terms-link">Terms & Conditions</a> and <a href="#"
+                          class="terms-link">Privacy Policy</a>
                       </label>
                     </div>
                     <div class="error-message"
@@ -236,10 +260,7 @@
 
                   <!-- Submit Button -->
                   <div class="submit-section">
-                    <button 
-                      class="register-btn" 
-                      type="submit" 
-                      [disabled]="myForm.invalid || isLoading" 
+                    <button class="register-btn" type="submit" [disabled]="myForm.invalid || isLoading"
                       [class.loading]="isLoading">
                       <span class="btn-text">
                         <i class="fas fa-user-plus"></i>
@@ -273,7 +294,7 @@
                   <h6 class="social-title">Quick Sign Up</h6>
                   <p class="social-subtitle">Get started instantly with your favorite platform</p>
                 </div>
-                
+
                 <div class="social-buttons">
                   <button class="social-btn google-btn">
                     <div class="social-icon">
@@ -287,7 +308,7 @@
                       <i class="fas fa-chevron-right"></i>
                     </div>
                   </button>
-                  
+
                   <button class="social-btn apple-btn">
                     <div class="social-icon">
                       <i class="fab fa-apple"></i>
@@ -300,7 +321,7 @@
                       <i class="fas fa-chevron-right"></i>
                     </div>
                   </button>
-                  
+
                   <button class="social-btn facebook-btn">
                     <div class="social-icon">
                       <i class="fab fa-facebook-f"></i>
