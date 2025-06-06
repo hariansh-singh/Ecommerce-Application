@@ -21,8 +21,8 @@ export class HeaderSellerComponent implements OnInit {
     
     if (_token) {
       try {
-        this.userData = jwtDecode(_token);
-        this.userName = this.capitalizeFirstLetter(this.userData?.Name || "Seller"); // Ensure capitalization
+        this.userData = this.authService.decodedTokenData()
+        this.userName = this.capitalizeFirstLetter(this.userData?.["Name"] || "Seller"); // Ensure capitalization
         console.log("Decoded User Data:", this.userData); // Debugging check
       } catch (error) {
         console.error("Token decode error:", error);
