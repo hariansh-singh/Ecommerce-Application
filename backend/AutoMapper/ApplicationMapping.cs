@@ -4,6 +4,7 @@ using backend.Models.CustomerModels;
 using backend.Models.OrderItemModels;
 using backend.Models.OrderModels;
 using backend.Models.ProductModels;
+using backend.Models.SellerDetails;
 using backend.Models.UserAddressModels;
 using backend.Models.UserAddressModels.backend.Models.UserAddressModels;
 using backend.Models.UserProfileModel;
@@ -22,6 +23,7 @@ namespace backend.AutoMapper
             CreateMap<CartDBModel, CartUIModel>().ReverseMap();
             CreateMap<UserAddressDBModel, UserAddressUIModel>().ReverseMap();
             CreateMap<UserReviewDBModel, UserReviewUIModel>().ReverseMap();
+            CreateMap<SellerDetailsDBModel, SellerDetailsUIModel>().ReverseMap();
         }
     }
 }

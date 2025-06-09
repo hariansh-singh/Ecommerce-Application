@@ -100,12 +100,13 @@ namespace backend.Controllers
             }
 
             var result = await _customerRepository.AddUser(customer);
-            if (result)
+            if (result>0)
             {
                 return Ok(new
                 {
                     err = 0,
-                    msg = "Registration successful"
+                    msg = "Registration successful",
+                    userId = result
                 });
             }
             return Ok(new

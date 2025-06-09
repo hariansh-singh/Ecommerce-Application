@@ -17,7 +17,7 @@ namespace backend.Models.CustomerModels
         public string? Password { get; set; }
 
         [Required]
-        public int PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [Required]
         public string? Role { get; set; } = "user"; // Default to "user" but allows "seller"
