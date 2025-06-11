@@ -71,8 +71,9 @@ export class ViewCartComponent implements OnInit {
   constructor() {}
   
   ngOnInit(): void {
+    window.scrollTo(0, 0); // Scrolls to the top of the page
     this.loadCartItems();
-  }
+}
   
   // SweetAlert2 Toast Utility Methods
   showSuccessToast(message: string, title: string = 'Success'): void {

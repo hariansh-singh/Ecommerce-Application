@@ -72,7 +72,7 @@
 /* Description text truncation */
 .description-text {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  /* -webkit-line-clamp: 2; */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -83,7 +83,7 @@
 /* Product name truncation */
 .product-name {
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  /* -webkit-line-clamp: 1; */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -161,7 +161,7 @@
 /* Responsive adjustments */
 @media (max-width: 767px) {
   .description-text {
-    -webkit-line-clamp: 1;
+    /* -webkit-line-clamp: 1; */
     max-height: 1.5rem;
     min-height: 1.5rem;
   }
