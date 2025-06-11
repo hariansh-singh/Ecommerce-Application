@@ -22,6 +22,7 @@ export class AddProductComponent {
 
   productForm: FormGroup = new FormGroup({
     ProductCategory: new FormControl('', [Validators.required]),
+    CustomCategory: new FormControl(''), // New field for custom category
     ProductName: new FormControl('', [Validators.required]),
     ProductPrice: new FormControl('', [Validators.required]),
     Description: new FormControl('', [Validators.required]),
@@ -44,6 +45,17 @@ export class AddProductComponent {
       this.imageName = file.name; // Store image name
       console.log("Selected File:", this.selectedFile);
     }
+  }
+}
+
+isOtherSelected: boolean = false; // Tracks "Others" selection
+
+handleCategoryChange(event: any) {
+  this.isOtherSelected = event.target.value === 'others';
+
+  // Reset the custom category field when selecting other options
+  if (!this.isOtherSelected) {
+    this.productForm.patchValue({ CustomCategory: '' });
   }
 }
 
@@ -72,6 +84,8 @@ submitProduct() {
 }
 }
 const formData = new FormData();
+const selectedCategory = this.isOtherSelected ? this.productForm.value.CustomCategory : this.productForm.value.ProductCategory;
+formData.append("ProductCategory", selectedCategory);
   Object.keys(this.productForm.value).forEach(key => {
     formData.append(key, this.productForm.value[key]);
   });

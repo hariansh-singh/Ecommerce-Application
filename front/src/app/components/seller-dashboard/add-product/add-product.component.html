@@ -38,17 +38,15 @@
                   <div class="form-group">
                     <div class="input-wrapper">
                       <select class="form-input role-select" id="productCategory" formControlName="ProductCategory"
-                        required [class.error]="
-                          productForm.get('ProductCategory')?.invalid &&
-                          productForm.get('ProductCategory')?.touched
-                        ">
-                        <option value="" disabled selected>
-                          Choose a Category
-                        </option>
+                        (change)="handleCategoryChange($event)" required [ngClass]="{
+        'error': productForm.get('ProductCategory')?.invalid && productForm.get('ProductCategory')?.touched
+      }">
+                        <option value="" disabled selected>Choose a Category</option>
                         <option value="mobiles">Mobiles</option>
                         <option value="laptops">Laptops</option>
                         <option value="accessories">Accessories</option>
                         <option value="cameras">Cameras</option>
+                        <option value="others">Others</option> <!-- New "Others" option -->
                       </select>
                       <label for="productCategory" class="form-label role-label">Product Category</label>
                       <div class="input-icon">
@@ -56,17 +54,28 @@
                       </div>
                       <div class="input-border"></div>
                     </div>
+
+                    <!-- Conditional Input Field for Custom Category -->
+                    <div *ngIf="isOtherSelected" class="input-wrapper">
+                      <!-- <input type="text" class="form-input" id="customCategory"
+                        formControlName="CustomCategory" required /> -->
+                        <input type="text" class="form-input" id="customCategory" placeholder=" " [class.error]="
+                          productForm.get('CustomCategory')?.invalid &&
+                          productForm.get('CustomCategory')?.touched
+                        " formControlName="CustomCategory" required />
+                      <label for="customCategory" class="form-label">Custom Category</label>
+                    </div>
+
                     <!-- Validation Error Message -->
                     <div class="error-message" *ngIf="
-                        productForm.get('ProductCategory')?.invalid &&
-                        productForm.get('ProductCategory')?.touched
-                      ">
+      productForm.get('ProductCategory')?.invalid && productForm.get('ProductCategory')?.touched
+    ">
                       <small *ngIf="productForm.get('ProductCategory')?.errors?.['required']">
-                        <i class="fas fa-exclamation-triangle"></i> Please
-                        select a product category!
+                        <i class="fas fa-exclamation-triangle"></i> Please select a product category!
                       </small>
                     </div>
                   </div>
+
 
                   <!-- Product Price -->
                   <div class="form-group">
