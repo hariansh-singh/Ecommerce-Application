@@ -17,7 +17,7 @@ namespace backend.Repositories.CustomerRepository
             this.mapper = mapper;
         }
 
-        public async Task<bool> AddUser(CustomerUIModel user)
+        public async Task<int?> AddUser(CustomerUIModel user)
         {
             var existingUser = await dBContext.Customers.FirstOrDefaultAsync(u => u.Email == user.Email);
             if (existingUser == null)
@@ -33,9 +33,9 @@ namespace backend.Repositories.CustomerRepository
                 await dBContext.SaveChangesAsync();
 
 
-                return true;
+                return addUser.CustomerId;
             }
-            return false;
+            return 0;
         }
 
         public async Task<bool> ChangeUserRole(int customerId, string updatedRole)

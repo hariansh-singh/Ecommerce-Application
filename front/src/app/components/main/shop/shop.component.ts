@@ -239,7 +239,8 @@ export class ShopComponent implements OnInit, OnChanges {
       filtered = filtered.filter(
         (product) =>
           product.name?.toLowerCase().includes(term) ||
-          product.description?.toLowerCase().includes(term)
+          product.description?.toLowerCase().includes(term) ||
+          product.category?.toLowerCase().includes(term)
       );
     }
 

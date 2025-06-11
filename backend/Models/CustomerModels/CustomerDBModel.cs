@@ -29,7 +29,7 @@ namespace backend.Models.CustomerModels
         public int UserStatus { get; set; } = 1;
        
         [Required]
-        public int PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
 
         [Required]

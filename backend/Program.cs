@@ -4,6 +4,7 @@ using backend.Repositories.CartRepository;
 using backend.Repositories.CustomerRepository;
 using backend.Repositories.OrderRepository;
 using backend.Repositories.ProductRepository;
+using backend.Repositories.SellerDetailsRepository;
 using backend.Repositories.UserAddressRepo;
 using backend.Repositories.UserProfileRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -64,6 +65,7 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IAdminDashboardRepo, AdminDashboardRepo>();
 builder.Services.AddScoped<IUserAddressRepo, UserAddressRepo>();
 builder.Services.AddScoped<IUserReviewRepo, UserReviewRepo>();
+builder.Services.AddScoped<ISellerDetailsRepo, SellerDetailsRepo>();
 
 var app = builder.Build();
 Console.WriteLine($"Current Environment: {app.Environment.EnvironmentName}");

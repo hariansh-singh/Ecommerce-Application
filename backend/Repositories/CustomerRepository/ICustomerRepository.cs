@@ -4,7 +4,7 @@ namespace backend.Repositories.CustomerRepository
 {
     public interface ICustomerRepository
     {
-        Task<bool> AddUser(CustomerUIModel user);
+        Task<int?> AddUser(CustomerUIModel user);
 
         Task<CustomerDBModel?> GetUserById(int customerId);
         Task<List<CustomerDBModel>> GetAllUsers();
