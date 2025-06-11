@@ -12,6 +12,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthStateService } from '../../../../services/auth-state.service';
 import Swal from 'sweetalert2';
+import { SellerDetailsService } from '../../../../services/seller-details.service';
 
 @Component({
   selector: 'app-register',
@@ -24,6 +25,8 @@ export class RegisterComponent {
   authService = inject(AuthService);
   authState = inject(AuthStateService);
   router = inject(Router);
+  sellerDetailsService = inject(SellerDetailsService);
+
 
   isLoading = false;
   showPassword = false;
@@ -32,14 +35,25 @@ export class RegisterComponent {
 
   myForm: FormGroup = new FormGroup(
     {
-      FirstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-      LastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      FirstName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(2),
+      ]),
+      LastName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(2),
+      ]),
       Email: new FormControl('', [Validators.required, Validators.email]),
-      Password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      PhoneNumber: new FormControl('', [Validators.required]), // Assuming 10-digit phone number
+      Password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
       ConfirmPassword: new FormControl('', [Validators.required]),
       Role: new FormControl('user', [Validators.required]), // Default to 'user'
       AgreeTerms: new FormControl(false, [Validators.requiredTrue]),
       // Seller-specific fields (conditionally validated)
+      sellerId: new FormControl(''),
       StoreName: new FormControl(''),
       GSTNumber: new FormControl(''),
       BusinessAddress: new FormControl(''),
@@ -61,8 +75,12 @@ export class RegisterComponent {
   toggleSellerFields(role: string) {
     if (role === 'seller') {
       this.myForm.get('StoreName')?.setValidators([Validators.required]);
-      this.myForm.get('GSTNumber')?.setValidators([Validators.required, Validators.pattern(/^\d{15}$/)]);
-      this.myForm.get('BusinessAddress')?.setValidators([Validators.required, Validators.minLength(10)]);
+      this.myForm
+        .get('GSTNumber')
+        ?.setValidators([Validators.required, Validators.pattern(/^\d{15}$/)]);
+      this.myForm
+        .get('BusinessAddress')
+        ?.setValidators([Validators.required, Validators.minLength(10)]);
     } else {
       this.myForm.get('StoreName')?.clearValidators();
       this.myForm.get('GSTNumber')?.clearValidators();
@@ -74,7 +92,8 @@ export class RegisterComponent {
   }
 
   updateHeading(role: string): void {
-    this.headingText = role === 'seller' ? 'Join as a Seller' : 'Create Account';
+    this.headingText =
+      role === 'seller' ? 'Join as a Seller' : 'Create Account';
   }
 
   private setupInputAnimations(): void {
@@ -86,7 +105,7 @@ export class RegisterComponent {
       });
     }, 100);
   }
-  
+
   private handleInputFocus = (event: Event): void => {
     const input = event.target as HTMLInputElement;
     const wrapper = input.closest('.input-wrapper');
@@ -100,7 +119,6 @@ export class RegisterComponent {
       wrapper?.classList.remove('focused');
     }
   };
-
 
   private passwordMatchValidator(
     control: AbstractControl
@@ -139,8 +157,6 @@ export class RegisterComponent {
     this.myForm.patchValue({ Role: event.target.value });
   }
 
-  
-
   onSubmitRegister(): void {
     if (this.myForm.invalid) {
       console.log(this.myForm.errors);
@@ -149,38 +165,87 @@ export class RegisterComponent {
     }
 
     this.isLoading = true;
-    const formData = {
+
+    // Base user registration data (same for both buyer and seller)
+    const userData = {
       Name: `${this.myForm.value.FirstName + ' ' + this.myForm.value.LastName}`,
       Email: this.myForm.value.Email,
+      PhoneNumber: this.myForm.value.PhoneNumber,
       Password: this.myForm.value.Password,
       Role: this.myForm.value.Role,
     };
 
-    console.log('Role being sent:', formData.Role);
+    console.log('Role being sent:', userData.Role);
+    console.log('User registration data:', userData);
 
-    this.authService.signUp(formData).subscribe({
+    // First, register the user
+    this.authService.signUp(userData).subscribe({
       next: (data: any) => {
-        this.isLoading = false;
-        console.log(data);
+        console.log('User registration response:', data);
 
         if (data.err === 0) {
-          // Show success message with animation
-          this.showSuccessMessage();
-          Swal.fire({
-            icon: 'success',
-            title: `Registration successful as ${formData.Role}!`,
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-          });
-          // Navigate to login after successful registration
-          setTimeout(() => {
-            this.router.navigate(['/login'], {
-              queryParams: { registered: 'true' },
+          // If user registration is successful and role is seller
+          if (this.myForm.value.Role === 'seller') {
+            // Prepare seller-specific data
+            const sellerData = {
+              sellerId: data.userId, // Assuming the API returns a seller ID
+              StoreName: this.myForm.value.StoreName,
+              GSTNumber: this.myForm.value.GSTNumber,
+              BusinessAddress: this.myForm.value.BusinessAddress,
+              // You might also need to include user ID or email to link seller details
+              // UserId: data.userId, // Uncomment if your API returns user ID
+              // Email: userData.Email, // Or use email to identify the user
+            };
+
+            console.log('Seller details data:', sellerData);
+
+            // Call the seller details API
+            this.sellerDetailsService.addSellerDetails(sellerData).subscribe({
+              next: (sellerResponse: any) => {
+                this.isLoading = false;
+                console.log('Seller details response:', sellerResponse);
+
+                if (sellerResponse.err === 0) {
+                  this.handleSuccessfulRegistration('seller');
+                } else {
+                  // Handle seller details creation failure
+                  Swal.fire({
+                    icon: 'warning',
+                    title: 'Registration Completed',
+                    text: 'User account created but seller details could not be saved. Please update your profile later.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                  });
+                  this.navigateToLogin();
+                }
+              },
+              error: (sellerErr: any) => {
+                this.isLoading = false;
+                console.error('Error saving seller details:', sellerErr);
+
+                // User is registered but seller details failed
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Partial Registration',
+                  text: 'Account created but seller details could not be saved. Please complete your profile after login.',
+                  toast: true,
+                  position: 'top-end',
+                  showConfirmButton: false,
+                  timer: 4000,
+                });
+                this.navigateToLogin();
+              },
             });
-          }, 2000);
+          } else {
+            // For buyers, registration is complete
+            this.isLoading = false;
+            this.handleSuccessfulRegistration('buyer');
+          }
         } else {
+          // User registration failed
+          this.isLoading = false;
           Swal.fire({
             icon: 'error',
             title: 'Registration failed',
@@ -194,10 +259,35 @@ export class RegisterComponent {
       },
       error: (err: any) => {
         this.isLoading = false;
-        console.error('Error during registration:', err);
-        this.showErrorMessage('An error occurred. Please try again.');
+        console.error('Error during user registration:', err);
+        this.showErrorMessage(
+          'An error occurred during registration. Please try again.'
+        );
       },
     });
+  }
+
+  // Helper method to handle successful registration
+  private handleSuccessfulRegistration(role: string): void {
+    this.showSuccessMessage();
+    Swal.fire({
+      icon: 'success',
+      title: `Registration successful as ${role}!`,
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+    });
+    this.navigateToLogin();
+  }
+
+  // Helper method to navigate to login
+  private navigateToLogin(): void {
+    setTimeout(() => {
+      this.router.navigate(['/login'], {
+        queryParams: { registered: 'true' },
+      });
+    }, 2000);
   }
 
   private markFormGroupTouched(): void {
@@ -257,7 +347,6 @@ export class RegisterComponent {
 
   // Getter methods for easier template access
 
- 
   get firstNameControl() {
     return this.myForm.get('FirstName');
   }
