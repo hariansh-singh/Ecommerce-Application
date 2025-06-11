@@ -9,11 +9,9 @@
 
     <div class="products-grid">
       <div class="product-card-wrapper" *ngFor="let product of products.slice(2, 6)">
-        <div class="product-card" 
-             [attr.data-product-id]="product.productId"
-             (mouseenter)="onCardHover($event, true)" 
-             (mouseleave)="onCardHover($event, false)">
-          
+        <div class="product-card" [attr.data-product-id]="product.productId" (mouseenter)="onCardHover($event, true)"
+          (mouseleave)="onCardHover($event, false)">
+
           <!-- Sale Badge -->
           <div *ngIf="product.onSale" class="sale-badge">
             <i class="fas fa-fire"></i> SALE
@@ -21,14 +19,10 @@
 
           <!-- Product Image -->
           <div class="image-container">
-            <img [src]="'https://localhost:7116/' + product.productImagePath" 
-                 [alt]="product.productName"
-                 class="product-image"
-                 (error)="onImageError($event)">
+            <img [src]="'https://localhost:7116/' + product.productImagePath" [alt]="product.productName"
+              class="product-image" (error)="onImageError($event)">
             <div class="image-overlay">
-              <button class="quick-view-btn" 
-                      [routerLink]="['/product', product.productId]"
-                      title="Quick View">
+              <button class="quick-view-btn" [routerLink]="['/product', product.productId]" title="Quick View">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
@@ -47,37 +41,37 @@
             </div>
             <div class="rating" *ngIf="product.rating">
               <div class="stars">
-                <i class="fas fa-star" 
-                   *ngFor="let star of getStarArray(product.rating)"
-                   [class.filled]="star <= product.rating"></i>
+                <i class="fas fa-star" *ngFor="let star of getStarArray(product.rating)"
+                  [class.filled]="star <= product.rating"></i>
               </div>
               <span class="rating-text">({{ product.reviewCount || 0 }})</span>
             </div>
 
+            <!-- Quantity Control (Updated to match home.html) -->
             <!-- Quantity Control -->
             <div class="quantity-control">
-              <button class="quantity-btn" (click)="decreaseQuantity(product)" [disabled]="(product.selectedQuantity || 1) <= 1">
+              <button class="quantity-btn" (click)="decreaseQuantity(product)"
+                [disabled]="(product.selectedQuantity ?? 1) <= 1">
                 <i class="fas fa-minus"></i>
               </button>
-              <span class="quantity-display">{{ product.selectedQuantity || 1 }}</span>
-              <button class="quantity-btn" (click)="increaseQuantity(product)" [disabled]="(product.selectedQuantity || 1) >= (product.stockQuantity || 10)">
+              <span class="quantity-display">{{ product.selectedQuantity ?? 1 }}</span>
+              <button class="quantity-btn" (click)="increaseQuantity(product)"
+                [disabled]="(product.selectedQuantity ?? 1) >= (product.stockQuantity ?? 10)">
                 <i class="fas fa-plus"></i>
               </button>
             </div>
+
           </div>
 
           <!-- Action Buttons -->
           <div class="action-buttons">
-            <button class="btn btn-primary btn-cart" 
-                    (click)="addToCart(product)"
-                    [disabled]="isAddingToCart"
-                    title="Add to Cart">
+            <button class="btn btn-primary btn-cart" (click)="addToCart(product)" [disabled]="isAddingToCart"
+              title="Add to Cart">
               <i class="fas fa-shopping-cart"></i>
               <span>{{ isAddingToCart ? 'Adding...' : 'Add to Cart' }}</span>
             </button>
-            <button class="btn btn-outline-primary btn-details" 
-                    [routerLink]="['/product', product.productId]"
-                    title="View Details">
+            <button class="btn btn-outline-primary btn-details" [routerLink]="['/product', product.productId]"
+              title="View Details">
               <i class="fas fa-info-circle"></i>
             </button>
           </div>
@@ -101,6 +95,6 @@
       <p>Check back later for more amazing products!</p>
     </div>
 
-   
+
   </div>
 </section>

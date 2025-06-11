@@ -125,7 +125,7 @@
 .product-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: var(--transition);
 }
 
@@ -186,7 +186,7 @@
   line-height: 1.4;
   height: 2.8rem;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  /* -webkit-line-clamp: 2; */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -318,7 +318,7 @@
 
 /* Quantity Control */
 .quantity-control {
-  display: flex;
+  /* display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
@@ -328,12 +328,15 @@
   box-shadow: var(--shadow-lg);
   width: fit-content;
   transition: var(--transition);
-  margin: 0 auto; 
+  margin: 0 auto;  */
+   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Quantity Buttons */
 .quantity-btn {
-  background: #b0b0b0; /* 🔹 Soft grey for sleek appearance */
+  /* background: #b0b0b0; 
   border: none;
   color: white;
   font-size: 1.2rem;
@@ -345,41 +348,29 @@
   justify-content: center;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md); */
+   background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.quantity-btn i {
-  font-size: 1rem;
-  color: white; /* Ensures icon visibility */
-}
-
-.quantity-btn:hover {
-  background: #909090; /* Slightly darker grey for hover effect */
-  transform: scale(1.1);
-  box-shadow: var(--shadow-lg);
-}
 
 .quantity-btn:disabled {
-  background: #cfcfcf; /* Lighter grey for disabled state */
-  opacity: 0.5;
+ opacity: 0.5;
   cursor: not-allowed;
-  transform: scale(1);
 }
 
-.quantity-btn:disabled i {
-  color: rgba(255, 255, 255, 0.5);
-}
 
 /* Quantity Display */
 .quantity-display {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  width: 50px;
+  padding: 0 10px;
+  min-width: 40px;
   text-align: center;
-  border: none;
-  background: transparent;
-  transition: var(--transition);
 }
 
 .quantity-display:focus {
