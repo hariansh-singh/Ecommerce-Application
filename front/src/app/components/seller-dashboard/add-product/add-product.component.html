@@ -64,11 +64,13 @@
                   <div class="form-group">
                     <div class="input-wrapper">
                       <input type="number" class="form-input" id="productPrice" placeholder=" "
-                        formControlName="ProductPrice" required
+
+                        formControlName="ProductPrice" required>
                         [class.error]="productForm.get('ProductPrice')?.invalid && productForm.get('ProductPrice')?.touched">
                       <label for="productPrice" class="form-label">Product Price (₹)</label>
                       <div class="input-icon">
-                        <i class="fas fa-dollar-sign"></i> <!-- Rupee Icon -->
+                       <p class="rupee-symbol">₹</p>
+
                       </div>
                       <div class="input-border"></div>
                     </div>

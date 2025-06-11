@@ -166,7 +166,14 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-top: 20px;
 }
+
+ .rupee-symbol {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 14px;
+        }
 
 .submit-btn:hover {
   transform: translateY(-2px);
