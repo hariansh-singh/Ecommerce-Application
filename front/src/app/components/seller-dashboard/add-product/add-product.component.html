@@ -1,6 +1,6 @@
 <section class="add-product-section">
   <div class="container">
-    
+
     <!-- Main Content -->
     <div class="row justify-content-center">
       <div class="col-12 col-lg-10 col-xl-8">
@@ -12,29 +12,38 @@
               <div class="form-container">
                 <form [formGroup]="productForm" (ngSubmit)="submitProduct()" enctype="multipart/form-data">
 
-                  <!-- Product Name -->
                   <div class="form-group">
                     <div class="input-wrapper">
                       <input type="text" class="form-input" id="productName" placeholder=" "
-                        formControlName="ProductName" required>
+                        formControlName="ProductName" required
+                        [class.error]="productForm.get('ProductName')?.invalid && productForm.get('ProductName')?.touched">
                       <label for="productName" class="form-label">Product Name</label>
                       <div class="input-icon">
                         <i class="fas fa-tag"></i>
                       </div>
                       <div class="input-border"></div>
                     </div>
+                    <!-- Validation Error Message -->
+                    <div class="error-message"
+                      *ngIf="productForm.get('ProductName')?.invalid && productForm.get('ProductName')?.touched">
+                      <small *ngIf="productForm.get('ProductName')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Product Name is required!
+                      </small>
+                    </div>
                   </div>
+
 
                   <!-- Product Category -->
                   <div class="form-group">
                     <div class="input-wrapper">
                       <select class="form-input role-select" id="productCategory" formControlName="ProductCategory"
-                        required>
+                        required
+                        [class.error]="productForm.get('ProductCategory')?.invalid && productForm.get('ProductCategory')?.touched">
                         <option value="" disabled selected>Choose a Category</option>
                         <option value="mobiles">Mobiles</option>
                         <option value="laptops">Laptops</option>
                         <option value="accessories">Accessories</option>
-                        <option value="cameras">Cameras
+                        <option value="cameras">Cameras</option>
                       </select>
                       <label for="productCategory" class="form-label role-label">Product Category</label>
                       <div class="input-icon">
@@ -42,13 +51,22 @@
                       </div>
                       <div class="input-border"></div>
                     </div>
+                    <!-- Validation Error Message -->
+                    <div class="error-message"
+                      *ngIf="productForm.get('ProductCategory')?.invalid && productForm.get('ProductCategory')?.touched">
+                      <small *ngIf="productForm.get('ProductCategory')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Please select a product category!
+                      </small>
+                    </div>
                   </div>
 
                   <!-- Product Price -->
                   <div class="form-group">
                     <div class="input-wrapper">
                       <input type="number" class="form-input" id="productPrice" placeholder=" "
+
                         formControlName="ProductPrice" required>
+                        [class.error]="productForm.get('ProductPrice')?.invalid && productForm.get('ProductPrice')?.touched">
                       <label for="productPrice" class="form-label">Product Price (₹)</label>
                       <div class="input-icon">
                        <p class="rupee-symbol">₹</p>
@@ -56,32 +74,62 @@
                       </div>
                       <div class="input-border"></div>
                     </div>
+                    <div class="error-message"
+                      *ngIf="productForm.get('ProductPrice')?.invalid && productForm.get('ProductPrice')?.touched">
+                      <small *ngIf="productForm.get('ProductPrice')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Product Price is required
+                      </small>
+                      <small *ngIf="productForm.get('ProductPrice')?.errors?.['min']">
+                        <i class="fas fa-exclamation-triangle"></i> Price must be greater than zero
+                      </small>
+                    </div>
                   </div>
+
 
                   <!-- Description -->
                   <div class="form-group">
                     <div class="input-wrapper">
                       <textarea class="form-input textarea-input" id="description" placeholder=" "
-                        formControlName="Description" required></textarea>
+                        formControlName="Description" required
+                        [class.error]="productForm.get('Description')?.invalid && productForm.get('Description')?.touched"></textarea>
                       <label for="description" class="form-label">Product Description</label>
                       <div class="input-icon">
-                        <i class="fas fa-align-left"></i> <!-- Added missing icon -->
+                        <i class="fas fa-align-left"></i>
                       </div>
                       <div class="input-border"></div>
                     </div>
+                    <!-- Inline Validation Message -->
+                    <div class="error-message"
+                      *ngIf="productForm.get('Description')?.invalid && productForm.get('Description')?.touched">
+                      <small *ngIf="productForm.get('Description')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Description is required!
+                      </small>
+                    </div>
                   </div>
-                  <!-- Stock Quantity -->
+
                   <div class="form-group">
                     <div class="input-wrapper">
                       <input type="number" class="form-input" id="stockQuantity" placeholder=" "
-                        formControlName="StockQuantity" required>
+                        formControlName="StockQuantity" required
+                        [class.error]="productForm.get('StockQuantity')?.invalid && productForm.get('StockQuantity')?.touched">
                       <label for="stockQuantity" class="form-label">Stock Quantity</label>
                       <div class="input-icon">
                         <i class="fas fa-cubes"></i>
                       </div>
                       <div class="input-border"></div>
                     </div>
+                    <!-- Inline Validation Message -->
+                    <div class="error-message"
+                      *ngIf="productForm.get('StockQuantity')?.invalid && productForm.get('StockQuantity')?.touched">
+                      <small *ngIf="productForm.get('StockQuantity')?.errors?.['required']">
+                        <i class="fas fa-exclamation-triangle"></i> Stock Quantity is required!
+                      </small>
+                      <small *ngIf="productForm.get('StockQuantity')?.errors?.['min']">
+                        <i class="fas fa-exclamation-triangle"></i> Quantity must be greater than zero!
+                      </small>
+                    </div>
                   </div>
+
 
                   <!-- Upload Product Image -->
                   <div class="form-group upload-group">
@@ -90,7 +138,7 @@
                       <input type="file" class="file-input" (change)="handleFileUpload($event)" required>
                       <div class="upload-area">
                         <i class="fas fa-upload upload-icon"></i>
-                        <span class="upload-text">Choose a file or drag it here</span>
+                        <span class="upload-text">{{ imageName ? imageName : 'Choose a file or drag it here' }}</span>
                       </div>
                     </div>
                   </div>
