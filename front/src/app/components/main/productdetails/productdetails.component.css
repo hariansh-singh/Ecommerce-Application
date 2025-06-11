@@ -409,3 +409,96 @@
     padding: 0 1rem;
   }
 }
+
+.reviews-section {
+    max-width: 1150px; /* Match product container */
+     margin: 2rem auto;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    box-shadow: 
+        0 16px 32px rgba(0, 0, 0, 0.1), 
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    margin-top: 2rem;
+    transition: all 0.4s ease-in-out;
+}
+
+.reviews-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 24px 48px rgba(0, 0, 0, 0.15), 
+        0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.review {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #556b7d;
+    padding: 1rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(39, 174, 96, 0.1));
+    border-left: 4px solid #27ae60;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.review:hover {
+    transform: scale(1.02);
+}
+
+.review strong {
+    font-weight: 700;
+    color: #27ae60;
+}
+
+.reviews-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.rating {
+     font-size: 1.5rem;
+    font-weight: 600;
+    color: #FFD700; /* Correct gold color */
+    display: inline-block;
+    text-shadow: 2px 2px 8px rgba(255, 215, 0, 0.8); /* Enhanced glow effect */
+    letter-spacing: 2px
+}
+
+.total-reviews {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #556b7d;
+}
+
+.reviews-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.view-all-reviews-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.view-all-reviews-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+}
