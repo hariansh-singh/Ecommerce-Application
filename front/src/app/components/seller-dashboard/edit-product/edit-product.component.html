@@ -94,7 +94,7 @@
                       <input type="file" class="file-input" (change)="uploadFile($event)">
                       <div class="upload-area">
                         <i class="fas fa-upload upload-icon"></i>
-                        <span class="upload-text">Choose a file or drag it here</span>
+                        <span class="upload-text">{{ filePathRef?.name ? filePathRef.name : 'Choose a file or drag it here'}}</span>
                       </div>
                     </div>
                   </div>
