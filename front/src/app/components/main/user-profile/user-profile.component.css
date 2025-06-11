@@ -1,23 +1,113 @@
-.user-profile {
-  max-width: 800px;
+/* Main Profile Container */
+.manage-profile {
+  display: flex;
+  max-width: 1000px;
   margin: auto;
   padding: 20px;
-  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar Navigation */
+.profile-sidebar {
+  width: 300px;
+  padding: 20px;
+  background: linear-gradient(135deg, #3b82f6, #a855f7);
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+}
+
+.profile-sidebar h2 {
+  margin-bottom: 1rem;
+}
+
+.profile-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.profile-sidebar li {
+  padding: 15px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.profile-sidebar li:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+/* Profile Content */
+.profile-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+/* Animated Profile Box */
+.profile-box {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Section Headings */
+.profile-box h3 {
+  font-size: 1.6rem;
+  color: #1e293b;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Labels */
+.profile-box label {
+  display: block;
+  font-weight: bold;
+  color: #64748b;
+  margin-top: 10px;
+}
+
+/* Data Display */
+.profile-box span {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #374151;
+  padding: 5px;
+  background: rgba(59, 130, 246, 0.1);
   border-radius: 5px;
 }
 
-h2, h3 {
-  color: #333;
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-section {
-  margin-bottom: 20px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .manage-profile {
+    flex-direction: column;
+  }
+  
+  .profile-sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 }
