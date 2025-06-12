@@ -16,6 +16,7 @@ import {
   ManageProfilesService,
   User,
 } from '../../../../services/manageProfilesServices/manage-profiles.service';
+import { SellerDetailsService } from '../../../../services/seller-details.service';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +39,7 @@ export class LoginComponent {
     private authService: AuthService,
     private manageProfileService: ManageProfilesService,
     private authState: AuthStateService,
+    private sellerDetailsService: SellerDetailsService,
     private router: Router
   ) {
     this.setupInputAnimations();
@@ -128,8 +130,16 @@ export class LoginComponent {
                 return;
               }
 
-              // User is active, proceed with login
-              this.completeLogin(data, tokenData);
+              // Check if user is seller and verify seller details
+              const userType = userData.data.userType; // Assuming userType field exists
+
+              if (userType === 'seller' || userType === 2) {
+                // Adjust condition based on your user type logic
+                this.checkSellerDetails(userId, data, tokenData);
+              } else {
+                // User is not a seller, proceed with normal login
+                this.completeLogin(data, tokenData);
+              }
             },
             error: (error) => {
               this.isLoading = false;
@@ -163,6 +173,84 @@ export class LoginComponent {
         console.error('Error during login:', err);
         this.showErrorMessage('An error occurred. Please try again.');
       },
+    });
+  }
+
+  // New method to check seller details
+  private checkSellerDetails(
+    sellerId: string,
+    loginData: any,
+    tokenData: any
+  ): void {
+    this.sellerDetailsService.getSellerDetailsById(Number(sellerId)).subscribe({
+      next: (sellerResponse: any) => {
+        console.log('Seller details response:', sellerResponse);
+
+        // Check if seller details exist (adjust condition based on your API response structure)
+        if (
+          sellerResponse &&
+          sellerResponse.data &&
+          sellerResponse.data.sellerId
+        ) {
+          // Seller details exist, proceed with login
+          this.completeLogin(loginData, tokenData);
+        } else {
+          // Seller details don't exist, show dialog to fill details
+          this.showSellerDetailsRequiredDialog();
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching seller details:', error);
+
+        // If error is 404 or similar (seller details not found), show dialog
+        if (
+          error.status === 404 ||
+          (error.error && error.error.msg === 'Seller not found')
+        ) {
+          this.showSellerDetailsRequiredDialog();
+        } else {
+          // Other errors, show generic error
+          this.isLoading = false;
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Could not verify seller details. Please try again.',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+          });
+        }
+      },
+    });
+  }
+
+  // New method to show seller details required dialog
+  private showSellerDetailsRequiredDialog(): void {
+    this.isLoading = false;
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Seller Details Required',
+      text: 'Please complete your seller profile to access the website.',
+      confirmButtonText: 'Fill Details',
+      cancelButtonText: 'Cancel',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      customClass: {
+        popup: 'custom-dialog-toast',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Redirect to seller details form/page
+        this.router.navigate(['/seller-details-form']); // Adjust route as needed
+      } else {
+        // User cancelled, stay on login page
+        console.log('User cancelled seller details completion');
+      }
     });
   }
 
