@@ -117,6 +117,7 @@ namespace backend.Repositories.CustomerRepository
             if (user != null)
             {
                 user.Name = updatedUser.Name;
+                user.PhoneNumber = updatedUser.PhoneNumber;
                 user.UpdatedAt = DateTime.UtcNow;
 
                 // Update password only if provided

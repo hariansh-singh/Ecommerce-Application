@@ -3,6 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { UserProfileService } from '../../../../services/user-profile.service';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-profile',
@@ -141,21 +142,34 @@ export class UserProfileComponent implements OnInit {
 
   saveBasicInfo(): void {
     const updatedInfo = {
+      ...this.user.data,
       name: this.name,
       email: this.email,
       phoneNumber: this.phoneNumber,
     };
 
+    console.log(updatedInfo);
+
     this.userProfileService
       .updateCustomerInfo(this.customerId, updatedInfo)
       .subscribe(
         (response) => {
-          console.log('Profile updated successfully', response);
-          // Show success message
+          Swal.fire({
+            title: 'Success!',
+            text: 'Your profile has been updated successfully',
+            icon: 'success',
+            timer: 1000,
+            showConfirmButton: false,
+          });
         },
         (error) => {
-          console.error('Error updating profile', error);
-          // Show error message
+          Swal.fire({
+            title: 'Oops!',
+            text: 'Something went wrong while updating your profile',
+            icon: 'error',
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Try Again',
+          });
         }
       );
   }

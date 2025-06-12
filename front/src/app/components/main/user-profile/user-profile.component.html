@@ -55,9 +55,9 @@
           </div>
 
           <div class="info-card">
-            <label>Email Address</label>
+            <label>Email Address <span *ngIf="isEditMode">(Can't modify email)</span></label>
             <div class="input-group" *ngIf="isEditMode; else displayEmail">
-              <input type="email" [(ngModel)]="email" class="form-input" />
+              <input type="email" [(ngModel)]="email" class="form-input" disabled />
               <i class="fas fa-envelope"></i>
             </div>
             <ng-template #displayEmail>
