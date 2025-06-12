@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-profile',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
@@ -15,6 +15,9 @@ export class UserProfileComponent implements OnInit {
   addresses: any[] = [];
   orders: any[] = [];
   reviews: any[] = [];
+
+  // Active section for navigation
+  activeSection: string = 'basic'; // Default section
 
   constructor(private userProfileService: UserProfileService) {}
 
@@ -71,5 +74,10 @@ export class UserProfileComponent implements OnInit {
 
   contactSupport(): void {
     console.log('User is contacting support...');
+  }
+
+  // Function to set active section dynamically
+  setActiveSection(section: string): void {
+    this.activeSection = section;
   }
 }
