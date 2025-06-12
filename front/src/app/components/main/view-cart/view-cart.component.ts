@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, inject, OnInit } from '@angular/core'
 import { CartService } from '../../../../services/cart.service';
 import { AuthService } from '../../../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { OrderService } from '../../../../services/order.service';
 import { FormsModule } from '@angular/forms';
 import { trigger, state, style, animate, transition } from '@angular/animations';
@@ -44,6 +44,8 @@ import Swal from 'sweetalert2';
 export class ViewCartComponent implements OnInit {
   @ViewChild('checkoutSection') checkoutSection!: ElementRef;
   
+  
+  
   cartItems: any[] = [];
   totalPrice: number = 0;
   isProcessing: boolean = false;
@@ -68,7 +70,7 @@ export class ViewCartComponent implements OnInit {
   
   decodedToken: any = this.authService.decodedTokenData();
   
-  constructor() {}
+  constructor(private router: Router) {}
   
   ngOnInit(): void {
     window.scrollTo(0, 0); // Scrolls to the top of the page
@@ -162,10 +164,18 @@ export class ViewCartComponent implements OnInit {
     }
   });
 }
-  
+ redirectToAddressPage(): void {
+    this.router.navigate(['/useraddress']); // Redirect to the User Address page
+  }
   placeOrder(): void {
     if (!this.cartItems.length) {
       this.showWarningToast('Your cart is empty!');
+      return;
+    }
+
+      if (!this.shippingAddress) {
+      this.showWarningToast('Please provide an address before placing an order.');
+      //this.router.navigate(['/user-address']); // Redirect to the address page
       return;
     }
     

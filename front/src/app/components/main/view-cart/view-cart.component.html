@@ -13,11 +13,7 @@
         </div>
 
         <!-- Empty Cart Message -->
-        <div
-          *ngIf="cartItems.length === 0"
-          @fadeIn
-          class="empty-cart-container"
-        >
+        <div *ngIf="cartItems.length === 0" @fadeIn class="empty-cart-container">
           <div class="empty-cart">
             <i class="fas fa-shopping-cart fa-4x"></i>
             <h4>Your cart is empty</h4>
@@ -30,25 +26,19 @@
 
         <!-- Cart Items -->
         <div *ngIf="cartItems.length > 0" class="cart-items">
-          <div
-            *ngFor="let item of cartItems; let i = index"
-            @cartItemAnimation
-            class="cart-item"
-            [class.highlighted]="item.isHighlighted"
-          >
+          <div *ngFor="let item of cartItems; let i = index" @cartItemAnimation class="cart-item"
+            [class.highlighted]="item.isHighlighted">
             <div class="cart-item-image">
-              <img
-                [src]="'https://localhost:7116/' + item.products.productImagePath"
-                [alt]="item.products.productName"
-              />
+              <img [src]="'https://localhost:7116/' + item.products.productImagePath"
+                [alt]="item.products.productName" />
             </div>
 
             <div class="cart-item-details">
               <h5 class="product-name">{{ item.products.productName }}</h5>
               <p class="product-price">
                 {{
-                  item.products.productPrice
-                    | currency : "INR" : "symbol" : "1.0-0"
+                item.products.productPrice
+                | currency : "INR" : "symbol" : "1.0-0"
                 }}
               </p>
 
@@ -57,10 +47,7 @@
                   <i class="fas fa-check-circle"></i> In Stock
                 </span>
               </div>
-              <div
-                class="stock-status"
-                *ngIf="item.products.stockQuantity <= 0"
-              >
+              <div class="stock-status" *ngIf="item.products.stockQuantity <= 0">
                 <span class="out-of-stock">
                   <i class="fas fa-times-circle"></i> Out of Stock
                 </span>
@@ -69,35 +56,24 @@
 
             <div class="cart-item-actions">
               <div class="quantity-control">
-                <button
-                  class="btn quantity-btn"
-                  [disabled]="item.quantity <= 1"
-                  (click)="decreaseQuantity(item)"
-                >
+                <button class="btn quantity-btn" [disabled]="item.quantity <= 1" (click)="decreaseQuantity(item)">
                   <i class="fas fa-minus"></i>
                 </button>
                 <span class="quantity">{{ item.quantity }}</span>
-                <button
-                  class="btn quantity-btn"
-                  [disabled]="item.quantity >= item.products.stockQuantity"
-                  (click)="increaseQuantity(item)"
-                >
+                <button class="btn quantity-btn" [disabled]="item.quantity >= item.products.stockQuantity"
+                  (click)="increaseQuantity(item)">
                   <i class="fas fa-plus"></i>
                 </button>
               </div>
 
               <div class="item-total">
                 {{
-                  item.products.productPrice * item.quantity
-                    | currency : "INR" : "symbol" : "1.0-0"
+                item.products.productPrice * item.quantity
+                | currency : "INR" : "symbol" : "1.0-0"
                 }}
               </div>
 
-              <button
-                class="btn remove-btn"
-                (click)="removeFromCart(item)"
-                @removeButtonAnimation
-              >
+              <button class="btn remove-btn" (click)="removeFromCart(item)" @removeButtonAnimation>
                 <i class="fas fa-trash-alt"></i>
               </button>
             </div>
@@ -110,27 +86,21 @@
             <span>Subtotal ({{ getTotalItems() }} items):</span>
             <span>{{
               totalPrice | currency : "INR" : "symbol" : "1.0-0"
-            }}</span>
+              }}</span>
           </div>
           <div class="summary-row" *ngIf="getDiscount() > 0">
             <span>Discount:</span>
-            <span
-              >-{{
-                getDiscount() | currency : "INR" : "symbol" : "1.0-0"
-              }}</span
-            >
+            <span>-{{
+              getDiscount() | currency : "INR" : "symbol" : "1.0-0"
+              }}</span>
           </div>
           <div class="summary-row total">
             <span>Total:</span>
             <span>{{
               getFinalTotal() | currency : "INR" : "symbol" : "1.0-0"
-            }}</span>
+              }}</span>
           </div>
-          <button
-            class="btn btn-primary checkout-btn"
-            [disabled]="cartItems.length === 0"
-            (click)="scrollToCheckout()"
-          >
+          <button class="btn btn-primary checkout-btn" [disabled]="cartItems.length === 0" (click)="scrollToCheckout()">
             Proceed to Checkout
           </button>
         </div>
@@ -146,44 +116,33 @@
               <span>Subtotal ({{ getTotalItems() }} items):</span>
               <span>{{
                 totalPrice | currency : "INR" : "symbol" : "1.0-0"
-              }}</span>
+                }}</span>
             </div>
             <div class="summary-row" *ngIf="getDiscount() > 0">
               <span>Discount:</span>
-              <span
-                >-{{
-                  getDiscount() | currency : "INR" : "symbol" : "1.0-0"
-                }}</span
-              >
+              <span>-{{
+                getDiscount() | currency : "INR" : "symbol" : "1.0-0"
+                }}</span>
             </div>
             <div class="summary-row" *ngIf="getShippingCost() > 0">
               <span>Shipping:</span>
               <span>{{
                 getShippingCost() | currency : "INR" : "symbol" : "1.0-0"
-              }}</span>
+                }}</span>
             </div>
             <div class="summary-row total">
               <span>Total:</span>
               <span>{{
                 getFinalTotal() | currency : "INR" : "symbol" : "1.0-0"
-              }}</span>
+                }}</span>
             </div>
           </div>
 
           <!-- Promo Code Section -->
           <div class="promo-code">
             <div class="input-group">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Enter promo code"
-                [(ngModel)]="promoCode"
-              />
-              <button
-                class="btn btn-outline-primary"
-                type="button"
-                (click)="applyPromoCode()"
-              >
+              <input type="text" class="form-control" placeholder="Enter promo code" [(ngModel)]="promoCode" />
+              <button class="btn btn-outline-primary" type="button" (click)="applyPromoCode()">
                 Apply
               </button>
             </div>
@@ -197,27 +156,16 @@
           <div class="payment-section" *ngIf="cartItems.length > 0">
             <h5>Payment Method</h5>
             <div class="payment-options">
-              <div
-                class="payment-option"
-                [class.selected]="selectedPayment === 'card'"
-                (click)="selectPayment('card')"
-              >
+              <div class="payment-option" [class.selected]="selectedPayment === 'card'" (click)="selectPayment('card')">
                 <i class="far fa-credit-card"></i>
                 <span>Credit Card</span>
               </div>
-              <div
-                class="payment-option"
-                [class.selected]="selectedPayment === 'paypal'"
-                (click)="selectPayment('paypal')"
-              >
+              <div class="payment-option" [class.selected]="selectedPayment === 'paypal'"
+                (click)="selectPayment('paypal')">
                 <i class="fab fa-paypal"></i>
                 <span>PayPal</span>
               </div>
-              <div
-                class="payment-option"
-                [class.selected]="selectedPayment === 'upi'"
-                (click)="selectPayment('upi')"
-              >
+              <div class="payment-option" [class.selected]="selectedPayment === 'upi'" (click)="selectPayment('upi')">
                 <i class="fas fa-mobile-alt"></i>
                 <span>UPI</span>
               </div>
@@ -226,50 +174,27 @@
             <!-- Credit Card Form -->
             <div *ngIf="selectedPayment === 'card'" @fadeIn class="card-form">
               <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="cardholderName"
-                  placeholder="Name on card"
-                  [(ngModel)]="paymentDetails.cardholderName"
-                />
+                <input type="text" class="form-control" id="cardholderName" placeholder="Name on card"
+                  [(ngModel)]="paymentDetails.cardholderName" />
                 <label for="cardholderName">Cardholder Name</label>
               </div>
               <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="cardNumber"
-                  placeholder="1234 5678 9012 3456"
-                  [(ngModel)]="paymentDetails.cardNumber"
-                  (input)="formatCardNumber()"
-                />
+                <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456"
+                  [(ngModel)]="paymentDetails.cardNumber" (input)="formatCardNumber()" />
                 <label for="cardNumber">Card Number</label>
               </div>
               <div class="row">
                 <div class="col-6">
                   <div class="form-floating mb-3">
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="expiryDate"
-                      placeholder="MM/YY"
-                      [(ngModel)]="paymentDetails.expiryDate"
-                      (input)="formatExpiryDate()"
-                    />
+                    <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY"
+                      [(ngModel)]="paymentDetails.expiryDate" (input)="formatExpiryDate()" />
                     <label for="expiryDate">Expiry Date</label>
                   </div>
                 </div>
                 <div class="col-6">
                   <div class="form-floating mb-3">
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="cvv"
-                      placeholder="CVV"
-                      [(ngModel)]="paymentDetails.cvv"
-                      maxlength="3"
-                    />
+                    <input type="password" class="form-control" id="cvv" placeholder="CVV"
+                      [(ngModel)]="paymentDetails.cvv" maxlength="3" />
                     <label for="cvv">CVV</label>
                   </div>
                 </div>
@@ -279,44 +204,27 @@
             <!-- UPI Form -->
             <div *ngIf="selectedPayment === 'upi'" @fadeIn class="upi-form">
               <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="upiId"
-                  placeholder="yourname@upi"
-                  [(ngModel)]="paymentDetails.upiId"
-                />
+                <input type="text" class="form-control" id="upiId" placeholder="yourname@upi"
+                  [(ngModel)]="paymentDetails.upiId" />
                 <label for="upiId">UPI ID</label>
               </div>
             </div>
 
+           
             <!-- Shipping Address Section -->
             <div class="address-section">
               <h5>Shipping Address</h5>
-              <div class="form-floating mb-3">
-                <textarea
-                  class="form-control"
-                  id="shippingAddress"
-                  placeholder="Enter your complete address"
-                  [(ngModel)]="shippingAddress"
-                  style="height: 100px"
-                ></textarea>
-                <label for="shippingAddress">Complete Address</label>
-              </div>
+
+              <!-- Button to Redirect to User Address Component -->
+              <button class="btn btn-primary" (click)="redirectToAddressPage()">+ Address</button>
             </div>
 
+
             <!-- Place Order Button -->
-            <button
-              class="btn btn-primary checkout-btn"
-              [disabled]="cartItems.length === 0 || isProcessing"
-              (click)="placeOrder()"
-            >
+            <button class="btn btn-primary checkout-btn" [disabled]="cartItems.length === 0 || isProcessing"
+              (click)="placeOrder()">
               <span *ngIf="!isProcessing">Place Order</span>
-              <div
-                *ngIf="isProcessing"
-                class="spinner-border spinner-border-sm"
-                role="status"
-              >
+              <div *ngIf="isProcessing" class="spinner-border spinner-border-sm" role="status">
                 <span class="visually-hidden">Loading...</span>
               </div>
             </button>
