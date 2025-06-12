@@ -166,6 +166,14 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
+ .rupee-symbol {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 14px;
+        }
+
+
+
 
 .submit-btn:hover {
   transform: translateY(-2px);

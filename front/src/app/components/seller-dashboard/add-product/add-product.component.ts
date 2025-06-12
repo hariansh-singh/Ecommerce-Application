@@ -22,6 +22,7 @@ export class AddProductComponent {
 
   productForm: FormGroup = new FormGroup({
     ProductCategory: new FormControl('', [Validators.required]),
+    CustomCategory: new FormControl(''), // New field for custom category
     ProductName: new FormControl('', [Validators.required]),
     ProductPrice: new FormControl('', [Validators.required]),
     Description: new FormControl('', [Validators.required]),
@@ -46,26 +47,52 @@ export class AddProductComponent {
     }
   }
 }
-  submitProduct() {
-    if (!this.selectedFile) {
-      console.error("Please select an image.");
-      return;
+
+isOtherSelected: boolean = false; // Tracks "Others" selection
+
+handleCategoryChange(event: any) {
+  this.isOtherSelected = event.target.value === 'others';
+
+  // Reset the custom category field when selecting other options
+  if (!this.isOtherSelected) {
+    this.productForm.patchValue({ CustomCategory: '' });
+  }
+}
+
+submitProduct() {
+  if (!this.selectedFile) {
+    Swal.fire('Error', 'Please select an image.', 'error');
+    return;
+  }
+
+  if (this.productForm.invalid) {
+    console.error("Form is invalid", this.productForm.errors);
+     this.productForm.markAllAsTouched(); 
+    // Find the first invalid field and focus on it
+   for (const field in this.productForm.controls) {
+  if (this.productForm.controls[field].invalid) {
+    const element = document.querySelector(`[formControlName="${field}"]`);
+    if (element) {
+      setTimeout(() => {
+        (element as HTMLElement).focus();
+        (element as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 0);
     }
+    break;
+    
+  }
+}
+}
+const formData = new FormData();
+const selectedCategory = this.isOtherSelected ? this.productForm.value.CustomCategory : this.productForm.value.ProductCategory;
+formData.append("ProductCategory", selectedCategory);
+  Object.keys(this.productForm.value).forEach(key => {
+    formData.append(key, this.productForm.value[key]);
+  });
+  formData.append("ProductImage", this.selectedFile, this.selectedFile.name);
 
-    const formData = new FormData();
-    formData.append("ProductCategory", this.productForm.value.ProductCategory);
-    formData.append("ProductName", this.productForm.value.ProductName);
-    formData.append("ProductPrice", this.productForm.value.ProductPrice);
-    formData.append("Description", this.productForm.value.Description);
-    formData.append("StockQuantity", this.productForm.value.StockQuantity);
-    formData.append("SellerId", this.productForm.value.SellerId);
-    formData.append("ProductImage", this.selectedFile, this.selectedFile.name);
-
-   
   this.productService.addProduct(formData).subscribe({
     next: (response) => {
-      console.log("Product added successfully", response);
-
       Swal.fire({
         title: 'Product Added!',
         text: 'Do you want to go to the dashboard or add another product?',
@@ -75,9 +102,9 @@ export class AddProductComponent {
         cancelButtonText: 'Add More Products'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.router.navigate(['/sellerdashboard']); // Navigate to Dashboard
+          this.router.navigate(['/sellerdashboard']);
         } else {
-          this.productForm.reset(); // Clear Form
+          this.productForm.reset();
           this.selectedFile = null;
           this.imagePreview = undefined;
           this.imageName = null;

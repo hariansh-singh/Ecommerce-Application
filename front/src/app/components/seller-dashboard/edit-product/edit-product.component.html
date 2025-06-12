@@ -29,18 +29,8 @@
                   <!-- Product Category Dropdown -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <select class="form-input role-select" id="ProductCategory" formControlName="ProductCategory"
-                        required>
-                        <option value="" disabled>Select a Category</option>
-                        <option value="mobiles" [selected]="myForm.get('ProductCategory')?.value === 'mobiles'">Mobiles
-                        </option>
-                        <option value="laptops" [selected]="myForm.get('ProductCategory')?.value === 'laptops'">Laptops
-                        </option>
-                        <option value="accessories" [selected]="myForm.get('ProductCategory')?.value === 'accessories'">
-                          Accessories</option>
-                        <option value="cameras" [selected]="myForm.get('ProductCategory')?.value === 'cameras'">Cameras
-                        </option>
-                      </select>
+                       <input type="text" class="form-input" id="ProductCategory" placeholder=" "
+                        formControlName="ProductCategory" required>
                       <label for="ProductCategory" class="form-label">Product Category</label>
                       <div class="input-icon">
                         <i class="fas fa-box"></i>
@@ -56,9 +46,9 @@
                     <div class="input-wrapper">
                       <input type="number" class="form-input" id="ProductPrice" placeholder=" "
                         formControlName="ProductPrice" required>
-                      <label for="ProductPrice" class="form-label">Product Price</label>
+                      <label for="ProductPrice" class="form-label">Product Price(₹)</label>
                       <div class="input-icon">
-                        <i class="fas fa-dollar-sign"></i>
+                        <p class="rupee-symbol">₹</p>
                       </div>
                     </div>
                   </div>
@@ -94,7 +84,7 @@
                       <input type="file" class="file-input" (change)="uploadFile($event)">
                       <div class="upload-area">
                         <i class="fas fa-upload upload-icon"></i>
-                        <span class="upload-text">Choose a file or drag it here</span>
+                        <span class="upload-text">{{ filePathRef?.name ? filePathRef.name : 'Choose a file or drag it here'}}</span>
                       </div>
                     </div>
                   </div>

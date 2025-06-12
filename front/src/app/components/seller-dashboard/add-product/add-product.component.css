@@ -166,7 +166,14 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-top: 20px;
 }
+
+ .rupee-symbol {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 14px;
+        }
 
 .submit-btn:hover {
   transform: translateY(-2px);
@@ -381,3 +388,22 @@
 .image-preview {
   animation: fadeInScale 1.8s ease-out forwards;
 }
+
+/* Style error messages */
+.error-message {
+  color: #e74c3c; /* Bright red */
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+  display: block;
+}
+
+
+
+/* Change label color when there’s an error */
+.form-label.error {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+
