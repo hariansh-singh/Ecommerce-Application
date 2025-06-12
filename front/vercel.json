@@ -1,11 +1,8 @@
 {
-  "buildCommand": "cd front && npm install --legacy-peer-deps && npm run build",
-  "installCommand": "cd front && npm install --legacy-peer-deps",
-  "outputDirectory": "front/dist/front",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+  "buildCommand": "npm install --legacy-peer-deps && npm run build",
+  "installCommand": "npm install --legacy-peer-deps",
+  "outputDirectory": "dist/front",
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
