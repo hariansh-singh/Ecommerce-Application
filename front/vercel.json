@@ -1,8 +1,11 @@
 {
-  "buildCommand": "npm install --legacy-peer-deps && npm run build",
+  "buildCommand": "npm install --legacy-peer-deps && npm run build && find dist -type f -name '*.html' && ls -la dist/",
   "installCommand": "npm install --legacy-peer-deps",
   "outputDirectory": "dist/front",
-  "routes": [
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
