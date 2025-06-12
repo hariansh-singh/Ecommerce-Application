@@ -10,6 +10,10 @@ export class UserProfileService {
 
   constructor(private http: HttpClient) {}
 
+  updateCustomerInfo(customerId: number, customerData: any): Observable<any> {
+    return this.http.put(`${this.apiBaseUrl}/Customer/${customerId}`, customerData);
+  }
+
   // Fetch customer information
   getCustomerInfo(customerId: number): Observable<any> {
     return this.http.get(`${this.apiBaseUrl}/Customer/${customerId}`);

@@ -1,68 +1,359 @@
 <div class="manage-profile">
-  <div class="profile-sidebar">
-    <h2>Manage Profile</h2>
-    <ul>
-      <li (click)="setActiveSection('basic')"><i class="fas fa-user-circle"></i> Basic Information</li>
-      <li (click)="setActiveSection('addresses')"><i class="fas fa-map-marker-alt"></i> Shipping Addresses</li>
-      <li (click)="setActiveSection('payments')"><i class="fas fa-credit-card"></i> Saved Payment Methods</li>
-      <li (click)="setActiveSection('orders')"><i class="fas fa-receipt"></i> Order History</li>
-      <li (click)="setActiveSection('reviews')"><i class="fas fa-star"></i> Reviews & Ratings</li>
-      <li (click)="setActiveSection('support')"><i class="fas fa-life-ring"></i> Support & Help</li>
-    </ul>
+  <div class="profile-header">
+    <div class="user-avatar">
+      <i class="fas fa-user-circle"></i>
+    </div>
+    <div class="user-info">
+      <h1>{{ name || "Loading..." }}</h1>
+      <p class="user-email">{{ email }}</p>
+      <span class="user-badge" [ngClass]="getRoleBadgeClass()">{{ role }}</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-edit" (click)="toggleEditMode()">
+        <i class="fas" [ngClass]="isEditMode ? 'fa-save' : 'fa-edit'"></i>
+        {{ isEditMode ? "Save Changes" : "Edit Profile" }}
+      </button>
+    </div>
   </div>
 
-  <div class="profile-content">
-    <section *ngIf="activeSection === 'basic'" class="profile-box">
-      <h3>Basic Information</h3>
-      <label>Name:</label>
-      <span>{{ user.name }}</span>
-      
-      <label>Email:</label>
-      <span>{{ user.email }}</span>
+  <div class="profile-layout">
+    <div class="profile-sidebar">
+      <div class="sidebar-nav">
+        <button
+          *ngFor="let item of navigationItems"
+          class="nav-item"
+          [class.active]="activeSection === item.key"
+          (click)="setActiveSection(item.key)"
+        >
+          <i class="fas" [ngClass]="item.icon"></i>
+          <span>{{ item.label }}</span>
+          <span class="item-count" *ngIf="item.count">{{ item.count }}</span>
+        </button>
+      </div>
+    </div>
 
-      <label>Phone Number:</label>
-      <span>{{ user.phoneNumber }}</span>
-    </section>
+    <div class="profile-content">
+      <!-- Basic Information Section -->
+      <section *ngIf="activeSection === 'basic'" class="content-section">
+        <div class="section-header">
+          <h2 class="mb-3 px-3">
+            <i class="fas fa-user-circle"></i> Basic Information
+          </h2>
+          <p>(Manage your personal information and account settings)</p>
+        </div>
 
-    <section *ngIf="activeSection === 'addresses'" class="profile-box">
-      <h3>Shipping Addresses</h3>
-      <ul>
-        <li *ngFor="let address of addresses">
-          {{ address.addressLine1 }}, {{ address.city }} - {{ address.postalCode }}
-        </li>
-      </ul>
-    </section>
+        <div class="info-grid">
+          <div class="info-card">
+            <label>Full Name</label>
+            <div class="input-group" *ngIf="isEditMode; else displayName">
+              <input type="text" [(ngModel)]="name" class="form-input" />
+              <i class="fas fa-user"></i>
+            </div>
+            <ng-template #displayName>
+              <span class="info-value">{{ name || "Not provided" }}</span>
+            </ng-template>
+          </div>
 
-    <section *ngIf="activeSection === 'payments'" class="profile-box">
-      <h3>Saved Payment Methods</h3>
-      <ul>
-        <li *ngFor="let method of user.paymentMethods">
-          {{ method }}
-        </li>
-      </ul>
-    </section>
+          <div class="info-card">
+            <label>Email Address</label>
+            <div class="input-group" *ngIf="isEditMode; else displayEmail">
+              <input type="email" [(ngModel)]="email" class="form-input" />
+              <i class="fas fa-envelope"></i>
+            </div>
+            <ng-template #displayEmail>
+              <span class="info-value">{{ email || "Not provided" }}</span>
+            </ng-template>
+          </div>
 
-    <section *ngIf="activeSection === 'orders'" class="profile-box">
-      <h3>Order History</h3>
-      <ul>
-        <li *ngFor="let order of orders">
-          Order #{{ order.orderId }} - {{ order.orderStatus }}
-        </li>
-      </ul>
-    </section>
+          <div class="info-card">
+            <label>Phone Number</label>
+            <div class="input-group" *ngIf="isEditMode; else displayPhone">
+              <input type="tel" [(ngModel)]="phoneNumber" class="form-input" />
+              <i class="fas fa-phone"></i>
+            </div>
+            <ng-template #displayPhone>
+              <span class="info-value">{{
+                phoneNumber || "Not provided"
+              }}</span>
+            </ng-template>
+          </div>
 
-    <section *ngIf="activeSection === 'reviews'" class="profile-box">
-      <h3>Reviews & Ratings</h3>
-      <ul>
-        <li *ngFor="let review of reviews">
-          {{ review.productName }} - {{ review.rating }}★ - "{{ review.reviewText }}"
-        </li>
-      </ul>
-    </section>
+          <div class="info-card">
+            <label>Account Type</label>
+            <span class="info-value">
+              <span
+                class="role-badge enhanced-badge"
+                [ngClass]="getRoleBadgeClass()"
+                [attr.aria-label]="'User role: ' + role"
+              >
+                <i class="badge-icon" [ngClass]="getRoleIconClass()"></i>
+                {{ role | titlecase }}
+              </span>
+            </span>
+          </div>
+        </div>
+      </section>
 
-    <section *ngIf="activeSection === 'support'" class="profile-box">
-      <h3>Support & Help</h3>
-      <button (click)="contactSupport()">Contact Support</button>
-    </section>
+      <!-- Shipping Addresses Section -->
+      <section *ngIf="activeSection === 'addresses'" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-map-marker-alt"></i> Shipping Addresses</h2>
+          <button class="btn-add" (click)="addNewAddress()">
+            <i class="fas fa-plus"></i> Add New Address
+          </button>
+        </div>
+
+        <div
+          class="addresses-grid"
+          *ngIf="addresses.length > 0; else noAddresses"
+        >
+          <div
+            class="address-card"
+            *ngFor="let address of addresses; let i = index"
+          >
+            <div class="address-header">
+              <h4>{{ address.label || "Address " + (i + 1) }}</h4>
+              <div class="address-actions">
+                <button class="btn-icon" (click)="editAddress(i)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon delete" (click)="deleteAddress(i)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <div class="address-content">
+              <p>
+                <strong>{{ address.addressLine1 }}</strong>
+              </p>
+              <p *ngIf="address.addressLine2">{{ address.addressLine2 }}</p>
+              <p>
+                {{ address.city }}, {{ address.state }} {{ address.postalCode }}
+              </p>
+              <p>{{ address.country }}</p>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noAddresses>
+          <div class="empty-state">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>No addresses saved</h3>
+            <p>Add your first shipping address to make checkout faster</p>
+            <button class="btn-primary" (click)="addNewAddress()">
+              <i class="fas fa-plus"></i> Add Address
+            </button>
+          </div>
+        </ng-template>
+      </section>
+
+      <!-- Payment Methods Section -->
+      <section *ngIf="activeSection === 'payments'" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-credit-card"></i> Payment Methods</h2>
+          <button class="btn-add" (click)="addPaymentMethod()">
+            <i class="fas fa-plus"></i> Add New Card
+          </button>
+        </div>
+
+        <div
+          class="payment-methods"
+          *ngIf="user.paymentMethods?.length > 0; else noPayments"
+        >
+          <div
+            class="payment-card"
+            *ngFor="let method of user.paymentMethods; let i = index"
+          >
+            <div class="card-icon">
+              <i class="fab" [ngClass]="getCardIcon(method.type)"></i>
+            </div>
+            <div class="card-info">
+              <h4>{{ method.type }} ending in {{ method.lastFour }}</h4>
+              <p>Expires {{ method.expiryMonth }}/{{ method.expiryYear }}</p>
+            </div>
+            <div class="card-actions">
+              <button class="btn-icon" (click)="editPaymentMethod(i)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-icon delete" (click)="deletePaymentMethod(i)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noPayments>
+          <div class="empty-state">
+            <i class="fas fa-credit-card"></i>
+            <h3>No payment methods saved</h3>
+            <p>Add a payment method for faster and more secure checkout</p>
+            <button class="btn-primary" (click)="addPaymentMethod()">
+              <i class="fas fa-plus"></i> Add Payment Method
+            </button>
+          </div>
+        </ng-template>
+      </section>
+
+      <!-- Order History Section -->
+      <section *ngIf="activeSection === 'orders'" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-receipt"></i> Order History</h2>
+          <div class="filter-controls">
+            <select
+              class="form-select"
+              [(ngModel)]="orderFilter"
+              (change)="filterOrders()"
+            >
+              <option value="all">All Orders</option>
+              <option value="delivered">Delivered</option>
+              <option value="pending">Pending</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="orders-list" *ngIf="orders.length > 0; else noOrders">
+          <div class="order-card" *ngFor="let order of filteredOrders">
+            <div class="order-header">
+              <div class="order-info">
+                <h4>Order #{{ order.orderId }}</h4>
+                <p class="order-date">
+                  {{ order.orderDate | date : "mediumDate" }}
+                </p>
+              </div>
+              <div class="order-status">
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatusClass(order.orderStatus)"
+                >
+                  {{ order.orderStatus }}
+                </span>
+              </div>
+            </div>
+            <div class="order-details">
+              <div class="order-items">
+                <p><strong>Items:</strong> {{ order.itemCount || "N/A" }}</p>
+                <p><strong>Total:</strong> ${{ order.total || "0.00" }}</p>
+              </div>
+              <div class="order-actions">
+                <button
+                  class="btn-secondary small"
+                  (click)="viewOrderDetails(order.orderId)"
+                >
+                  View Details
+                </button>
+                <button
+                  class="btn-secondary small"
+                  *ngIf="order.orderStatus === 'delivered'"
+                  (click)="reorder(order.orderId)"
+                >
+                  Reorder
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noOrders>
+          <div class="empty-state">
+            <i class="fas fa-shopping-bag"></i>
+            <h3>No orders yet</h3>
+            <p>When you place your first order, it will appear here</p>
+            <button class="btn-primary" (click)="startShopping()">
+              <i class="fas fa-shopping-cart"></i> Start Shopping
+            </button>
+          </div>
+        </ng-template>
+      </section>
+
+      <!-- Reviews Section -->
+      <section *ngIf="activeSection === 'reviews'" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-star"></i> Reviews & Ratings</h2>
+          <div class="review-stats">
+            <span class="stat">{{ reviews.length }} Reviews</span>
+            <span class="stat">{{ getAverageRating() }}★ Average</span>
+          </div>
+        </div>
+
+        <div class="reviews-list" *ngIf="reviews.length > 0; else noReviews">
+          <div class="review-card" *ngFor="let review of reviews">
+            <div class="review-header">
+              <div class="product-info">
+                <h4>{{ review.productName }}</h4>
+                <div class="rating">
+                  <i
+                    *ngFor="let star of getStarArray(review.rating)"
+                    class="fas fa-star"
+                    [class.filled]="star <= review.rating"
+                  ></i>
+                  <span class="rating-text">{{ review.rating }}/5</span>
+                </div>
+              </div>
+              <span class="review-date">{{
+                review.date | date : "shortDate"
+              }}</span>
+            </div>
+            <div class="review-content">
+              <p>"{{ review.reviewText }}"</p>
+            </div>
+            <div class="review-actions">
+              <button class="btn-text" (click)="editReview(review.id)">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn-text delete" (click)="deleteReview(review.id)">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noReviews>
+          <div class="empty-state">
+            <i class="fas fa-star"></i>
+            <h3>No reviews yet</h3>
+            <p>Share your experience by reviewing products you've purchased</p>
+          </div>
+        </ng-template>
+      </section>
+
+      <!-- Support Section -->
+      <section *ngIf="activeSection === 'support'" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-life-ring"></i> Support & Help</h2>
+          <p>Get help with your account and orders</p>
+        </div>
+
+        <div class="support-options">
+          <div class="support-card" (click)="contactSupport('chat')">
+            <i class="fas fa-comments"></i>
+            <h4>Live Chat</h4>
+            <p>Chat with our support team</p>
+            <span class="availability online">Available now</span>
+          </div>
+
+          <div class="support-card" (click)="contactSupport('email')">
+            <i class="fas fa-envelope"></i>
+            <h4>Email Support</h4>
+            <p>Send us a detailed message</p>
+            <span class="availability">Response within 24h</span>
+          </div>
+
+          <div class="support-card" (click)="contactSupport('phone')">
+            <i class="fas fa-phone"></i>
+            <h4>Phone Support</h4>
+            <p>Call our support hotline</p>
+            <span class="availability">Mon-Fri 9AM-6PM</span>
+          </div>
+
+          <div class="support-card" (click)="openFAQ()">
+            <i class="fas fa-question-circle"></i>
+            <h4>FAQ</h4>
+            <p>Find quick answers</p>
+            <span class="availability">Self-service</span>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
 </div>
