@@ -62,7 +62,8 @@ export class HeaderMainComponent implements OnInit {
   userProfileService = inject(UserProfileService);
 
   userData: any = this.authService.decodedTokenData();
-  userid: any = this.userData['CustomerId'];
+  // userid: any = this.userData['CustomerId'];
+   userid: any = this.userData?.CustomerId ?? null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
