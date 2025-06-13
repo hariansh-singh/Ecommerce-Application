@@ -4,6 +4,8 @@ import { UserProfileService } from '../../../../services/user-profile.service';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
 import Swal from 'sweetalert2';
+import { OrderService } from '../../../../services/order.service';
+import { MatCardLgImage } from '@angular/material/card';
 
 @Component({
   selector: 'app-user-profile',
@@ -23,7 +25,9 @@ export class UserProfileComponent implements OnInit {
   phoneNumber: string = '';
   role: string = '';
 
+  orderService: any = inject(OrderService);
   authService: any = inject(AuthService);
+
   userData: any = this.authService.decodedTokenData();
   customerId = this.userData?.CustomerId || 0;
 
@@ -97,13 +101,14 @@ export class UserProfileComponent implements OnInit {
   }
 
   loadCustomerOrders(): void {
-    this.userProfileService.getCustomerOrders(this.customerId).subscribe(
-      (data) => {
-        this.orders = data;
+    this.orderService.fetchOrdersById(this.customerId).subscribe(
+      (data: any) => {
+        this.orders = data.data;
+        console.log(this.orders)
         this.filteredOrders = [...this.orders];
         this.updateNavigationCount('orders', this.orders.length);
       },
-      (error) => {
+      (error: any) => {
         console.error('Error fetching orders', error);
       }
     );
