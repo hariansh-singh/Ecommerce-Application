@@ -105,55 +105,53 @@ autofillCityAndState(): void {
 saveAddress(): void {
   const token = localStorage.getItem("token") || sessionStorage.getItem("token");
   
-  if (token) {
-    try {
-      const decoded: any = jwtDecode(token);
-      const customerId =parseInt(decoded.CustomerId); // Extract CustomerId
-
-     console.log("Extracted CustomerId:", customerId);
-
-      if (this.addressForm.valid && customerId) {
-        const address: UserAddress = {
-          ...this.addressForm.value,
-          customerId: customerId // Use extracted customer ID
-        };
-
-         console.log("Sending Address Data:", JSON.stringify(address)); // Debugging log
-    if (address.isDefault) {
-      localStorage.setItem('defaultAddress', JSON.stringify(address)); // Store default address
-    }
-        if (this.editingAddressId) {
-          this.addressService.updateAddress(this.editingAddressId, address).subscribe({
-            next: () => {
-              this.loadAddresses();
-              alert('Address updated successfully!');
-              this.addressForm.reset();
-              this.editingAddressId = null;
-            },
-            error: (error) => console.error('Error updating address:', error)
-          });
-        } else {
-          this.addressService.addAddress(address).subscribe({
-            next: () => {
-              this.loadAddresses();
-              alert('Address saved successfully!');
-              localStorage.setItem('savedAddress', JSON.stringify(address));
-              this.addressForm.reset();
-            },
-            error: (error) => console.error('Error saving address:', error)
-          });
-        }
-      } else {
-        alert("Customer ID not found in token.");
-      }
-    } catch (error) {
-      console.error("Error decoding token:", error);
-      alert("Invalid or expired token.");
-    }
-  } else {
+  if (!token) {
     alert("User not logged in. Please sign in.");
+    return;
+  }
+
+  try {
+    const decoded: any = jwtDecode(token);
+    const customerId = parseInt(decoded.CustomerId);
+
+    if (!customerId) {
+      alert("Customer ID not found in token.");
+      return;
+    }
+
+    if (this.addressForm.valid) {
+      const address: UserAddress = { ...this.addressForm.value, customerId };
+
+      console.log("Sending Address Data:", JSON.stringify(address));
+
+      // Store default address in local storage
+      if (address.isDefault) {
+        localStorage.setItem('defaultAddress', JSON.stringify(address));
+      }
+
+      const request$ = this.editingAddressId 
+        ? this.addressService.updateAddress(this.editingAddressId, address)
+        : this.addressService.addAddress(address);
+
+      request$.subscribe({
+        next: () => {
+          this.loadAddresses();
+          alert(`Address ${this.editingAddressId ? 'updated' : 'saved'} successfully!`);
+          localStorage.setItem('savedAddress', JSON.stringify(address));
+          this.addressForm.reset();
+          this.editingAddressId = null;
+        },
+        error: (error) => console.error(`Error ${this.editingAddressId ? 'updating' : 'saving'} address:`, error)
+      });
+    } else {
+      alert('Please complete the required fields.');
+    }
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    alert("Invalid or expired token.");
   }
 }
+
 
 
 
@@ -181,9 +179,10 @@ removeAddress(addressId: number): void {
 }
 
   editAddress(address: UserAddress): void {
-    this.editingAddressId = address.customerId;
-    this.addressForm.patchValue(address);
-  }
+  this.editingAddressId = address.addressId; // Use addressId instead of customerId
+  this.addressForm.patchValue(address);
+}
+
   cancelEdit(): void {
   this.editingAddressId = null; // Reset edit mode
   this.addressForm.reset(); // Clear the form
