@@ -227,11 +227,11 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.showSuccessAnimation = false;
       this.buttonText = 'Add to Cart';
-    }, 2000);
+    }, 1000);
 
     setTimeout(() => {
       this.showSuccessNotification = false;
-    }, 3000);
+    }, 1000);
   }
 
   // Method to handle image load errors
