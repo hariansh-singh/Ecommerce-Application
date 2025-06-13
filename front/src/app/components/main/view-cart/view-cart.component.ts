@@ -2,12 +2,13 @@ import { Component, ViewChild, ElementRef, inject, OnInit } from '@angular/core'
 import { CartService } from '../../../../services/cart.service';
 import { AuthService } from '../../../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { OrderService } from '../../../../services/order.service';
 import { FormsModule } from '@angular/forms';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
+import { UserAddressService } from '../../../../services/user-address.service';
 
 @Component({
   selector: 'app-view-cart',
@@ -44,6 +45,8 @@ import Swal from 'sweetalert2';
 export class ViewCartComponent implements OnInit {
   @ViewChild('checkoutSection') checkoutSection!: ElementRef;
   
+  
+  
   cartItems: any[] = [];
   totalPrice: number = 0;
   isProcessing: boolean = false;
@@ -65,15 +68,45 @@ export class ViewCartComponent implements OnInit {
   cartService = inject(CartService);
   authService = inject(AuthService);
   orderService = inject(OrderService);
+  addressService = inject(UserAddressService);
   
   decodedToken: any = this.authService.decodedTokenData();
   
-  constructor() {}
-  
-  ngOnInit(): void {
-    window.scrollTo(0, 0); // Scrolls to the top of the page
-    this.loadCartItems();
+  constructor(private router: Router) {}
+ ngOnInit(): void {
+  window.scrollTo(0, 0); // Scroll to the top
+  this.loadCartItems();
+
+  // Clear selected address on new login
+  const isNewSession = sessionStorage.getItem('isNewSession');
+  if (isNewSession === 'true') {
+    localStorage.removeItem('selectedAddress'); // Ensure only default is used
+    sessionStorage.removeItem('isNewSession'); // Reset flag after clearing
+  }
+
+  // Check if a selected address exists in localStorage (for current session only)
+  const selectedAddress = localStorage.getItem('selectedAddress');
+
+  if (selectedAddress) {
+    const addressObj = JSON.parse(selectedAddress);
+    this.shippingAddress = `${addressObj.addressLine1}, ${addressObj.addressLine2}, ${addressObj.landmark}, ${addressObj.city}, ${addressObj.state}, ${addressObj.postalCode}, ${addressObj.country}`;
+  } else {
+    // Fetch default address from backend if no selected address exists
+    this.addressService.getDefaultAddress(this.decodedToken.CustomerId).subscribe({
+      next: (defaultAddress) => {
+        if (defaultAddress) {
+          this.shippingAddress = `${defaultAddress.addressLine1}, ${defaultAddress.addressLine2}, ${defaultAddress.landmark}, ${defaultAddress.city}, ${defaultAddress.state}, ${defaultAddress.postalCode}, ${defaultAddress.country}`;
+
+          localStorage.setItem('defaultAddress', JSON.stringify(defaultAddress)); // Store for fallback
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching default address:', error);
+      }
+    });
+  }
 }
+
   
   // SweetAlert2 Toast Utility Methods
   showSuccessToast(message: string, title: string = 'Success'): void {
@@ -162,10 +195,18 @@ export class ViewCartComponent implements OnInit {
     }
   });
 }
-  
+ redirectToAddressPage(): void {
+    this.router.navigate(['/useraddress']); // Redirect to the User Address page
+  }
   placeOrder(): void {
     if (!this.cartItems.length) {
       this.showWarningToast('Your cart is empty!');
+      return;
+    }
+
+      if (!this.shippingAddress) {
+      this.showWarningToast('Please provide an address before placing an order.');
+      //this.router.navigate(['/user-address']); // Redirect to the address page
       return;
     }
     
