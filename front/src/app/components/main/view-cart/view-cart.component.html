@@ -210,14 +210,21 @@
               </div>
             </div>
 
-           
+
             <!-- Shipping Address Section -->
             <div class="address-section">
               <h5>Shipping Address</h5>
 
-              <!-- Button to Redirect to User Address Component -->
-              <button class="btn btn-primary" (click)="redirectToAddressPage()">+ Address</button>
+              <!-- Display Selected Address -->
+              <p *ngIf="shippingAddress">{{ shippingAddress }}</p>
+
+              <!-- Button to Add Another Address -->
+              <button class="btn btn-primary" (click)="redirectToAddressPage()">
+                {{ shippingAddress ? ' Add Another Address' : '+ Address' }}
+              </button>
             </div>
+
+
 
 
             <!-- Place Order Button -->
