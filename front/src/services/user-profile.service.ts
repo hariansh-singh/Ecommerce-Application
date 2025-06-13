@@ -8,11 +8,20 @@ import { Observable } from 'rxjs';
 export class UserProfileService {
   private apiBaseUrl = 'https://localhost:7116/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
+
+  updateCustomerInfo(customerId: number, customerData: any): Observable<any> {
+    return this.http.put(`${this.apiBaseUrl}/Customer/${customerId}`, customerData);
+  }
 
   // Fetch customer information
   getCustomerInfo(customerId: number): Observable<any> {
     return this.http.get(`${this.apiBaseUrl}/Customer/${customerId}`);
+  }
+
+  // Delete user account
+  deleteAccount(customerId: number): Observable<any> {
+    return this.http.delete(`${this.apiBaseUrl}/Customer/${customerId}`);
   }
 
   // Fetch user addresses
