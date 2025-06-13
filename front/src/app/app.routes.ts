@@ -19,6 +19,7 @@ import { SellerDashboardComponent } from './components/seller-dashboard/seller-d
 import { HomeSellerComponent } from './components/seller-dashboard/home-seller/home-seller.component';
 import { UserProfileComponent } from './components/main/user-profile/user-profile.component';
 import { UserAddressComponent } from './components/main/user-address/user-address.component';
+import { SalesComponent } from './components/seller-dashboard/sales/sales.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -48,6 +49,8 @@ export const routes: Routes = [
       { path: 'addProduct', component: AddProductComponent },
       { path: 'editpro/:id', component: EditProductComponent },
       { path: 'allorders', component: AllOrderDetailsComponent },
+     { path: 'sales', component: SalesComponent },
+      
     ],
   },
 
