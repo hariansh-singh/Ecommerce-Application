@@ -19,12 +19,8 @@
   <div class="profile-layout">
     <div class="profile-sidebar">
       <div class="sidebar-nav">
-        <button
-          *ngFor="let item of navigationItems"
-          class="nav-item"
-          [class.active]="activeSection === item.key"
-          (click)="setActiveSection(item.key)"
-        >
+        <button *ngFor="let item of navigationItems" class="nav-item" [class.active]="activeSection === item.key"
+          (click)="setActiveSection(item.key)">
           <i class="fas" [ngClass]="item.icon"></i>
           <span>{{ item.label }}</span>
           <span class="item-count" *ngIf="item.count">{{ item.count }}</span>
@@ -74,18 +70,15 @@
             <ng-template #displayPhone>
               <span class="info-value">{{
                 phoneNumber || "Not provided"
-              }}</span>
+                }}</span>
             </ng-template>
           </div>
 
           <div class="info-card">
             <label>Account Type</label>
             <span class="info-value">
-              <span
-                class="role-badge enhanced-badge"
-                [ngClass]="getRoleBadgeClass()"
-                [attr.aria-label]="'User role: ' + role"
-              >
+              <span class="role-badge enhanced-badge" [ngClass]="getRoleBadgeClass()"
+                [attr.aria-label]="'User role: ' + role">
                 <i class="badge-icon" [ngClass]="getRoleIconClass()"></i>
                 {{ role | titlecase }}
               </span>
@@ -103,14 +96,8 @@
           </button>
         </div>
 
-        <div
-          class="addresses-grid"
-          *ngIf="addresses.length > 0; else noAddresses"
-        >
-          <div
-            class="address-card"
-            *ngFor="let address of addresses; let i = index"
-          >
+        <div class="addresses-grid" *ngIf="addresses.length > 0; else noAddresses">
+          <div class="address-card" *ngFor="let address of addresses; let i = index">
             <div class="address-header">
               <h4>{{ address.label || "Address " + (i + 1) }}</h4>
               <div class="address-actions">
@@ -156,14 +143,8 @@
           </button>
         </div>
 
-        <div
-          class="payment-methods"
-          *ngIf="user.paymentMethods?.length > 0; else noPayments"
-        >
-          <div
-            class="payment-card"
-            *ngFor="let method of user.paymentMethods; let i = index"
-          >
+        <div class="payment-methods" *ngIf="user.paymentMethods?.length > 0; else noPayments">
+          <div class="payment-card" *ngFor="let method of user.paymentMethods; let i = index">
             <div class="card-icon">
               <i class="fab" [ngClass]="getCardIcon(method.type)"></i>
             </div>
@@ -199,11 +180,7 @@
         <div class="section-header">
           <h2 class="mb-3 px-3"><i class="fas fa-receipt"></i> Order History</h2>
           <div class="filter-controls mb-2">
-            <select
-              class="form-select"
-              [(ngModel)]="orderFilter"
-              (change)="filterOrders()"
-            >
+            <select class="form-select" [(ngModel)]="orderFilter" (change)="filterOrders()">
               <option value="all">All Orders</option>
               <option value="delivered">Delivered</option>
               <option value="pending">Pending</option>
@@ -222,10 +199,7 @@
                 </p>
               </div>
               <div class="order-status">
-                <span
-                  class="status-badge"
-                  [ngClass]="getStatusClass(order.orderStatus)"
-                >
+                <span class="status-badge" [ngClass]="getStatusClass(order.orderStatus)">
                   {{ order.orderStatus }}
                 </span>
               </div>
@@ -236,17 +210,11 @@
                 <p><strong>Total:</strong> ${{ order.totalPrice || "0.00" }}</p>
               </div>
               <div class="order-actions">
-                <button
-                  class="btn-secondary small"
-                  (click)="viewOrderDetails(order.orderId)"
-                >
+                <button class="btn-secondary small" (click)="viewOrderDetails(order.orderId)">
                   View Details
                 </button>
-                <button
-                  class="btn-secondary small"
-                  *ngIf="order.orderStatus === 'delivered'"
-                  (click)="reorder(order.orderId)"
-                >
+                <button class="btn-secondary small" *ngIf="order.orderStatus === 'delivered'"
+                  (click)="reorder(order.orderId)">
                   Reorder
                 </button>
               </div>
@@ -282,17 +250,14 @@
               <div class="product-info">
                 <h4>{{ review.productName }}</h4>
                 <div class="rating">
-                  <i
-                    *ngFor="let star of getStarArray(review.rating)"
-                    class="fas fa-star"
-                    [class.filled]="star <= review.rating"
-                  ></i>
+                  <i *ngFor="let star of getStarArray(review.rating)" class="fas fa-star"
+                    [class.filled]="star <= review.rating"></i>
                   <span class="rating-text">{{ review.rating }}/5</span>
                 </div>
               </div>
               <span class="review-date">{{
                 review.date | date : "shortDate"
-              }}</span>
+                }}</span>
             </div>
             <div class="review-content">
               <p>"{{ review.reviewText }}"</p>
@@ -354,6 +319,25 @@
           </div>
         </div>
       </section>
+      
+      <!-- Account Section -->
+      <section *ngIf="activeSection === 'account'" class="content-section">
+        <div class="section-header">
+          <h2 class="mb-3 px-3"><i class="fas fa-user-lock"></i> Account</h2>
+          <p>(Manage your account settings and deletion preferences)</p>
+        </div>
+
+        <div class="account-settings">
+          <div class="account-card delete-warning">
+            <h3><i class="fas fa-exclamation-triangle"></i> Delete Account</h3>
+            <p>Deleting your account is permanent and cannot be undone. All your data will be removed.</p>
+            <button class="btn-danger" (click)="deleteAccount()">
+              <i class="fas fa-trash"></i> Delete My Account
+            </button>
+          </div>
+        </div>
+      </section>
+
     </div>
   </div>
 </div>

@@ -62,9 +62,10 @@ export class UserProfileComponent implements OnInit {
       icon: 'fa-life-ring',
       count: null,
     },
+    { key: 'account', label: 'Account', icon: 'fa-user-lock' }
   ];
 
-  constructor(private userProfileService: UserProfileService) {}
+  constructor(private userProfileService: UserProfileService) { }
 
   ngOnInit(): void {
     this.loadCustomerInfo();
@@ -178,6 +179,51 @@ export class UserProfileComponent implements OnInit {
         }
       );
   }
+
+  //delete account code 
+  deleteAccount(): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Your account and all related data will be permanently deleted.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userProfileService.deleteAccount(this.customerId).subscribe(
+          () => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted!',
+              text: 'Your account has been successfully deleted.',
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            // Give SweetAlert a moment to finish before redirecting
+            setTimeout(() => {
+              if (this.authService.logout) {
+                this.authService.logout(); // Clear user session
+              }
+              window.location.href = '/register'; // 🔁 Redirect to register
+            }, 1600);
+          },
+          (error) => {
+            console.error('Error deleting account:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: 'Something went wrong while deleting your account.'
+            });
+          }
+        );
+      }
+    });
+  }
+
 
   getRoleBadgeClass(): string {
     const baseClass = 'badge-';
