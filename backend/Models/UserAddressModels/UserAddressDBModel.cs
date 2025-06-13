@@ -31,7 +31,7 @@ namespace backend.Models.UserAddressModels
 
             [Required]
             [MaxLength(10)]
-            public string PostalCode { get; set; }
+            public string? PostalCode { get; set; }
 
             public bool IsDefault { get; set; }  // Marks the primary address for the user
         }

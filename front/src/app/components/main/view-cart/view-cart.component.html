@@ -293,15 +293,110 @@
             <!-- Shipping Address Section -->
             <div class="address-section">
               <h5>Shipping Address</h5>
+              
               <div class="form-floating mb-3">
-                <textarea
+                <input
+                  type="text"
                   class="form-control"
-                  id="shippingAddress"
-                  placeholder="Enter your complete address"
-                  [(ngModel)]="shippingAddress"
-                  style="height: 100px"
-                ></textarea>
-                <label for="shippingAddress">Complete Address</label>
+                  id="addressLine1"
+                  placeholder="House/Flat No., Street Name"
+                  [(ngModel)]="shippingAddress.addressLine1"
+                  required
+                />
+                <label for="addressLine1">Address Line 1 *</label>
+              </div>
+
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="addressLine2"
+                  placeholder="Area, Locality (Optional)"
+                  [(ngModel)]="shippingAddress.addressLine2"
+                />
+                <label for="addressLine2">Address Line 2</label>
+              </div>
+
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="landmark"
+                  placeholder="Nearby landmark for easy delivery"
+                  [(ngModel)]="shippingAddress.landmark"
+                />
+                <label for="landmark">Landmark</label>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="city"
+                      placeholder="City"
+                      [(ngModel)]="shippingAddress.city"
+                      required
+                    />
+                    <label for="city">City *</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="state"
+                      placeholder="State"
+                      [(ngModel)]="shippingAddress.state"
+                      required
+                    />
+                    <label for="state">State *</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="country"
+                      placeholder="Country"
+                      [(ngModel)]="shippingAddress.country"
+                      required
+                    />
+                    <label for="country">Country *</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating mb-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="postalCode"
+                      placeholder="Postal Code"
+                      [(ngModel)]="shippingAddress.postalCode"
+                      maxlength="10"
+                      required
+                    />
+                    <label for="postalCode">Postal Code *</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-check mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="isDefault"
+                  [(ngModel)]="shippingAddress.isDefault"
+                />
+                <label class="form-check-label" for="isDefault">
+                  Save as default address
+                </label>
               </div>
             </div>
 

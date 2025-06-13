@@ -50,7 +50,19 @@ export class ViewCartComponent implements OnInit {
   promoCode: string = '';
   promoApplied: boolean = false;
   discount: number = 0;
-  shippingAddress: string = '';
+  
+  // Updated shipping address object with detailed fields
+  shippingAddress = {
+    customerId: 0,
+    addressLine1: '',
+    addressLine2: '',
+    landmark: '',
+    city: '',
+    state: '',
+    country: 'India', // Default to India, can be changed by user
+    postalCode: '',
+    isDefault: false
+  };
   
   selectedPayment: string = 'card';
   
@@ -72,8 +84,9 @@ export class ViewCartComponent implements OnInit {
   
   ngOnInit(): void {
     window.scrollTo(0, 0); // Scrolls to the top of the page
+    this.shippingAddress.customerId = this.decodedToken.CustomerId;
     this.loadCartItems();
-}
+  }
   
   // SweetAlert2 Toast Utility Methods
   showSuccessToast(message: string, title: string = 'Success'): void {
@@ -129,39 +142,39 @@ export class ViewCartComponent implements OnInit {
   }
   
   loadCartItems(): void {
-  this.cartService.getCartItems(this.decodedToken.CustomerId).subscribe({
-    next: (response: any) => {
-      if (Array.isArray(response)) {
-        this.cartItems = response.map((item) => ({
-          ...item,
-          cartId: item.cartId || null,
-          isHighlighted: false,
-          // Ensure the product has a valid image URL or use a fallback
-          products: {
-            ...item.products,
-            imageUrl: item.products.imageUrl || 'https://via.placeholder.com/150' // Using an online placeholder
-          }
-        }));
+    this.cartService.getCartItems(this.decodedToken.CustomerId).subscribe({
+      next: (response: any) => {
+        if (Array.isArray(response)) {
+          this.cartItems = response.map((item) => ({
+            ...item,
+            cartId: item.cartId || null,
+            isHighlighted: false,
+            // Ensure the product has a valid image URL or use a fallback
+            products: {
+              ...item.products,
+              imageUrl: item.products.imageUrl || 'https://via.placeholder.com/150' // Using an online placeholder
+            }
+          }));
+          
+          // Add staggered animation effect
+          this.cartItems.forEach((item, index) => {
+            setTimeout(() => {
+              item.isVisible = true;
+            }, 100 * index);
+          });
+        } else {
+          console.error('Unexpected API response structure:', response);
+          this.cartItems = [];
+        }
         
-        // Add staggered animation effect
-        this.cartItems.forEach((item, index) => {
-          setTimeout(() => {
-            item.isVisible = true;
-          }, 100 * index);
-        });
-      } else {
-        console.error('Unexpected API response structure:', response);
-        this.cartItems = [];
+        this.calculateTotalPrice();
+      },
+      error: (error) => {
+        console.error('API Error fetching cart:', error);
+        this.showErrorToast('Failed to load your cart items');
       }
-      
-      this.calculateTotalPrice();
-    },
-    error: (error) => {
-      console.error('API Error fetching cart:', error);
-      this.showErrorToast('Failed to load your cart items');
-    }
-  });
-}
+    });
+  }
   
   placeOrder(): void {
     if (!this.cartItems.length) {
@@ -173,14 +186,19 @@ export class ViewCartComponent implements OnInit {
       return;
     }
     
+    if (!this.validateShippingAddress()) {
+      return;
+    }
+    
     this.isProcessing = true;
     
     const orderData = {
       customerId: this.decodedToken.CustomerId,
       orderDate: new Date().toISOString(),
       totalPrice: this.getFinalTotal(),
-      shippingAddress: this.shippingAddress, // In a real app, get this from a form
+      shippingAddress: this.getFormattedAddress(),
       paymentMethod: this.selectedPayment,
+      addressDetails: this.shippingAddress, // Send detailed address object
       orderItems: this.cartItems.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
@@ -197,6 +215,7 @@ export class ViewCartComponent implements OnInit {
           this.totalPrice = 0;
           this.promoApplied = false;
           this.discount = 0;
+          this.resetShippingAddress();
           
           // Clear cart data in service
           this.cartService.clearCart(this.decodedToken.CustomerId).subscribe();
@@ -231,6 +250,69 @@ export class ViewCartComponent implements OnInit {
     }
     
     return true;
+  }
+  
+  validateShippingAddress(): boolean {
+    const requiredFields = [
+      { field: 'addressLine1', name: 'Address Line 1' },
+      { field: 'city', name: 'City' },
+      { field: 'state', name: 'State' },
+      { field: 'country', name: 'Country' },
+      { field: 'postalCode', name: 'Postal Code' }
+    ];
+    
+    for (const { field, name } of requiredFields) {
+      if (!this.shippingAddress[field as keyof typeof this.shippingAddress] || 
+          (this.shippingAddress[field as keyof typeof this.shippingAddress] as string).trim() === '') {
+        this.showWarningToast(`Please enter ${name}`);
+        return false;
+      }
+    }
+    
+    // Validate postal code length (max 10 characters)
+    if (this.shippingAddress.postalCode.length > 10) {
+      this.showWarningToast('Postal code cannot exceed 10 characters');
+      return false;
+    }
+    
+    // Basic postal code format validation for India
+    if (this.shippingAddress.country.toLowerCase() === 'india') {
+      const indianPinRegex = /^[1-9][0-9]{5}$/;
+      if (!indianPinRegex.test(this.shippingAddress.postalCode)) {
+        this.showWarningToast('Please enter a valid 6-digit PIN code for India');
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  getFormattedAddress(): string {
+    const parts = [
+      this.shippingAddress.addressLine1,
+      this.shippingAddress.addressLine2,
+      this.shippingAddress.landmark,
+      this.shippingAddress.city,
+      this.shippingAddress.state,
+      this.shippingAddress.country,
+      this.shippingAddress.postalCode
+    ].filter(part => part && part.trim() !== '');
+    
+    return parts.join(', ');
+  }
+  
+  resetShippingAddress(): void {
+    this.shippingAddress = {
+      customerId: this.decodedToken.CustomerId,
+      addressLine1: '',
+      addressLine2: '',
+      landmark: '',
+      city: '',
+      state: '',
+      country: 'India',
+      postalCode: '',
+      isDefault: false
+    };
   }
   
   increaseQuantity(item: any): void {
@@ -395,6 +477,38 @@ export class ViewCartComponent implements OnInit {
   scrollToCheckout(): void {
     if (this.checkoutSection) {
       this.checkoutSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+  
+  // Utility method to format postal code (remove spaces and convert to uppercase)
+  formatPostalCode(): void {
+    this.shippingAddress.postalCode = this.shippingAddress.postalCode
+      .replace(/\s+/g, '')
+      .toUpperCase()
+      .substring(0, 10); // Limit to 10 characters
+  }
+  
+  // Method to auto-fill state based on postal code (for India)
+  onPostalCodeChange(): void {
+    if (this.shippingAddress.country.toLowerCase() === 'india' && 
+        this.shippingAddress.postalCode.length === 6) {
+      // This is a basic implementation - in a real app, you'd use a postal code API
+      const firstDigit = this.shippingAddress.postalCode.charAt(0);
+      const stateMap: { [key: string]: string } = {
+        '1': 'Delhi',
+        '2': 'Haryana',
+        '3': 'Punjab',
+        '4': 'Rajasthan',
+        '5': 'Uttar Pradesh',
+        '6': 'Bihar',
+        '7': 'West Bengal',
+        '8': 'Odisha',
+        '9': 'Tamil Nadu'
+      };
+      
+      if (stateMap[firstDigit] && !this.shippingAddress.state) {
+        this.shippingAddress.state = stateMap[firstDigit];
+      }
     }
   }
 }
