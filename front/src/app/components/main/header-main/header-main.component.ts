@@ -21,6 +21,7 @@ import {
 import { ProductService } from '../../../../services/product.service';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, Subject } from 'rxjs';
+import { UserProfileService } from '../../../../services/user-profile.service';
 
 @Component({
   selector: 'app-header-main',
@@ -46,6 +47,7 @@ export class HeaderMainComponent implements OnInit {
   userEmail: string = '';
   userRole: string = '';
   userId: any;
+  userInfo: any;
   cartItemCount: number = 0;
   isScrolled: boolean = false;
   animationEnabled: boolean = true;
@@ -57,8 +59,15 @@ export class HeaderMainComponent implements OnInit {
   authState = inject(AuthStateService);
   cartService = inject(CartService);
   router: Router = inject(Router);
+  userProfileService = inject(UserProfileService);
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private productService: ProductService) {}
+  userData: any = this.authService.decodedTokenData();
+  userid: any = this.userData['CustomerId'];
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private productService: ProductService
+  ) {}
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -68,29 +77,43 @@ export class HeaderMainComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userProfileService.getCustomerInfo(this.userid).subscribe({
+      next: (data) => {
+        if (data) {
+          this.userInfo = data.data; // Ensure this matches API response structure
+          console.log('User data:', this.userInfo);
+
+          // Now that userInfo is available, initialize user details properly
+          const token = this.authService.getToken();
+          this.authState.setLoginState(!!token);
+
+          if (token && this.userInfo) {
+            this.userName = this.capitalizeFirstLetter(this.userInfo.name);
+            this.userEmail = this.userInfo?.email || ''; // Use safe optional chaining
+            this.userRole = this.userInfo?.role || '';
+            this.userId = this.userInfo?.customerId || '';
+          } else {
+            console.warn('User data is missing or token is invalid.');
+          }
+        } else {
+          console.warn('No user data found.');
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching user info:', error);
+      },
+    });
+
     // Enable initial animations only on first load
     this.animationEnabled = true;
     setTimeout(() => {
       this.animationEnabled = false;
     }, 1500);
 
-    // Check login status
+    // Subscribe to login status updates
     this.authState.loginStatus$.subscribe((status: boolean) => {
       this.isLoggedIn = status;
     });
-
-    const token = this.authService.getToken();
-    this.authState.setLoginState(!!token);
-
-    let userData: any = null;
-
-    if (token) {
-      userData = this.authService.decodedTokenData();
-      this.userName = this.capitalizeFirstLetter(userData?.['Name'] || '');
-      this.userEmail = userData?.['Email'] || '';
-      this.userRole = userData?.['Role'] || '';
-      this.userId = userData?.['CustomerId'] || '';
-    }
 
     // Subscribe to cart item count from CartService
     this.cartService.cartItemCount$.subscribe((count: number) => {
@@ -112,16 +135,14 @@ export class HeaderMainComponent implements OnInit {
       this.cartItemCount = count;
     });
 
-    this.searchQueryUpdated.pipe(debounceTime(300)).subscribe(query => {
-    this.onSearch(query);
-  });
-
-
+    this.searchQueryUpdated.pipe(debounceTime(300)).subscribe((query) => {
+      this.onSearch(query);
+    });
   }
 
   onSearch(query: string) {
     this.productService.setSearchQuery(query);
-    this.router.navigate(['/shop']) 
+    this.router.navigate(['/shop']);
   }
 
   isSeller(): boolean {

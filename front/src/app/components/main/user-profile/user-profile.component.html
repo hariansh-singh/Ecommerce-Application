@@ -206,8 +206,8 @@
             </div>
             <div class="order-details">
               <div class="order-items">
-                <p><strong>Items:</strong> {{ order.itemCount || "N/A" }}</p>
-                <p><strong>Total:</strong> ${{ order.total || "0.00" }}</p>
+                <p><strong>Items:</strong> {{ order.orderItems.length || "N/A" }}</p>
+                <p><strong>Total:</strong> ${{ order.totalPrice || "0.00" }}</p>
               </div>
               <div class="order-actions">
                 <button class="btn-secondary small" (click)="viewOrderDetails(order.orderId)">
