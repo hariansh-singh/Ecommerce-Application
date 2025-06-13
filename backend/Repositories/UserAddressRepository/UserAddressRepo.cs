@@ -76,6 +76,11 @@ namespace backend.Repositories.UserAddressRepo
             return _context.UserAddress.FirstOrDefault(a => a.CustomerId == customerId && a.IsDefault);
         }
 
+        public UserAddressDBModel? GetAddressById(int addressId)
+        {
+            return _context.UserAddress.AsNoTracking().FirstOrDefault(a => a.AddressId == addressId);
+        }
+
     }
 
 }

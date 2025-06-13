@@ -43,15 +43,16 @@ namespace backend.Controllers
         [HttpDelete("remove/{addressId}")]
         public IActionResult RemoveAddress(int addressId)
         {
-            var addressExists = _userAddressRepo.GetAddressesByCustomer(addressId).Any();
-            if (!addressExists)
+            var address = _userAddressRepo.GetAddressById(addressId); // ✅ Correct method to check Address ID
+            if (address == null)
             {
                 return NotFound($"❌ Address ID {addressId} not found.");
             }
 
-            _userAddressRepo.RemoveAddress(addressId); // ✅ Call repository method instead
+            _userAddressRepo.RemoveAddress(addressId); // ✅ Calls correct repo method
             return NoContent();
         }
+
 
 
 
