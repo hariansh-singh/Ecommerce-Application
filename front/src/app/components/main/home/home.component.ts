@@ -40,6 +40,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+     window.scrollTo(0, 0); // Scrolls to the top of the page
     this.loadProducts();
   }
 
