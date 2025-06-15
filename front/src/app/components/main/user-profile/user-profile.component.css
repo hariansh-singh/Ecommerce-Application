@@ -874,21 +874,21 @@
 
 /* Role-specific styles */
 .badge-admin {
-  background: linear-gradient(135deg, #dc3545, #c82333);
+  background: linear-gradient(135deg, #6c757d, #5a6268);
   color: white;
-  border-color: #bd2130;
+  border-color: #545b62;
 }
 
 .badge-user {
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background: linear-gradient(135deg, #6c757d, #5a6268);
   color: white;
-  border-color: #1e7e34;
+  border-color: #545b62;
 }
 
 .badge-moderator {
-  background: linear-gradient(135deg, #ffc107, #e0a800);
-  color: #212529;
-  border-color: #d39e00;
+  background: linear-gradient(135deg, #6c757d, #5a6268);
+  color: white;
+  border-color: #545b62;
 }
 
 .badge-guest {
