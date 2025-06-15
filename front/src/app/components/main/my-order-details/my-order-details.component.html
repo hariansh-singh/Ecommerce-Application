@@ -28,7 +28,7 @@
 
     <div class="order-cards">
       <div *ngFor="let order of orders; trackBy: trackByOrderId" class="order-card">
-        
+
         <!-- Order Header -->
         <div class="order-card-header">
           <div class="order-main-info">
@@ -76,7 +76,8 @@
           <div class="items-list" *ngIf="order.showItems && order.orderItems && order.orderItems.length > 0">
             <div *ngFor="let item of order.orderItems; trackBy: trackByItemId" class="item">
               <div class="item-details">
-                <img class="cart-item-image" [src]="'https://localhost:7116/' + item.products?.productImagePath" alt="Product Image" />
+                <img class="cart-item-image" [src]="'https://localhost:7116/' + item.products?.productImagePath"
+                  alt="Product Image" />
                 <br />
                 <a class="item-name text-decoration-none" [routerLink]="['/product', item.productId]">
                   Product {{ item.products?.productName }}
@@ -87,6 +88,21 @@
                 <span class="price">{{ item.quantity * item.unitPrice | currency : "INR" : "symbol" : "1.0-0" }}</span>
               </div>
             </div>
+          </div>
+
+
+          <!-- Review and Rating Section -->
+          <div class="order-review">
+            <h4>Rate Your Order</h4>
+            <div class="star-rating">
+              <span *ngFor="let star of [1, 2, 3, 4, 5]" class="star" [ngClass]="{ 'active': order.rating >= star }"
+                (click)="toggleStars($event, order)" [attr.data-value]="star">
+                &#9733;
+              </span>
+            </div>
+
+            <textarea class="review-text" placeholder="Leave a review..."></textarea>
+            <button class="btn btn-primary submit-review">Submit</button>
           </div>
         </div>
       </div>

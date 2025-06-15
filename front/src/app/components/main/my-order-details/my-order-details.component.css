@@ -319,3 +319,46 @@
   border-radius: 6px;
 }
 
+/* Review Section */
+.order-review {
+  margin-top: 20px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.order-review h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+}
+
+.star {
+  font-size: 24px;
+  color: #e2e8f0;
+  cursor: pointer;
+}
+
+.star.active {
+  color: #facc15; /* Yellow color for selected stars */
+}
+
+.review-text {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  resize: none;
+}
+
+.submit-review {
+  margin-top: 10px;
+}
