@@ -1,0 +1,71 @@
+
+<div class="form-container">
+  <h2>Add an Address</h2>
+
+  <!-- <h2>Select or Add an Address</h2> -->
+
+ <!-- Saved Addresses Section: Only display if there are addresses -->
+<div *ngIf="addresses.length > 0">
+  <h3>Saved Addresses:</h3>
+  <div *ngFor="let address of addresses" class="address-card">
+    <p>{{ address.addressLine1 }},{{ address.addressLine2 }}, {{ address.landmark }},{{ address.city }}, {{ address.state }}, {{ address.postalCode }}</p>
+    <button (click)="selectAddress(address)">Use This Address</button>
+    <button (click)="editAddress(address)">Edit</button>
+    <button (click)="removeAddress(address.addressId)">Remove</button>
+
+  </div>
+</div>
+
+  <!-- Address Form -->
+  <form [formGroup]="addressForm" (ngSubmit)="saveAddress()">
+    <div class="form-group">
+      <label class="required-label">Address Line 1: <span class="star">*</span></label>
+      <input formControlName="addressLine1" required>
+    </div>
+
+    <div class="form-group">
+      <label>Address Line 2:</label>
+      <input formControlName="addressLine2">
+    </div>
+
+    <div class="form-group">
+      <label>Landmark:</label>
+      <input formControlName="landmark">
+    </div>
+
+    <div class="form-group">
+      <label class="required-label">Postal Code: <span class="star">*</span></label>
+      <input formControlName="postalCode" (input)="autofillCityAndState()" required maxlength="6">
+    </div>
+
+    <div class="form-group">
+      <label class="required-label">City: <span class="star">*</span></label>
+      <input formControlName="city" required>
+    </div>
+
+    <div class="form-group">
+      <label class="required-label">State: <span class="star">*</span></label>
+      <input formControlName="state" required>
+    </div>
+
+    <div class="form-group">
+      <label class="required-label">Country: <span class="star">*</span></label>
+     <input formControlName="country" readonly>
+
+    </div>
+
+    <div class="form-group">
+      <label>Set as Default Address:</label>
+      <input type="checkbox" formControlName="isDefault">
+    </div>
+
+    <form [formGroup]="addressForm" (ngSubmit)="saveAddress()">
+  <button type="submit" [disabled]="!addressForm.valid">
+    {{ editingAddressId ? 'Update Address' : 'Save Address' }}
+  </button>
+  <button *ngIf="editingAddressId" (click)="cancelEdit()">Cancel Edit</button>
+</form>
+
+
+
+

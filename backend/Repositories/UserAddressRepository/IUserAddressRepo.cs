@@ -9,5 +9,7 @@ namespace backend.Repositories.UserAddressRepo
         void AddAddress(UserAddressUIModel uiModel);
         void RemoveAddress(int addressId);
         void UpdateAddress(int addressId, UserAddressUIModel uiModel);
+       UserAddressDBModel? GetDefaultAddress(int customerId);
+        UserAddressDBModel? GetAddressById(int addressId);
     }
 }

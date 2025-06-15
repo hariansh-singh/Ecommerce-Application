@@ -22,6 +22,8 @@ interface Order {
   shippingAddress: string;
   orderItems: OrderItem[];
   showItems?: boolean;
+  rating?: number; // ⭐ Rating (0 to 5)
+  review?: string; // 📝 User review text
 }
 
 @Component({
@@ -117,11 +119,11 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
     // Order Items Table Rows
     doc.setFont('helvetica', 'normal');
     order.orderItems.forEach((item: any, index: any) => {
-        doc.text(`${index + 1}`, 10, yPosition);
-        doc.text(`${item.products?.productName || 'Unknown Product'}`, 30, yPosition);
-        doc.text(`${item.quantity}`, 120, yPosition);
-        doc.text(`₹${item.products?.productPrice || 0}`, 150, yPosition);
-        yPosition += 10; // ✅ Increment Y position for each item row
+      doc.text(`${index + 1}`, 10, yPosition);
+      doc.text(`${item.products?.productName || 'Unknown Product'}`, 30, yPosition);
+      doc.text(`${item.quantity}`, 120, yPosition);
+      doc.text(`₹${item.products?.productPrice || 0}`, 150, yPosition);
+      yPosition += 10; // ✅ Increment Y position for each item row
     });
 
     // Total Amount
@@ -142,7 +144,7 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
 
     // Generate and Download the PDF
     doc.save(`Invoice_Order_${order.orderId}.pdf`);
-}
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -196,4 +198,16 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
   trackByItemId(index: number, item: OrderItem): string {
     return `${item.productId}-${index}`;
   }
+
+  selectRating(order: Order, rating: number): void {
+    order.rating = rating; // Store the selected rating
+  }
+
+  toggleStars(event: Event, order: Order): void {
+    const selectedValue = parseInt((event.target as HTMLElement).getAttribute("data-value") || "0", 10);
+    if (selectedValue) {
+      this.selectRating(order, selectedValue);
+    }
+  }
+
 }

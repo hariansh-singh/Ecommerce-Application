@@ -4,6 +4,8 @@ import { UserProfileService } from '../../../../services/user-profile.service';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
 import Swal from 'sweetalert2';
+import { OrderService } from '../../../../services/order.service';
+import { MatCardLgImage } from '@angular/material/card';
 
 @Component({
   selector: 'app-user-profile',
@@ -23,7 +25,9 @@ export class UserProfileComponent implements OnInit {
   phoneNumber: string = '';
   role: string = '';
 
+  orderService: any = inject(OrderService);
   authService: any = inject(AuthService);
+
   userData: any = this.authService.decodedTokenData();
   customerId = this.userData?.CustomerId || 0;
 
@@ -58,9 +62,10 @@ export class UserProfileComponent implements OnInit {
       icon: 'fa-life-ring',
       count: null,
     },
+    { key: 'account', label: 'Account', icon: 'fa-user-lock' }
   ];
 
-  constructor(private userProfileService: UserProfileService) {}
+  constructor(private userProfileService: UserProfileService) { }
 
   ngOnInit(): void {
     this.loadCustomerInfo();
@@ -97,13 +102,14 @@ export class UserProfileComponent implements OnInit {
   }
 
   loadCustomerOrders(): void {
-    this.userProfileService.getCustomerOrders(this.customerId).subscribe(
-      (data) => {
-        this.orders = data;
+    this.orderService.fetchOrdersById(this.customerId).subscribe(
+      (data: any) => {
+        this.orders = data.data;
+        console.log(this.orders)
         this.filteredOrders = [...this.orders];
         this.updateNavigationCount('orders', this.orders.length);
       },
-      (error) => {
+      (error: any) => {
         console.error('Error fetching orders', error);
       }
     );
@@ -173,6 +179,51 @@ export class UserProfileComponent implements OnInit {
         }
       );
   }
+
+  //delete account code 
+  deleteAccount(): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Your account and all related data will be permanently deleted.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userProfileService.deleteAccount(this.customerId).subscribe(
+          () => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted!',
+              text: 'Your account has been successfully deleted.',
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            // Give SweetAlert a moment to finish before redirecting
+            setTimeout(() => {
+              if (this.authService.logout) {
+                this.authService.logout(); // Clear user session
+              }
+              window.location.href = '/register'; // 🔁 Redirect to register
+            }, 1600);
+          },
+          (error) => {
+            console.error('Error deleting account:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: 'Something went wrong while deleting your account.'
+            });
+          }
+        );
+      }
+    });
+  }
+
 
   getRoleBadgeClass(): string {
     const baseClass = 'badge-';

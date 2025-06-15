@@ -2,12 +2,13 @@ import { Component, ViewChild, ElementRef, inject, OnInit } from '@angular/core'
 import { CartService } from '../../../../services/cart.service';
 import { AuthService } from '../../../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { OrderService } from '../../../../services/order.service';
 import { FormsModule } from '@angular/forms';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
+import { UserAddressService } from '../../../../services/user-address.service';
 
 @Component({
   selector: 'app-view-cart',
@@ -44,25 +45,15 @@ import Swal from 'sweetalert2';
 export class ViewCartComponent implements OnInit {
   @ViewChild('checkoutSection') checkoutSection!: ElementRef;
   
+  
+  
   cartItems: any[] = [];
   totalPrice: number = 0;
   isProcessing: boolean = false;
   promoCode: string = '';
   promoApplied: boolean = false;
   discount: number = 0;
-  
-  // Updated shipping address object with detailed fields
-  shippingAddress = {
-    customerId: 0,
-    addressLine1: '',
-    addressLine2: '',
-    landmark: '',
-    city: '',
-    state: '',
-    country: 'India', // Default to India, can be changed by user
-    postalCode: '',
-    isDefault: false
-  };
+  shippingAddress: string = '';
   
   selectedPayment: string = 'card';
   
@@ -77,16 +68,45 @@ export class ViewCartComponent implements OnInit {
   cartService = inject(CartService);
   authService = inject(AuthService);
   orderService = inject(OrderService);
+  addressService = inject(UserAddressService);
   
   decodedToken: any = this.authService.decodedTokenData();
   
-  constructor() {}
-  
-  ngOnInit(): void {
-    window.scrollTo(0, 0); // Scrolls to the top of the page
-    this.shippingAddress.customerId = this.decodedToken.CustomerId;
-    this.loadCartItems();
+  constructor(private router: Router) {}
+ ngOnInit(): void {
+  window.scrollTo(0, 0); // Scroll to the top
+  this.loadCartItems();
+
+  // Clear selected address on new login
+  const isNewSession = sessionStorage.getItem('isNewSession');
+  if (isNewSession === 'true') {
+    localStorage.removeItem('selectedAddress'); // Ensure only default is used
+    sessionStorage.removeItem('isNewSession'); // Reset flag after clearing
   }
+
+  // Check if a selected address exists in localStorage (for current session only)
+  const selectedAddress = localStorage.getItem('selectedAddress');
+
+  if (selectedAddress) {
+    const addressObj = JSON.parse(selectedAddress);
+    this.shippingAddress = `${addressObj.addressLine1}, ${addressObj.addressLine2}, ${addressObj.landmark}, ${addressObj.city}, ${addressObj.state}, ${addressObj.postalCode}, ${addressObj.country}`;
+  } else {
+    // Fetch default address from backend if no selected address exists
+    this.addressService.getDefaultAddress(this.decodedToken.CustomerId).subscribe({
+      next: (defaultAddress) => {
+        if (defaultAddress) {
+          this.shippingAddress = `${defaultAddress.addressLine1}, ${defaultAddress.addressLine2}, ${defaultAddress.landmark}, ${defaultAddress.city}, ${defaultAddress.state}, ${defaultAddress.postalCode}, ${defaultAddress.country}`;
+
+          localStorage.setItem('defaultAddress', JSON.stringify(defaultAddress)); // Store for fallback
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching default address:', error);
+      }
+    });
+  }
+}
+
   
   // SweetAlert2 Toast Utility Methods
   showSuccessToast(message: string, title: string = 'Success'): void {
@@ -142,51 +162,55 @@ export class ViewCartComponent implements OnInit {
   }
   
   loadCartItems(): void {
-    this.cartService.getCartItems(this.decodedToken.CustomerId).subscribe({
-      next: (response: any) => {
-        if (Array.isArray(response)) {
-          this.cartItems = response.map((item) => ({
-            ...item,
-            cartId: item.cartId || null,
-            isHighlighted: false,
-            // Ensure the product has a valid image URL or use a fallback
-            products: {
-              ...item.products,
-              imageUrl: item.products.imageUrl || 'https://via.placeholder.com/150' // Using an online placeholder
-            }
-          }));
-          
-          // Add staggered animation effect
-          this.cartItems.forEach((item, index) => {
-            setTimeout(() => {
-              item.isVisible = true;
-            }, 100 * index);
-          });
-        } else {
-          console.error('Unexpected API response structure:', response);
-          this.cartItems = [];
-        }
+  this.cartService.getCartItems(this.decodedToken.CustomerId).subscribe({
+    next: (response: any) => {
+      if (Array.isArray(response)) {
+        this.cartItems = response.map((item) => ({
+          ...item,
+          cartId: item.cartId || null,
+          isHighlighted: false,
+          // Ensure the product has a valid image URL or use a fallback
+          products: {
+            ...item.products,
+            imageUrl: item.products.imageUrl || 'https://via.placeholder.com/150' // Using an online placeholder
+          }
+        }));
         
-        this.calculateTotalPrice();
-      },
-      error: (error) => {
-        console.error('API Error fetching cart:', error);
-        this.showErrorToast('Failed to load your cart items');
+        // Add staggered animation effect
+        this.cartItems.forEach((item, index) => {
+          setTimeout(() => {
+            item.isVisible = true;
+          }, 100 * index);
+        });
+      } else {
+        console.error('Unexpected API response structure:', response);
+        this.cartItems = [];
       }
-    });
+      
+      this.calculateTotalPrice();
+    },
+    error: (error) => {
+      console.error('API Error fetching cart:', error);
+      this.showErrorToast('Failed to load your cart items');
+    }
+  });
+}
+ redirectToAddressPage(): void {
+    this.router.navigate(['/useraddress']); // Redirect to the User Address page
   }
-  
   placeOrder(): void {
     if (!this.cartItems.length) {
       this.showWarningToast('Your cart is empty!');
       return;
     }
-    
-    if (!this.validatePaymentDetails()) {
+
+      if (!this.shippingAddress) {
+      this.showWarningToast('Please provide an address before placing an order.');
+      //this.router.navigate(['/user-address']); // Redirect to the address page
       return;
     }
     
-    if (!this.validateShippingAddress()) {
+    if (!this.validatePaymentDetails()) {
       return;
     }
     
@@ -196,9 +220,8 @@ export class ViewCartComponent implements OnInit {
       customerId: this.decodedToken.CustomerId,
       orderDate: new Date().toISOString(),
       totalPrice: this.getFinalTotal(),
-      shippingAddress: this.getFormattedAddress(),
+      shippingAddress: this.shippingAddress, // In a real app, get this from a form
       paymentMethod: this.selectedPayment,
-      addressDetails: this.shippingAddress, // Send detailed address object
       orderItems: this.cartItems.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
@@ -215,7 +238,6 @@ export class ViewCartComponent implements OnInit {
           this.totalPrice = 0;
           this.promoApplied = false;
           this.discount = 0;
-          this.resetShippingAddress();
           
           // Clear cart data in service
           this.cartService.clearCart(this.decodedToken.CustomerId).subscribe();
@@ -250,69 +272,6 @@ export class ViewCartComponent implements OnInit {
     }
     
     return true;
-  }
-  
-  validateShippingAddress(): boolean {
-    const requiredFields = [
-      { field: 'addressLine1', name: 'Address Line 1' },
-      { field: 'city', name: 'City' },
-      { field: 'state', name: 'State' },
-      { field: 'country', name: 'Country' },
-      { field: 'postalCode', name: 'Postal Code' }
-    ];
-    
-    for (const { field, name } of requiredFields) {
-      if (!this.shippingAddress[field as keyof typeof this.shippingAddress] || 
-          (this.shippingAddress[field as keyof typeof this.shippingAddress] as string).trim() === '') {
-        this.showWarningToast(`Please enter ${name}`);
-        return false;
-      }
-    }
-    
-    // Validate postal code length (max 10 characters)
-    if (this.shippingAddress.postalCode.length > 10) {
-      this.showWarningToast('Postal code cannot exceed 10 characters');
-      return false;
-    }
-    
-    // Basic postal code format validation for India
-    if (this.shippingAddress.country.toLowerCase() === 'india') {
-      const indianPinRegex = /^[1-9][0-9]{5}$/;
-      if (!indianPinRegex.test(this.shippingAddress.postalCode)) {
-        this.showWarningToast('Please enter a valid 6-digit PIN code for India');
-        return false;
-      }
-    }
-    
-    return true;
-  }
-  
-  getFormattedAddress(): string {
-    const parts = [
-      this.shippingAddress.addressLine1,
-      this.shippingAddress.addressLine2,
-      this.shippingAddress.landmark,
-      this.shippingAddress.city,
-      this.shippingAddress.state,
-      this.shippingAddress.country,
-      this.shippingAddress.postalCode
-    ].filter(part => part && part.trim() !== '');
-    
-    return parts.join(', ');
-  }
-  
-  resetShippingAddress(): void {
-    this.shippingAddress = {
-      customerId: this.decodedToken.CustomerId,
-      addressLine1: '',
-      addressLine2: '',
-      landmark: '',
-      city: '',
-      state: '',
-      country: 'India',
-      postalCode: '',
-      isDefault: false
-    };
   }
   
   increaseQuantity(item: any): void {
@@ -477,38 +436,6 @@ export class ViewCartComponent implements OnInit {
   scrollToCheckout(): void {
     if (this.checkoutSection) {
       this.checkoutSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-  
-  // Utility method to format postal code (remove spaces and convert to uppercase)
-  formatPostalCode(): void {
-    this.shippingAddress.postalCode = this.shippingAddress.postalCode
-      .replace(/\s+/g, '')
-      .toUpperCase()
-      .substring(0, 10); // Limit to 10 characters
-  }
-  
-  // Method to auto-fill state based on postal code (for India)
-  onPostalCodeChange(): void {
-    if (this.shippingAddress.country.toLowerCase() === 'india' && 
-        this.shippingAddress.postalCode.length === 6) {
-      // This is a basic implementation - in a real app, you'd use a postal code API
-      const firstDigit = this.shippingAddress.postalCode.charAt(0);
-      const stateMap: { [key: string]: string } = {
-        '1': 'Delhi',
-        '2': 'Haryana',
-        '3': 'Punjab',
-        '4': 'Rajasthan',
-        '5': 'Uttar Pradesh',
-        '6': 'Bihar',
-        '7': 'West Bengal',
-        '8': 'Odisha',
-        '9': 'Tamil Nadu'
-      };
-      
-      if (stateMap[firstDigit] && !this.shippingAddress.state) {
-        this.shippingAddress.state = stateMap[firstDigit];
-      }
     }
   }
 }

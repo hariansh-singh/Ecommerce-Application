@@ -901,3 +901,71 @@
 .badge-icon {
   font-size: 0.875rem;
 }
+
+
+ .account-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.account-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.delete-warning {
+  border-left: 6px solid #dc3545;
+  background: linear-gradient(120deg, #fff5f5, #ffe3e3);
+  padding: 28px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.delete-warning::before {
+  content: "⚠️";
+  font-size: 36px;
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  opacity: 0.15;
+}
+
+.btn-danger {
+  background: linear-gradient(45deg, #dc3545, #b02a37);
+  color: #fff;
+  border: none;
+  padding: 8px 16px; /* 🔽 reduced size */
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px; /* 🔽 slightly smaller text */
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+.btn-danger i {
+  font-size: 14px; /* 🔽 match button scale */
+}
+
+.btn-danger:hover {
+  background: linear-gradient(45deg, #c82333, #9d1b29);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(220, 53, 69, 0.35);
+}
+
+
+
+.btn-danger:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}

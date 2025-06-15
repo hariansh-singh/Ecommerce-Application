@@ -9,7 +9,11 @@
 
         public class UserAddressUIModel
         {
-          
+            
+      
+            public int AddressId { get; set; }
+
+
 
             [Required]
             public int CustomerId { get; set; }  // Foreign key to associate address with a customer
