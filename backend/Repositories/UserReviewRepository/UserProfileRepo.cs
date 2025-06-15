@@ -1,20 +1,32 @@
-﻿using backend.Models.UserProfileModel;
+﻿using AutoMapper;
+using backend.DataAccessLayer;
+using backend.Models.UserProfileModel;
+using backend.Models.UserReviewModel;
 
 namespace backend.Repositories.UserProfileRepository
 {
     public class UserReviewRepo : IUserReviewRepo
     {
-        private static List<UserReviewDBModel> Reviews = new();
+        private readonly IMapper _mapper;
+        private readonly EcomDBContext dBContext;
+
+        public UserReviewRepo(IMapper _mapper, EcomDBContext dBContext)
+        {
+            this._mapper = _mapper;
+            this.dBContext = dBContext;
+        }
 
         public List<UserReviewDBModel> GetReviewsByCustomer(int customerId)
         {
-            return Reviews.Where(r => r.CustomerId == customerId).ToList();
+            return dBContext.UserReviews.Where(r => r.CustomerId == customerId).ToList();
         }
 
-        public void AddReview(UserReviewDBModel review)
+        public bool AddReview(UserReviewUIModel review)
         {
-            review.ReviewId = Reviews.Count + 1;
-            Reviews.Add(review);
+            var reviewDB = _mapper.Map<UserReviewDBModel>(review);
+            dBContext.UserReviews.Add(reviewDB);
+            dBContext.SaveChanges();
+            return true;
         }
     }
 }

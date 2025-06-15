@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil, finalize } from 'rxjs';
 import { OrderService } from '../../../../services/order.service';
 import { AuthService } from '../../../../services/auth.service';
@@ -11,6 +12,10 @@ interface OrderItem {
   quantity: number;
   unitPrice: number;
   products?: any;
+  rating?: number; // Rating for this specific item (1-5)
+  reviewText?: string; // Review text for this specific item
+  hoverRating?: number; // For hover effect on stars
+  reviewSubmitted?: boolean; // Flag to track if review was submitted
 }
 
 interface Order {
@@ -22,13 +27,18 @@ interface Order {
   shippingAddress: string;
   orderItems: OrderItem[];
   showItems?: boolean;
-  rating?: number; // ⭐ Rating (0 to 5)
-  review?: string; // 📝 User review text
+}
+
+interface UserReviewModel {
+  customerId: number;
+  productId: number;
+  rating: number;
+  reviewText?: string;
 }
 
 @Component({
   selector: 'app-my-order-details',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './my-order-details.component.html',
   styleUrls: ['./my-order-details.component.css'],
 })
@@ -38,6 +48,17 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
   name: string = '';
   isLoading: boolean = false;
   error: string | null = null;
+  isSubmittingReview: boolean = false;
+
+  // Modal dialog properties
+  showReviewModal: boolean = false;
+  selectedItem: OrderItem | null = null;
+  selectedOrder: Order | null = null;
+  reviewForm = {
+    rating: 0,
+    reviewText: '',
+    hoverRating: 0,
+  };
 
   private destroy$ = new Subject<void>();
   private authService = inject(AuthService);
@@ -45,6 +66,7 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
   userData: any = this.authService.decodedTokenData();
   userName: any = this.userData['Name'] || 'User';
   userEmail: any = this.userData['Email'] || 'User';
+  customerId: number = parseInt(this.userData['CustomerId'] || '0');
 
   constructor(
     private route: ActivatedRoute,
@@ -91,7 +113,11 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
     doc.text(`Customer Email: ${this.userEmail}`, 10, yPosition);
     yPosition += 10;
 
-    doc.text(`Order Date: ${new Date(order.orderDate).toLocaleDateString()}`, 10, yPosition);
+    doc.text(
+      `Order Date: ${new Date(order.orderDate).toLocaleDateString()}`,
+      10,
+      yPosition
+    );
     yPosition += 10;
 
     doc.text(`Shipping Address: ${order.shippingAddress}`, 10, yPosition);
@@ -120,7 +146,11 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
     doc.setFont('helvetica', 'normal');
     order.orderItems.forEach((item: any, index: any) => {
       doc.text(`${index + 1}`, 10, yPosition);
-      doc.text(`${item.products?.productName || 'Unknown Product'}`, 30, yPosition);
+      doc.text(
+        `${item.products?.productName || 'Unknown Product'}`,
+        30,
+        yPosition
+      );
       doc.text(`${item.quantity}`, 120, yPosition);
       doc.text(`₹${item.products?.productPrice || 0}`, 150, yPosition);
       yPosition += 10; // ✅ Increment Y position for each item row
@@ -146,18 +176,133 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
     doc.save(`Invoice_Order_${order.orderId}.pdf`);
   }
 
+  // Modal dialog methods
+  openReviewDialog(item: OrderItem, order: Order): void {
+    this.selectedItem = item;
+    this.selectedOrder = order;
+    this.reviewForm = {
+      rating: item.rating || 0,
+      reviewText: item.reviewText || '',
+      hoverRating: 0,
+    };
+    this.showReviewModal = true;
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  }
+
+  closeReviewDialog(): void {
+    this.showReviewModal = false;
+    this.selectedItem = null;
+    this.selectedOrder = null;
+    this.reviewForm = {
+      rating: 0,
+      reviewText: '',
+      hoverRating: 0,
+    };
+    document.body.style.overflow = 'auto'; // Restore scrolling
+  }
+
+  // Modal rating methods
+  setRating(rating: number): void {
+    this.reviewForm.rating = rating;
+  }
+
+  setHoverRating(rating: number): void {
+    this.reviewForm.hoverRating = rating;
+  }
+
+  clearHoverRating(): void {
+    this.reviewForm.hoverRating = 0;
+  }
+
+  getRatingText(rating: number): string {
+    const ratingTexts = {
+      1: 'Poor',
+      2: 'Fair',
+      3: 'Good',
+      4: 'Very Good',
+      5: 'Excellent',
+    };
+    return ratingTexts[rating as keyof typeof ratingTexts] || '';
+  }
+
+  submitReviewFromModal(): void {
+    if (!this.selectedItem || !this.selectedOrder) {
+      return;
+    }
+
+    if (
+      !this.reviewForm.rating ||
+      this.reviewForm.rating < 1 ||
+      this.reviewForm.rating > 5
+    ) {
+      alert('Please select a rating between 1 and 5 stars.');
+      return;
+    }
+
+    if (!this.customerId || this.customerId === 0) {
+      alert('Customer ID not found. Please log in again.');
+      return;
+    }
+
+    this.isSubmittingReview = true;
+
+    const reviewData: UserReviewModel = {
+      customerId: this.customerId,
+      productId: parseInt(this.selectedItem.productId),
+      rating: this.reviewForm.rating,
+      reviewText: this.reviewForm.reviewText || '',
+    };
+
+    console.log('Submitting review:', reviewData);
+
+    this.orderService
+      .submitProductReview(reviewData)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.isSubmittingReview = false;
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Review submitted successfully:', response);
+
+          // Update the item with submitted review
+          this.selectedItem!.rating = this.reviewForm.rating;
+          this.selectedItem!.reviewText = this.reviewForm.reviewText;
+          this.selectedItem!.reviewSubmitted = true;
+
+          this.closeReviewDialog();
+          this.showSuccessMessage('Review submitted successfully!');
+        },
+        error: (error) => {
+          console.error('Error submitting review:', error);
+          alert('Failed to submit review. Please try again.');
+        },
+      });
+  }
+
+  private showSuccessMessage(message: string): void {
+    // You can implement a toast notification here
+    // For now, using console.log
+    console.log(message);
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    document.body.style.overflow = 'auto'; // Ensure scrolling is restored
   }
 
   private initializeUserData(): void {
     try {
       const userData: any = this.authService.decodedTokenData();
       this.name = userData['Name'] || 'User';
+      this.customerId = parseInt(userData['CustomerId'] || '0');
     } catch (error) {
       console.error('Error decoding user data:', error);
       this.name = 'User';
+      this.customerId = 0;
     }
   }
 
@@ -179,6 +324,14 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
             this.orders = response.data.map((order: any) => ({
               ...order,
               showItems: false, // Default state: items hidden
+              orderItems:
+                order.orderItems?.map((item: any) => ({
+                  ...item,
+                  rating: 0,
+                  reviewText: '',
+                  hoverRating: 0,
+                  reviewSubmitted: false,
+                })) || [],
             }));
           } else {
             this.orders = [];
@@ -198,16 +351,4 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
   trackByItemId(index: number, item: OrderItem): string {
     return `${item.productId}-${index}`;
   }
-
-  selectRating(order: Order, rating: number): void {
-    order.rating = rating; // Store the selected rating
-  }
-
-  toggleStars(event: Event, order: Order): void {
-    const selectedValue = parseInt((event.target as HTMLElement).getAttribute("data-value") || "0", 10);
-    if (selectedValue) {
-      this.selectRating(order, selectedValue);
-    }
-  }
-
 }
