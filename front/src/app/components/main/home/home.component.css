@@ -354,3 +354,56 @@
     min-width: 100%;
   }
 }
+
+.floating-text-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: linear-gradient(90deg, #ff4c4c, #ff9800);
+  padding: 12px 0;
+  text-align: center;
+}
+
+.floating-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  animation: scrollText 12s linear infinite;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.elite-theme {
+  background: linear-gradient(90deg, #001a33, #004080, #0077cc, #00aaff); /* Deep royal blue with electric cyan */
+  box-shadow: 0px 0px 16px rgba(0, 170, 255, 0.9); /* Stylish glow effect */
+}
+
+.elite-theme .floating-text {
+  color: #ffffff; /* Crisp white text for maximum contrast */
+  font-size: 1.8rem; /* Large, bold, and premium */
+  font-weight: bold;
+  text-shadow: 2px 2px 6px rgba(0, 255, 255, 0.7); /* Refined glow without blur */
+}
+
+@keyframes scrollTextSlow {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.elite-theme .floating-text {
+  animation: scrollTextSlow 18s linear infinite; /* Slower speed for better readability */
+}

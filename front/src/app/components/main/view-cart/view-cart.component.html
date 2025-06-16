@@ -124,13 +124,13 @@
                 getDiscount() | currency : "INR" : "symbol" : "1.0-0"
                 }}</span>
             </div>
-            <div class="summary-row" *ngIf="getShippingCost() > 0">
+            <!-- <div class="summary-row" *ngIf="getShippingCost() > 0">
               <span>Shipping:</span>
               <span>{{
                 getShippingCost() | currency : "INR" : "symbol" : "1.0-0"
                 }}</span>
-            </div>
-            <div class="summary-row total">
+            </div> -->
+            <div class="summary-row total">                   
               <span>Total:</span>
               <span>{{
                 getFinalTotal() | currency : "INR" : "symbol" : "1.0-0"
