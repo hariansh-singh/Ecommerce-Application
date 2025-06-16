@@ -5,7 +5,8 @@ namespace backend.Repositories.UserProfileRepository
 {
     public interface IUserReviewRepo
     {
-        List<UserReviewDBModel> GetReviewsByCustomer(int customerId);
-        bool AddReview(UserReviewUIModel review);
+        Task<List<UserReviewDBModel>?> GetReviewsByCustomerAsync(int customerId);
+        Task<List<UserReviewDBModel>?> GetReviewsByProductAsync(int productId);
+        Task<bool> AddReviewAsync(UserReviewUIModel review);
     }
 }
