@@ -2,6 +2,7 @@
 using backend.DataAccessLayer;
 using backend.Models.UserProfileModel;
 using backend.Models.UserReviewModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories.UserProfileRepository
 {
@@ -16,17 +17,27 @@ namespace backend.Repositories.UserProfileRepository
             this.dBContext = dBContext;
         }
 
-        public List<UserReviewDBModel> GetReviewsByCustomer(int customerId)
+        public async Task<List<UserReviewDBModel>?> GetReviewsByCustomerAsync(int customerId)
         {
-            return dBContext.UserReviews.Where(r => r.CustomerId == customerId).ToList();
+            return await dBContext.UserReviews.Where(r => r.CustomerId == customerId).ToListAsync();
+        }
+        public async Task<List<UserReviewDBModel>?> GetReviewsByProductAsync(int customerId)
+        {
+            return await dBContext.UserReviews.Where(r => r.CustomerId == customerId).ToListAsync();
         }
 
-        public bool AddReview(UserReviewUIModel review)
+        public async Task<bool> AddReviewAsync(UserReviewUIModel review)
         {
-            var reviewDB = _mapper.Map<UserReviewDBModel>(review);
-            dBContext.UserReviews.Add(reviewDB);
-            dBContext.SaveChanges();
-            return true;
+            var existingReview = await dBContext.UserReviews
+                .FirstOrDefaultAsync(r => r.CustomerId == review.CustomerId && r.ProductId == review.ProductId);
+
+            if (existingReview == null) {
+                var reviewDB = _mapper.Map<UserReviewDBModel>(review);
+                await dBContext.UserReviews.AddAsync(reviewDB);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
     }
 }
