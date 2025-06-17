@@ -21,9 +21,9 @@ namespace backend.Repositories.UserProfileRepository
         {
             return await dBContext.UserReviews.Where(r => r.CustomerId == customerId).ToListAsync();
         }
-        public async Task<List<UserReviewDBModel>?> GetReviewsByProductAsync(int customerId)
+        public async Task<List<UserReviewDBModel>?> GetReviewsByProductAsync(int productId)
         {
-            return await dBContext.UserReviews.Where(r => r.CustomerId == customerId).ToListAsync();
+            return await dBContext.UserReviews.Where(r => r.ProductId == productId).ToListAsync();
         }
 
         public async Task<bool> AddReviewAsync(UserReviewUIModel review)
