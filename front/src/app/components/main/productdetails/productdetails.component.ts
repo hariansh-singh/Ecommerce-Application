@@ -5,15 +5,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '../../../../services/cart.service';
 import { inject } from '@angular/core';
-import { 
-  trigger, 
-  state, 
-  style, 
-  transition, 
-  animate, 
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
   keyframes,
   query,
-  stagger 
+  stagger
 } from '@angular/animations';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../services/auth.service';
@@ -104,19 +104,18 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   showSuccessNotification: boolean = false;
   buttonText: string = 'Add to Cart';
   isLoading: boolean = true;
-  
   private cartService = inject(CartService);
   private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
-  currentUser:any = this.authService.decodedTokenData();
-  customerId:any = this.currentUser["CustomerId"];
+  currentUser: any = this.authService.decodedTokenData();
+  customerId: any = this.currentUser["CustomerId"];
 
   constructor(
-    private productService: ProductService, 
-    private router: Router, 
+    private productService: ProductService,
+    private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadProduct();
@@ -145,7 +144,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response: any) => {
           console.log("Full API Response:", response);
-          
+
           if (response && response.data) {
             this.products = response.data;
             this.isLoading = false;
@@ -188,32 +187,32 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   }
 
   addToCart(): void {
-  if (!this.products || !this.products.productId) {
-    console.error("Invalid product object:", this.products);
-    return;
+    if (!this.products || !this.products.productId) {
+      console.error("Invalid product object:", this.products);
+      return;
+    }
+
+    // Prepare cart item with quantity
+    const cartItem = {
+      customerId: this.customerId,
+      productId: this.products.productId,
+      quantity: this.quantity
+    };
+
+    // Add to cart through service - MUST subscribe to execute the HTTP request
+    this.cartService.addToCart(cartItem)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          // Trigger success animations only after successful API call
+          this.triggerSuccessAnimations();
+          window.scrollTo(0, 0);
+        },
+        error: (error) => {
+          console.error('Error adding product to cart:', error);
+        }
+      });
   }
-
-  // Prepare cart item with quantity
-  const cartItem = {
-    customerId: this.customerId,
-    productId: this.products.productId,
-    quantity: this.quantity
-  };
-
-  // Add to cart through service - MUST subscribe to execute the HTTP request
-  this.cartService.addToCart(cartItem)
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: (response) => {
-        // Trigger success animations only after successful API call
-        this.triggerSuccessAnimations();
-         window.scrollTo(0, 0);
-      },
-      error: (error) => {
-        console.error('Error adding product to cart:', error);
-      }
-    });
-}
 
   private triggerSuccessAnimations(): void {
     // Button animation
@@ -258,7 +257,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   // Method to get stock status class
   getStockStatusClass(): string {
     if (!this.products) return '';
-    
+
     if (this.products.stockQuantity === 0) {
       return 'out-of-stock';
     } else if (this.products.stockQuantity <= 10) {

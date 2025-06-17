@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 
 interface UserReviewModel {
   customerId: number;
@@ -25,8 +26,15 @@ export class OrderService {
     return this.http.get<any>(`${this.API_URL}/api/Order/byUser/${id}`);
   }
 
-  // Add this method to submit product reviews
-  submitProductReview(reviewData: UserReviewModel): Observable<any> {
-    return this.http.post(`${this.API_URL}/api/Review`, reviewData);
-  }
+ submitProductReview(reviewData: UserReviewModel): Observable<any> {
+  console.log('Sending review to API:', reviewData);
+  return this.http.post(`${this.API_URL}/api/reviews`, reviewData)
+    .pipe(
+      catchError((error) => {
+        console.error('API review submission failed:', error);
+        return throwError(() => new Error('Error submitting review.'));
+      })
+    );
+}
+
 }
