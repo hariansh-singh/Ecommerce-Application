@@ -368,13 +368,13 @@ export class ViewCartComponent implements OnInit {
     return this.promoApplied ? this.discount : 0;
   }
   
-  getShippingCost(): number {
-    // Free shipping for orders over INR 1000
-    return this.totalPrice > 1000 ? 0 : 99;
-  }
+  // getShippingCost(): number {
+  //   // Free shipping for orders over INR 1000
+  //   return this.totalPrice > 1000 ? 0 : 99;
+  // }
   
   getFinalTotal(): number {
-    return this.totalPrice - this.getDiscount() + this.getShippingCost();
+    return this.totalPrice - this.getDiscount();
   }
   
   applyPromoCode(): void {
