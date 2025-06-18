@@ -123,9 +123,12 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    const productIdStr: any = this.route.snapshot.paramMap.get('id');
     this.loadProduct();
-    this.userProfileService.getProductReviews(this.products.id).subscribe(data => {
+    this.userProfileService.getProductReviews(productIdStr).subscribe(data => {
     this.reviews = data.data;
+    console.log("Product Reviews:", this.reviews);
+    
   });
 
 
