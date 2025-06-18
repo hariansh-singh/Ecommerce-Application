@@ -17,6 +17,7 @@ import {
 } from '@angular/animations';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../services/auth.service';
+import { UserProfileService } from '../../../../services/user-profile.service';
 
 @Component({
   selector: 'app-productdetails',
@@ -104,8 +105,13 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   showSuccessNotification: boolean = false;
   buttonText: string = 'Add to Cart';
   isLoading: boolean = true;
+  reviews: any[] = [];
+
   private cartService = inject(CartService);
   private authService = inject(AuthService);
+  private userProfileService = inject(UserProfileService);
+  private router = inject(Router);
+
   private destroy$ = new Subject<void>();
 
   currentUser: any = this.authService.decodedTokenData();
@@ -113,12 +119,16 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private productService: ProductService,
-    private router: Router,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.loadProduct();
+    this.userProfileService.getProductReviews(this.products.id).subscribe(data => {
+    this.reviews = data.data;
+  });
+
+
     window.scrollTo(0, 0);
   }
 

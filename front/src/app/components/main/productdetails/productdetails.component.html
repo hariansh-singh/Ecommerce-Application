@@ -5,62 +5,70 @@
       <div class="floating-circle"></div>
       <div class="floating-circle"></div>
     </div>
-    
+
     <div class="product-content">
       <div class="image-section">
-        <img 
-          class="product-image" 
-          [src]="'https://localhost:7116/' + products.productImagePath" 
+        <img
+          class="product-image"
+          [src]="'https://localhost:7116/' + products.productImagePath"
           [alt]="products.productName"
           [@imageFloat]
         />
       </div>
-      
+
       <div class="details-section">
         <h1 class="product-title" [@titleSlide]>{{ products.productName }}</h1>
-        
+
         <div class="price-container" [@priceSlide]>
-          <div class="price">Rs {{ products.productPrice | number:'1.0-0' }}</div>
+          <div class="price">
+            Rs {{ products.productPrice | number : "1.0-0" }}
+          </div>
         </div>
-        
+
         <div class="description-section" [@descriptionSlide]>
           <h3 class="description-title">Description:</h3>
           <p class="description-text">{{ products.description }}</p>
         </div>
-        
+
         <div class="stock-info" [@stockSlide]>
           <div class="stock-icon"></div>
-          <span class="stock-text">{{ products.stockQuantity }} items available</span>
+          <span class="stock-text"
+            >{{ products.stockQuantity }} items available</span
+          >
         </div>
-        
+
         <div class="quantity-selector" [@quantitySlide]>
           <span class="quantity-label">Quantity:</span>
           <div class="quantity-control">
-            <button 
-              class="quantity-btn" 
+            <button
+              class="quantity-btn"
               (click)="decreaseQuantity()"
               [disabled]="quantity <= 1"
               [@buttonHover]
-            >-</button>
-            <input 
-              type="number" 
-              class="quantity-input" 
-              [(ngModel)]="quantity" 
-              [min]="1" 
+            >
+              -
+            </button>
+            <input
+              type="number"
+              class="quantity-input"
+              [(ngModel)]="quantity"
+              [min]="1"
               [max]="products.stockQuantity"
               readonly
-            >
-            <button 
-              class="quantity-btn" 
+            />
+            <button
+              class="quantity-btn"
               (click)="increaseQuantity()"
               [disabled]="quantity >= products.stockQuantity"
               [@buttonHover]
-            >+</button>
+            >
+              +
+            </button>
           </div>
         </div>
-        
-        <button 
-          class="add-to-cart-btn" 
+
+        <button
+          class="add-to-cart-btn"
           (click)="addToCart()"
           [class.success-animation]="showSuccessAnimation"
           [@buttonSlide]
@@ -73,32 +81,22 @@
 </div>
 
 <div class="reviews-section">
-   <h3 class="reviews-title">
-    Latest Reviews 
+  <h3 class="reviews-title">
+    Latest Reviews
     <span class="rating">⭐⭐⭐⭐☆ (4.2)</span>
     <span class="total-reviews">(Total: 128 Reviews)</span>
   </h3>
-  <div class="review">
-    <strong>Alice:</strong> Great product! Highly recommend.
+  <div class="review" *ngFor="let review of reviews">
+    <strong>{{ review.username }}:</strong> {{ review.reviewText }}
   </div>
-  <div class="review">
-    <strong>Bob:</strong> Good value for money, but could be improved.
-  </div>
-  <div class="review">
-    <strong>Charlie:</strong> Fast delivery and excellent quality!
-  </div>
-    <div class="reviews-button-container">
+  <div class="reviews-button-container">
     <a href="all-reviews.html" class="view-all-reviews-btn">View All Reviews</a>
   </div>
 </div>
 
-
-
-
-
 <!-- Success notification -->
-<div 
-  class="success-notification" 
+<div
+  class="success-notification"
   *ngIf="showSuccessNotification"
   [@slideInRight]
 >

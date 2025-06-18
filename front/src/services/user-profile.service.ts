@@ -54,6 +54,10 @@ export class UserProfileService {
     return this.http.get(`${this.apiBaseUrl}/reviews/${customerId}`);
   }
 
+  getProductReviews(productId: number): Observable<any> {
+    return this.http.get(`${this.apiBaseUrl}/product-reviews/${productId}`);
+  }
+
   // Add a new user review
   addUserReview(reviewData: any): Observable<any> {
     return this.http.post(`${this.apiBaseUrl}/user-reviews/add`, reviewData);
