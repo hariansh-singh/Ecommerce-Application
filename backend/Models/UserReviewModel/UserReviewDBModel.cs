@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using backend.Models.OrderItemModels;
+using backend.Models.ProductModels;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models.UserProfileModel
 {
@@ -20,6 +23,10 @@ namespace backend.Models.UserProfileModel
 
             [Required]
             public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+
+            [ForeignKey(nameof(ProductId))]
+            public ProductDBModel? Products { get; set; }
         }
     }
 

@@ -19,8 +19,12 @@
   <div class="profile-layout">
     <div class="profile-sidebar">
       <div class="sidebar-nav">
-        <button *ngFor="let item of navigationItems" class="nav-item" [class.active]="activeSection === item.key"
-          (click)="setActiveSection(item.key)">
+        <button
+          *ngFor="let item of navigationItems"
+          class="nav-item"
+          [class.active]="activeSection === item.key"
+          (click)="setActiveSection(item.key)"
+        >
           <i class="fas" [ngClass]="item.icon"></i>
           <span>{{ item.label }}</span>
           <span class="item-count" *ngIf="item.count">{{ item.count }}</span>
@@ -51,9 +55,17 @@
           </div>
 
           <div class="info-card">
-            <label>Email Address <span *ngIf="isEditMode">(Can't modify email)</span></label>
+            <label
+              >Email Address
+              <span *ngIf="isEditMode">(Can't modify email)</span></label
+            >
             <div class="input-group" *ngIf="isEditMode; else displayEmail">
-              <input type="email" [(ngModel)]="email" class="form-input" disabled />
+              <input
+                type="email"
+                [(ngModel)]="email"
+                class="form-input"
+                disabled
+              />
               <i class="fas fa-envelope"></i>
             </div>
             <ng-template #displayEmail>
@@ -70,15 +82,18 @@
             <ng-template #displayPhone>
               <span class="info-value">{{
                 phoneNumber || "Not provided"
-                }}</span>
+              }}</span>
             </ng-template>
           </div>
 
           <div class="info-card">
             <label>Account Type</label>
             <span class="info-value">
-              <span class="role-badge enhanced-badge" [ngClass]="getRoleBadgeClass()"
-                [attr.aria-label]="'User role: ' + role">
+              <span
+                class="role-badge enhanced-badge"
+                [ngClass]="getRoleBadgeClass()"
+                [attr.aria-label]="'User role: ' + role"
+              >
                 <i class="badge-icon" [ngClass]="getRoleIconClass()"></i>
                 {{ role | titlecase }}
               </span>
@@ -90,14 +105,22 @@
       <!-- Shipping Addresses Section -->
       <section *ngIf="activeSection === 'addresses'" class="content-section">
         <div class="section-header">
-          <h2 class="mb-3 px-3 "><i class="fas fa-map-marker-alt"></i> Shipping Addresses</h2>
+          <h2 class="mb-3 px-3">
+            <i class="fas fa-map-marker-alt"></i> Shipping Addresses
+          </h2>
           <button class="btn-add mb-2" (click)="addNewAddress()">
             <i class="fas fa-plus"></i> Add New Address
           </button>
         </div>
 
-        <div class="addresses-grid" *ngIf="addresses.length > 0; else noAddresses">
-          <div class="address-card" *ngFor="let address of addresses; let i = index">
+        <div
+          class="addresses-grid"
+          *ngIf="addresses.length > 0; else noAddresses"
+        >
+          <div
+            class="address-card"
+            *ngFor="let address of addresses; let i = index"
+          >
             <div class="address-header">
               <h4>{{ address.label || "Address " + (i + 1) }}</h4>
               <div class="address-actions">
@@ -137,14 +160,22 @@
       <!-- Payment Methods Section -->
       <section *ngIf="activeSection === 'payments'" class="content-section">
         <div class="section-header">
-          <h2 class="mb-3 px-3"><i class="fas fa-credit-card"></i> Payment Methods</h2>
+          <h2 class="mb-3 px-3">
+            <i class="fas fa-credit-card"></i> Payment Methods
+          </h2>
           <button class="btn-add mb-2" (click)="addPaymentMethod()">
             <i class="fas fa-plus"></i> Add New Card
           </button>
         </div>
 
-        <div class="payment-methods" *ngIf="user.paymentMethods?.length > 0; else noPayments">
-          <div class="payment-card" *ngFor="let method of user.paymentMethods; let i = index">
+        <div
+          class="payment-methods"
+          *ngIf="user.paymentMethods?.length > 0; else noPayments"
+        >
+          <div
+            class="payment-card"
+            *ngFor="let method of user.paymentMethods; let i = index"
+          >
             <div class="card-icon">
               <i class="fab" [ngClass]="getCardIcon(method.type)"></i>
             </div>
@@ -178,9 +209,15 @@
       <!-- Order History Section -->
       <section *ngIf="activeSection === 'orders'" class="content-section">
         <div class="section-header">
-          <h2 class="mb-3 px-3"><i class="fas fa-receipt"></i> Order History</h2>
+          <h2 class="mb-3 px-3">
+            <i class="fas fa-receipt"></i> Order History
+          </h2>
           <div class="filter-controls mb-2">
-            <select class="form-select" [(ngModel)]="orderFilter" (change)="filterOrders()">
+            <select
+              class="form-select"
+              [(ngModel)]="orderFilter"
+              (change)="filterOrders()"
+            >
               <option value="all">All Orders</option>
               <option value="delivered">Delivered</option>
               <option value="pending">Pending</option>
@@ -199,22 +236,33 @@
                 </p>
               </div>
               <div class="order-status">
-                <span class="status-badge" [ngClass]="getStatusClass(order.orderStatus)">
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatusClass(order.orderStatus)"
+                >
                   {{ order.orderStatus }}
                 </span>
               </div>
             </div>
             <div class="order-details">
               <div class="order-items">
-                <p><strong>Items:</strong> {{ order.orderItems.length || "N/A" }}</p>
+                <p>
+                  <strong>Items:</strong> {{ order.orderItems.length || "N/A" }}
+                </p>
                 <p><strong>Total:</strong> ${{ order.totalPrice || "0.00" }}</p>
               </div>
               <div class="order-actions">
-                <button class="btn-secondary small" (click)="viewOrderDetails(order.orderId)">
+                <button
+                  class="btn-secondary small"
+                  (click)="viewOrderDetails(order.orderId)"
+                >
                   View Details
                 </button>
-                <button class="btn-secondary small" *ngIf="order.orderStatus === 'delivered'"
-                  (click)="reorder(order.orderId)">
+                <button
+                  class="btn-secondary small"
+                  *ngIf="order.orderStatus === 'delivered'"
+                  (click)="reorder(order.orderId)"
+                >
                   Reorder
                 </button>
               </div>
@@ -237,7 +285,9 @@
       <!-- Reviews Section -->
       <section *ngIf="activeSection === 'reviews'" class="content-section">
         <div class="section-header">
-          <h2 class="mb-2 px-3"><i class="fas fa-star"></i> Reviews & Ratings</h2>
+          <h2 class="mb-2 px-3">
+            <i class="fas fa-star"></i> Reviews & Ratings
+          </h2>
           <div class="review-stats">
             <span class="stat">{{ reviews.length }} Reviews</span>
             <span class="stat">{{ getAverageRating() }}★ Average</span>
@@ -248,16 +298,27 @@
           <div class="review-card" *ngFor="let review of reviews">
             <div class="review-header">
               <div class="product-info">
-                <h4>{{ review.productName }}</h4>
-                <div class="rating">
-                  <i *ngFor="let star of getStarArray(review.rating)" class="fas fa-star"
-                    [class.filled]="star <= review.rating"></i>
-                  <span class="rating-text">{{ review.rating }}/5</span>
+                <img
+                  [src]="'https://localhost:7116/' + review.products.productImagePath"
+                  alt="{{ review.products.productName }}"
+                  class="product-image"
+                />
+                <div class="product-details">
+                  <h4>{{ review.products.productName }}</h4>
+                  <p class="product-price">₹{{ review.products.productPrice }}</p>
+                  <div class="rating">
+                    <i
+                      *ngFor="let star of getStarArray(review.rating)"
+                      class="fas fa-star"
+                      [class.filled]="star <= review.rating"
+                    ></i>
+                    <span class="rating-text">{{ review.rating }}/5</span>
+                  </div>
                 </div>
               </div>
               <span class="review-date">{{
                 review.date | date : "shortDate"
-                }}</span>
+              }}</span>
             </div>
             <div class="review-content">
               <p>"{{ review.reviewText }}"</p>
@@ -285,7 +346,9 @@
       <!-- Support Section -->
       <section *ngIf="activeSection === 'support'" class="content-section">
         <div class="section-header">
-          <h2 class="mb-3 px-3"><i class="fas fa-life-ring"></i> Support & Help</h2>
+          <h2 class="mb-3 px-3">
+            <i class="fas fa-life-ring"></i> Support & Help
+          </h2>
           <p>(Get help with your account and orders)</p>
         </div>
 
@@ -319,7 +382,7 @@
           </div>
         </div>
       </section>
-      
+
       <!-- Account Section -->
       <section *ngIf="activeSection === 'account'" class="content-section">
         <div class="section-header">
@@ -330,14 +393,16 @@
         <div class="account-settings">
           <div class="account-card delete-warning">
             <h3><i class="fas fa-exclamation-triangle"></i> Delete Account</h3>
-            <p>Deleting your account is permanent and cannot be undone. All your data will be removed.</p>
+            <p>
+              Deleting your account is permanent and cannot be undone. All your
+              data will be removed.
+            </p>
             <button class="btn-danger" (click)="deleteAccount()">
               <i class="fas fa-trash"></i> Delete My Account
             </button>
           </div>
         </div>
       </section>
-
     </div>
   </div>
 </div>

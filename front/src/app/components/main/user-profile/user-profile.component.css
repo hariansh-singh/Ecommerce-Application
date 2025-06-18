@@ -969,3 +969,21 @@
   transform: scale(0.96);
   box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
 }
+
+.product-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+}

@@ -118,7 +118,7 @@ export class UserProfileComponent implements OnInit {
   loadUserReviews(): void {
     this.userProfileService.getUserReviews(this.customerId).subscribe(
       (data) => {
-        this.reviews = data;
+        this.reviews = data.data;
         this.updateNavigationCount('reviews', this.reviews.length);
       },
       (error) => {

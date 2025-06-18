@@ -19,7 +19,9 @@ namespace backend.Repositories.UserProfileRepository
 
         public async Task<List<UserReviewDBModel>?> GetReviewsByCustomerAsync(int customerId)
         {
-            return await dBContext.UserReviews.Where(r => r.CustomerId == customerId).ToListAsync();
+            return await dBContext.UserReviews
+                .Include(p => p.Products)
+                .Where(r => r.CustomerId == customerId).ToListAsync();
         }
         public async Task<List<UserReviewDBModel>?> GetReviewsByProductAsync(int productId)
         {
