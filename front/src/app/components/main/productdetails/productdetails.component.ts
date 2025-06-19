@@ -19,6 +19,13 @@ import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../services/auth.service';
 import { UserProfileService } from '../../../../services/user-profile.service';
 
+interface Review {
+  customerId: number;
+  productId: number;
+  rating: number;
+  reviewText: string;
+  username: string;
+}
 @Component({
   selector: 'app-productdetails',
   standalone: true,
@@ -97,6 +104,7 @@ import { UserProfileService } from '../../../../services/user-profile.service';
       ])
     ])
   ]
+  
 })
 export class ProductdetailsComponent implements OnInit, OnDestroy {
   products: any = null;
@@ -105,7 +113,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   showSuccessNotification: boolean = false;
   buttonText: string = 'Add to Cart';
   isLoading: boolean = true;
-  reviews: any[] = [];
+  reviews: Review[] = [];
 
   private cartService = inject(CartService);
   private authService = inject(AuthService);
@@ -288,4 +296,10 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   trackByFn(index: number, item: any): any {
     return item.id || index;
   }
+
+  averageRating(): number {
+  if (!this.reviews.length) return 0;
+  const total = this.reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+  return parseFloat((total / this.reviews.length).toFixed(1));
+}
 }

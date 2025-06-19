@@ -502,3 +502,22 @@
     transform: scale(1.05);
     box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
 }
+.rating span {
+  font-size: 22px;
+  margin-right: 2px;
+}
+
+/* Full star */
+.star-filled {
+  color: #ffc107; /* gold */
+}
+
+/* Empty star */
+.star-empty {
+  color: #ccc; /* light gray */
+}
+
+/* Optional: middle ground color for "half" stars if you still want it */
+.star-half {
+  color: #bfa932; /* muted gold */
+}

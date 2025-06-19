@@ -6,6 +6,7 @@ import { Subject, takeUntil, finalize } from 'rxjs';
 import { OrderService } from '../../../../services/order.service';
 import { AuthService } from '../../../../services/auth.service';
 import { jsPDF } from 'jspdf';
+import Swal from 'sweetalert2';
 
 interface OrderItem {
   productId: string;
@@ -269,10 +270,22 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
         this.selectedItem!.reviewSubmitted = true;
         this.closeReviewDialog();
         this.showSuccessMessage('Review submitted successfully!');
+         Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Your review was submitted successfully.',
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        
       },
-      error: (error) => {
-        console.error('Error submitting review:', error);
-        alert('Failed to submit review. Please try again.');
+      error: (response) => {
+        // console.error('Error submitting review:', error);
+        Swal.fire({
+            icon: 'info',
+            title: 'Review Already Submitted',
+            text: response.msg || 'You have already reviewed this product.',
+          });
       },
     });
 }

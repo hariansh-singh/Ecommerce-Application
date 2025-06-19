@@ -15,5 +15,7 @@ namespace backend.Models.UserReviewModel
         public int Rating { get; set; }  // Example: 1-5 stars
 
         public string? ReviewText { get; set; }
+
+        public string Username { get; set; } = "Anonymous"; // Provided in API when sending reviews
     }
 }

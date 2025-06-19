@@ -23,10 +23,22 @@ namespace backend.Repositories.UserProfileRepository
                 .Include(p => p.Products)
                 .Where(r => r.CustomerId == customerId).ToListAsync();
         }
-        public async Task<List<UserReviewDBModel>?> GetReviewsByProductAsync(int productId)
+        public async Task<List<UserReviewUIModel>> GetReviewsByProductAsync(int productId)
         {
-            return await dBContext.UserReviews.Where(r => r.ProductId == productId).ToListAsync();
+            return await dBContext.UserReviews
+                .Where(r => r.ProductId == productId)
+                .Include(r => r.Customer) // Make sure this works with your navigation
+                .Select(r => new UserReviewUIModel
+                {
+                    CustomerId = r.CustomerId,
+                    ProductId = r.ProductId,
+                    Rating = r.Rating,
+                    ReviewText = r.ReviewText,
+                    Username = r.Customer != null ? r.Customer.Name : "Anonymous"
+                })
+                .ToListAsync();
         }
+
 
         public async Task<bool> AddReviewAsync(UserReviewUIModel review)
         {
