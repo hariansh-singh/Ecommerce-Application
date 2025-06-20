@@ -5,6 +5,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+
 
 namespace backend.Controllers
 {
@@ -24,7 +28,7 @@ namespace backend.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody]LoginModel user)
+        public async Task<IActionResult> Login([FromBody] LoginModel user)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +104,7 @@ namespace backend.Controllers
             }
 
             var result = await _customerRepository.AddUser(customer);
-            if (result>0)
+            if (result > 0)
             {
                 return Ok(new
                 {
@@ -114,6 +118,51 @@ namespace backend.Controllers
                 err = 1,
                 msg = "Failed to add user"
             });
+        }
+        [HttpGet("google-login")]
+        public IActionResult GoogleLogin()
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleCallback", "Auth", null, Request.Scheme)
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("signin-google")]
+        public async Task<IActionResult> GoogleCallback()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            if (!result.Succeeded)
+                return Unauthorized(new { err = 1, msg = "Google authentication failed." });
+
+            var principal = result.Principal;
+            var email = principal.FindFirstValue(ClaimTypes.Email);
+            var name = principal.FindFirstValue(ClaimTypes.Name);
+
+            // Optional: check if user exists in DB, or auto-register
+            var existingCustomer = await _customerRepository.FindByEmailAsync(email);
+            if (existingCustomer == null)
+            {
+                var newCustomer = new CustomerUIModel
+                {
+                    Email = email,
+                    Name = name,
+                    Role = "user"
+                };
+
+                var newId = await _customerRepository.AddUser(newCustomer);
+                existingCustomer = await _customerRepository.FindByEmailAsync(email); // re-fetch with ID
+            }
+
+            var token = IssueToken(existingCustomer);
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+
+            // ✅ Redirect to Angular app with token
+            return Redirect($"http://localhost:4200/register?token={token}");
+
         }
     }
 }

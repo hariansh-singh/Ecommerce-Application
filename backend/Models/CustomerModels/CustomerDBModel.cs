@@ -17,7 +17,7 @@ namespace backend.Models.CustomerModels
         public string? Email { get; set; }
 
 
-        [Required]
+        //[Required]
         public string? Password { get; set; }
 
 
@@ -28,7 +28,7 @@ namespace backend.Models.CustomerModels
         [Required]
         public int UserStatus { get; set; } = 1;
        
-        [Required]
+        //[Required]
         public string? PhoneNumber { get; set; }
 
 

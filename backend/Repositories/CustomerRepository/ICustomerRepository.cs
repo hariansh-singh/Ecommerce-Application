@@ -7,6 +7,8 @@ namespace backend.Repositories.CustomerRepository
         Task<int?> AddUser(CustomerUIModel user);
 
         Task<CustomerDBModel?> GetUserById(int customerId);
+        Task<CustomerDBModel?> FindByEmailAsync(string email);
+
         Task<List<CustomerDBModel>> GetAllUsers();
 
         Task<bool> UpdateUser(int customerId, CustomerUIModel updatedUser);
