@@ -9,7 +9,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthStateService } from '../../../../services/auth-state.service';
 import Swal from 'sweetalert2';
 import { SellerDetailsService } from '../../../../services/seller-details.service';
@@ -25,6 +25,7 @@ export class RegisterComponent {
   authService = inject(AuthService);
   authState = inject(AuthStateService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
   sellerDetailsService = inject(SellerDetailsService);
 
 
@@ -60,6 +61,7 @@ export class RegisterComponent {
     },
     { validators: this.passwordMatchValidator }
   );
+  authStateService: any;
 
   constructor() {
     // Add input focus animations
@@ -71,6 +73,33 @@ export class RegisterComponent {
       this.toggleSellerFields(role);
     });
   }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      console.log('📦 queryParams received:', params); // 🔍 Debug
+      const tokenFromURL = params['token'];
+
+      if (tokenFromURL) {
+        // Google login flow: store and redirect
+        const expirationTime = 7 * 24 * 60 * 60 * 1000; // Set expiration to 7 days
+        const expirationDate = new Date(new Date().getTime() + expirationTime);
+        localStorage.setItem('token', tokenFromURL);
+        localStorage.setItem('tokenExpiration', expirationDate.toISOString());
+
+
+        const payload = JSON.parse(atob(tokenFromURL.split('.')[1]));
+        console.log('👤 Logged in as:', payload.name);
+        console.log('🔐 Role:', payload.role);
+
+        // Notify auth state
+        this.authState.setLoginState(true);
+
+        this.router.navigate(['/']); // Redirect only if token came from URL
+      }
+    });
+  }
+
+
 
   toggleSellerFields(role: string) {
     if (role === 'seller') {
@@ -346,6 +375,11 @@ export class RegisterComponent {
   }
 
   // Getter methods for easier template access
+  onGoogleLogin(): void {
+    // Redirect to your backend's Google login endpoint
+    window.location.href = 'https://localhost:7116/api/Auth/google-login';
+  }
+
 
   get firstNameControl() {
     return this.myForm.get('FirstName');

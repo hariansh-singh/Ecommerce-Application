@@ -24,19 +24,34 @@ namespace backend.Repositories.CustomerRepository
             {
                 var addUser = mapper.Map<CustomerDBModel>(user);
 
-                addUser.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+                // ✅ Only hash the password if it's not null or empty
+                if (!string.IsNullOrEmpty(user.Password))
+                {
+                    addUser.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+                }
+                else
+                {
+                    addUser.Password = null; // or some placeholder like Guid.NewGuid().ToString()
+                }
+                //else
+                //{
+                //    // TEMP: Use a unique placeholder password for users created via social login
+                //    var dummyPassword = Guid.NewGuid().ToString("N"); // No dashes
+                //    addUser.Password = BCrypt.Net.BCrypt.HashPassword(dummyPassword);
+                //}
 
-                // **Ensure the role is properly assigned**
+
+                // ✅ Assign role properly
                 addUser.Role = user.Role == "seller" ? "seller" : "user";
 
                 await dBContext.Customers.AddAsync(addUser);
                 await dBContext.SaveChangesAsync();
 
-
                 return addUser.CustomerId;
             }
             return 0;
         }
+
 
         public async Task<bool> ChangeUserRole(int customerId, string updatedRole)
         {
@@ -91,6 +106,12 @@ namespace backend.Repositories.CustomerRepository
         public async Task<CustomerDBModel?> GetUserById(int customerId)
         {
             return await dBContext.Customers.FirstOrDefaultAsync(u => u.CustomerId == customerId);
+        }
+
+        public async Task<CustomerDBModel?> FindByEmailAsync(string email)
+        {
+            return await dBContext.Customers
+                .FirstOrDefaultAsync(c => c.Email == email);
         }
 
         public async Task<CustomerDBModel?> Login(LoginModel user)
