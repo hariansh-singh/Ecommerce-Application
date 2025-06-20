@@ -18,6 +18,16 @@
       >
     </a>
 
+    <!-- Current Location Display -->
+<div
+  class="location-display text-light mx-3 d-flex align-items-center"
+  [ngClass]="{ 'animate__animated animate__fadeInDown': animationEnabled }"
+>
+  <i class="fas fa-map-marker-alt text-warning me-1"></i>
+  <span *ngIf="location">{{ location }}</span>
+  <span *ngIf="!location">Detecting location...</span>
+</div>
+
     <!-- Hamburger Menu for Mobile -->
     <button
       class="navbar-toggler border-0"

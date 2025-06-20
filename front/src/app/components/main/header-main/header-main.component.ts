@@ -52,6 +52,7 @@ export class HeaderMainComponent implements OnInit {
   isScrolled: boolean = false;
   animationEnabled: boolean = true;
   searchQuery: string = '';
+  location: string | null = null;
 
   searchQueryUpdated = new Subject<string>();
 
@@ -76,8 +77,36 @@ export class HeaderMainComponent implements OnInit {
       this.isScrolled = window.scrollY > 50;
     }
   }
+  getUserLocation(): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          this.reverseGeocode(lat, lon);
+        },
+        error => {
+          this.location = 'Location unavailable';
+        }
+      );
+    } else {
+      this.location = 'Geolocation not supported';
+    }
+  }
+
+  reverseGeocode(lat: number, lon: number): void {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+      .then(response => response.json())
+      .then(data => {
+        this.location = data.address?.city || data.address?.town || data.address?.village || 'Unknown location';
+      })
+      .catch(() => {
+        this.location = 'Unable to fetch location';
+      });
+  }
 
   ngOnInit(): void {
+      this.getUserLocation();
     this.userProfileService.getCustomerInfo(this.userid).subscribe({
       next: (data) => {
         if (data) {
