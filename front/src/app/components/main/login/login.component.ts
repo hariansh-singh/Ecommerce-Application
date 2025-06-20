@@ -341,6 +341,12 @@ export class LoginComponent {
     }, 3000);
   }
 
+
+    onGoogleLogin(): void {
+    // Redirect to your backend's Google login endpoint
+    window.location.href = 'https://localhost:7116/api/Auth/google-login';
+  }
+
   // Getter methods for easier template access
   get emailControl() {
     return this.myForm.get('Email');
