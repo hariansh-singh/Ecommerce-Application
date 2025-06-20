@@ -502,6 +502,7 @@
     transform: scale(1.05);
     box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
 }
+<<<<<<< HEAD
 .rating span {
   font-size: 22px;
   margin-right: 2px;
@@ -521,3 +522,33 @@
 .star-half {
   color: #bfa932; /* muted gold */
 }
+=======
+
+.star-rating {
+  color: #ccc;
+  font-size: 1.2em;
+}
+.star-rating .filled {
+  color: gold;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.star-rating {
+  color: #ccc;
+  font-size: 1.2em;
+}
+
+.star-rating .filled {
+  color: gold;
+}
+
+.review-text {
+  margin-left: 4px;
+}
+>>>>>>> eed92de017572df73ff88c42626171ab019790f0

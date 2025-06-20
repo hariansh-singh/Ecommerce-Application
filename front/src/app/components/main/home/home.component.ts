@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   cartService = inject(CartService);
   authService = inject(AuthService);
+  userProfileService = inject(UserProfileService);
   decodedToken: any = this.authService.decodedTokenData();
 
   constructor(
@@ -88,7 +89,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.setActiveTestimonial(nextIndex);
   }
 
+<<<<<<< HEAD
   loadProducts(): void {
+=======
+   loadProducts(): void {
+>>>>>>> eed92de017572df73ff88c42626171ab019790f0
   this.isLoading = true;
   this.productService.getAllProducts().subscribe({
     next: (response: any) => {
@@ -100,7 +105,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
           stars: [],
           averageRating: null
         }));
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> eed92de017572df73ff88c42626171ab019790f0
         // For each product, fetch and calculate average rating
         this.products.forEach(product => {
           this.userProfileService.getProductReviews(product.productId).subscribe({
@@ -123,7 +132,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
             }
           });
         });
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> eed92de017572df73ff88c42626171ab019790f0
         this.isLoading = false;
         this.cdr.markForCheck(); // Trigger initial view update
       } else {

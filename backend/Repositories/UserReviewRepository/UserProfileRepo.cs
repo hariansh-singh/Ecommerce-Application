@@ -26,6 +26,7 @@ namespace backend.Repositories.UserProfileRepository
         public async Task<List<UserReviewUIModel>> GetReviewsByProductAsync(int productId)
         {
             return await dBContext.UserReviews
+<<<<<<< HEAD
                 .Where(r => r.ProductId == productId)
                 .Include(r => r.Customer) // Make sure this works with your navigation
                 .Select(r => new UserReviewUIModel
@@ -37,6 +38,10 @@ namespace backend.Repositories.UserProfileRepository
                     Username = r.Customer != null ? r.Customer.Name : "Anonymous"
                 })
                 .ToListAsync();
+=======
+                .Include(c => c.Customers)
+                .Where(r => r.ProductId == productId).ToListAsync();
+>>>>>>> eed92de017572df73ff88c42626171ab019790f0
         }
 
 

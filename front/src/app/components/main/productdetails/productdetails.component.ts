@@ -13,7 +13,7 @@ import {
   animate,
   keyframes,
   query,
-  stagger
+  stagger,
 } from '@angular/animations';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../services/auth.service';
@@ -36,75 +36,115 @@ interface Review {
     trigger('fadeInUp', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(30px)' }),
-        animate('0.8s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-      ])
+        animate(
+          '0.8s ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
+      ]),
     ]),
     trigger('slideIn', [
       transition(':enter', [
         style({ opacity: 0, transform: 'scale(0.95) translateY(20px)' }),
-        animate('1s 0.2s ease-out', style({ opacity: 1, transform: 'scale(1) translateY(0)' }))
-      ])
+        animate(
+          '1s 0.2s ease-out',
+          style({ opacity: 1, transform: 'scale(1) translateY(0)' })
+        ),
+      ]),
     ]),
     trigger('titleSlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateX(-30px)' }),
-        animate('0.8s 0.4s ease-out', style({ opacity: 1, transform: 'translateX(0)' }))
-      ])
+        animate(
+          '0.8s 0.4s ease-out',
+          style({ opacity: 1, transform: 'translateX(0)' })
+        ),
+      ]),
     ]),
     trigger('priceSlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateX(-20px)' }),
-        animate('0.8s 0.6s ease-out', style({ opacity: 1, transform: 'translateX(0)' }))
-      ])
+        animate(
+          '0.8s 0.6s ease-out',
+          style({ opacity: 1, transform: 'translateX(0)' })
+        ),
+      ]),
     ]),
     trigger('descriptionSlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(20px)' }),
-        animate('0.8s 0.8s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-      ])
+        animate(
+          '0.8s 0.8s ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
+      ]),
     ]),
     trigger('stockSlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateX(-20px)' }),
-        animate('0.8s 1s ease-out', style({ opacity: 1, transform: 'translateX(0)' }))
-      ])
+        animate(
+          '0.8s 1s ease-out',
+          style({ opacity: 1, transform: 'translateX(0)' })
+        ),
+      ]),
     ]),
     trigger('quantitySlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateX(-20px)' }),
-        animate('0.8s 1.1s ease-out', style({ opacity: 1, transform: 'translateX(0)' }))
-      ])
+        animate(
+          '0.8s 1.1s ease-out',
+          style({ opacity: 1, transform: 'translateX(0)' })
+        ),
+      ]),
     ]),
     trigger('buttonSlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(20px)' }),
-        animate('0.8s 1.2s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-      ])
+        animate(
+          '0.8s 1.2s ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
+      ]),
     ]),
     trigger('buttonHover', [
       state('normal', style({ transform: 'scale(1)' })),
       state('hovered', style({ transform: 'scale(1.1)' })),
-      transition('normal <=> hovered', animate('0.2s ease'))
+      transition('normal <=> hovered', animate('0.2s ease')),
     ]),
     trigger('imageFloat', [
       transition(':enter', [
-        animate('3s ease-in-out', keyframes([
-          style({ transform: 'translateY(0px) scale(1)', offset: 0 }),
-          style({ transform: 'translateY(-10px) scale(1.02)', offset: 1 })
-        ]))
-      ])
+        animate(
+          '3s ease-in-out',
+          keyframes([
+            style({ transform: 'translateY(0px) scale(1)', offset: 0 }),
+            style({ transform: 'translateY(-10px) scale(1.02)', offset: 1 }),
+          ])
+        ),
+      ]),
     ]),
     trigger('slideInRight', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateX(100px)' }),
-        animate('0.5s ease-out', style({ opacity: 1, transform: 'translateX(0)' }))
+        animate(
+          '0.5s ease-out',
+          style({ opacity: 1, transform: 'translateX(0)' })
+        ),
       ]),
       transition(':leave', [
+<<<<<<< HEAD
         animate('0.5s ease-out', style({ opacity: 0, transform: 'translateX(100px)' }))
       ])
     ])
   ]
   
+=======
+        animate(
+          '0.5s ease-out',
+          style({ opacity: 0, transform: 'translateX(100px)' })
+        ),
+      ]),
+    ]),
+  ],
+>>>>>>> eed92de017572df73ff88c42626171ab019790f0
 })
 export class ProductdetailsComponent implements OnInit, OnDestroy {
   products: any = null;
@@ -123,22 +163,22 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   currentUser: any = this.authService.decodedTokenData();
-  customerId: any = this.currentUser["CustomerId"];
+  customerId: any = this.currentUser['CustomerId'];
 
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const productIdStr: any = this.route.snapshot.paramMap.get('id');
     this.loadProduct();
-    this.userProfileService.getProductReviews(productIdStr).subscribe(data => {
-    this.reviews = data.data;
-    console.log("Product Reviews:", this.reviews);
-    
-  });
-
+    this.userProfileService
+      .getProductReviews(productIdStr)
+      .subscribe((data) => {
+        this.reviews = data.data;
+        console.log('Product Reviews:', this.reviews);
+      });
 
     window.scrollTo(0, 0);
   }
@@ -152,33 +192,37 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
     const productIdStr = this.route.snapshot.paramMap.get('id');
 
     if (!productIdStr || isNaN(Number(productIdStr))) {
-      console.error("Invalid Product ID:", productIdStr);
+      console.error('Invalid Product ID:', productIdStr);
       this.router.navigate(['/products']).then(() => window.scrollTo(0, 0));
       return;
     }
 
     const productId = Number(productIdStr);
-    console.log("Retrieved Product ID:", productId);
+    console.log('Retrieved Product ID:', productId);
 
-    this.productService.getProductById(productId)
+    this.productService
+      .getProductById(productId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
-          console.log("Full API Response:", response);
+          console.log('Full API Response:', response);
 
           if (response && response.data) {
             this.products = response.data;
             this.isLoading = false;
-            console.log("Assigned Product Object:", this.products);
+            console.log('Assigned Product Object:', this.products);
           } else {
-            console.error("API response does not contain expected 'data' property:", response);
+            console.error(
+              "API response does not contain expected 'data' property:",
+              response
+            );
             this.isLoading = false;
           }
         },
         error: (err: any) => {
-          console.error("Error fetching product:", err);
+          console.error('Error fetching product:', err);
           this.isLoading = false;
-        }
+        },
       });
   }
 
@@ -209,7 +253,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
 
   addToCart(): void {
     if (!this.products || !this.products.productId) {
-      console.error("Invalid product object:", this.products);
+      console.error('Invalid product object:', this.products);
       return;
     }
 
@@ -217,11 +261,12 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
     const cartItem = {
       customerId: this.customerId,
       productId: this.products.productId,
-      quantity: this.quantity
+      quantity: this.quantity,
     };
 
     // Add to cart through service - MUST subscribe to execute the HTTP request
-    this.cartService.addToCart(cartItem)
+    this.cartService
+      .addToCart(cartItem)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -231,7 +276,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error adding product to cart:', error);
-        }
+        },
       });
   }
 
@@ -266,7 +311,7 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
     }).format(price);
   }
 
@@ -298,8 +343,16 @@ export class ProductdetailsComponent implements OnInit, OnDestroy {
   }
 
   averageRating(): number {
+<<<<<<< HEAD
   if (!this.reviews.length) return 0;
   const total = this.reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
   return parseFloat((total / this.reviews.length).toFixed(1));
 }
 }
+=======
+    if (!this.reviews.length) return 0;
+    const total = this.reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+    return parseFloat((total / this.reviews.length).toFixed(1));
+  }
+}
+>>>>>>> eed92de017572df73ff88c42626171ab019790f0

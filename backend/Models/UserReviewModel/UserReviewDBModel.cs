@@ -30,8 +30,12 @@ namespace backend.Models.UserProfileModel
             public ProductDBModel? Products { get; set; }
 
             [ForeignKey(nameof(CustomerId))]
+<<<<<<< HEAD
             public CustomerDBModel? Customer { get; set; } // ✅ New: link to customer
 
+=======
+            public CustomerDBModel? Customers { get; set; }
+>>>>>>> eed92de017572df73ff88c42626171ab019790f0
     }
     }
 
