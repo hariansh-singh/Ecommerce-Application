@@ -1,4 +1,5 @@
-﻿using backend.Models.OrderItemModels;
+﻿using backend.Models.CustomerModels;
+using backend.Models.OrderItemModels;
 using backend.Models.ProductModels;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -27,7 +28,10 @@ namespace backend.Models.UserProfileModel
 
             [ForeignKey(nameof(ProductId))]
             public ProductDBModel? Products { get; set; }
-        }
+
+            [ForeignKey(nameof(CustomerId))]
+            public CustomerDBModel? Customers { get; set; }
+    }
     }
 
 

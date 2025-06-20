@@ -502,3 +502,31 @@
     transform: scale(1.05);
     box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
 }
+
+.star-rating {
+  color: #ccc;
+  font-size: 1.2em;
+}
+.star-rating .filled {
+  color: gold;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.star-rating {
+  color: #ccc;
+  font-size: 1.2em;
+}
+
+.star-rating .filled {
+  color: gold;
+}
+
+.review-text {
+  margin-left: 4px;
+}

@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { CartService } from '../../../../services/cart.service';
 import { AuthService } from '../../../../services/auth.service';
 import Swal from 'sweetalert2';
+import { UserProfileService } from '../../../../services/user-profile.service';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +30,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   cartService = inject(CartService);
   authService = inject(AuthService);
+  userProfileService = inject(UserProfileService);
   decodedToken: any = this.authService.decodedTokenData();
 
   constructor(
@@ -86,31 +88,54 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.setActiveTestimonial(nextIndex);
   }
 
-  loadProducts(): void {
-    this.isLoading = true;
-    this.productService.getAllProducts().subscribe({
-      next: (response: any) => {
-        console.log('Products received:', response);
-        if (response && response.data) {
-          // Process all products with consistent structure
-          this.products = response.data.map((product: any) => ({
-            ...product,
-            selectedQuantity: 1,
-            stars: this.calculateStars(product.rating || 4.5)
-          }));
-          
-          this.isLoading = false;
-          this.cdr.markForCheck(); // Trigger change detection
-        } else {
-          this.handleError('Invalid response format');
-        }
-      },
-      error: (error) => {
-        console.error('API Error:', error);
-        this.handleError('Failed to load products');
+   loadProducts(): void {
+  this.isLoading = true;
+  this.productService.getAllProducts().subscribe({
+    next: (response: any) => {
+      console.log('Products received:', response);
+      if (response && response.data) {
+        this.products = response.data.map((product: any) => ({
+          ...product,
+          selectedQuantity: 1,
+          stars: [],
+          averageRating: null
+        }));
+ 
+        // For each product, fetch and calculate average rating
+        this.products.forEach(product => {
+          this.userProfileService.getProductReviews(product.productId).subscribe({
+            next: (reviewsResponse: any) => {
+              const reviews = reviewsResponse?.data || [];
+              if (reviews.length > 0) {
+                const avg = reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length;
+                product.averageRating = parseFloat(avg.toFixed(1));
+                product.stars = this.calculateStars(product.averageRating);
+              } else {
+                product.averageRating = 5.0;
+                product.stars = this.calculateStars(5);
+              }
+              this.cdr.markForCheck(); // Update view with new ratings
+            },
+            error: () => {
+              product.averageRating = 5.0;
+              product.stars = this.calculateStars(5);
+              this.cdr.markForCheck();
+            }
+          });
+        });
+ 
+        this.isLoading = false;
+        this.cdr.markForCheck(); // Trigger initial view update
+      } else {
+        this.handleError('Invalid response format');
       }
-    });
-  }
+    },
+    error: (error) => {
+      console.error('API Error:', error);
+      this.handleError('Failed to load products');
+    }
+  });
+}
 
   // Handle errors consistently
   private handleError(message: string): void {
