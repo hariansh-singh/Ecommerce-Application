@@ -87,10 +87,9 @@
       <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
         <span
           [ngClass]="{
-            'star-filled': averageRating() >= star,
-            'star-half':
-              averageRating() >= star - 0.5 && averageRating() < star,
-            'star-empty': averageRating() < star - 0.5
+            filled: averageRating() >= star,
+            half: averageRating() >= star - 0.5 && averageRating() < star,
+            empty: averageRating() < star - 0.5
           }"
           >★</span
         >
@@ -101,18 +100,18 @@
     <span class="total-reviews">(Total: {{ reviews.length }} Reviews)</span>
   </h3>
   <div class="review" *ngFor="let review of reviews">
-  <div class="review-header">
-    <strong>{{ review.customers.name || "Anonymous" }}</strong>
-    <span class="star-rating">
-      <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
-        <span [ngClass]="{ filled: star <= review.rating }">★</span>
-      </ng-container>
-    </span>
+    <div class="review-header">
+      <strong>{{ review.customers.name || "Anonymous" }}</strong>
+      <span class="star-rating">
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+          <span [ngClass]="{ filled: star <= review.rating }">★</span>
+        </ng-container>
+      </span>
+    </div>
+    <div class="review-text">
+      <i>{{ review.reviewText }}</i>
+    </div>
   </div>
-  <div class="review-text">
-    <i>{{ review.reviewText }}</i>
-  </div>
-</div>
   <!-- <div class="reviews-button-container">
     <a href="all-reviews.html" class="view-all-reviews-btn">View All Reviews</a>
   </div> -->
@@ -132,3 +131,4 @@
   <div class="loading-spinner"></div>
   <p>Loading product details...</p>
 </div>
+

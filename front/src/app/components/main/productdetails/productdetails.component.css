@@ -466,9 +466,7 @@
 .rating {
      font-size: 1.5rem;
     font-weight: 600;
-    color: #FFD700; /* Correct gold color */
     display: inline-block;
-    text-shadow: 2px 2px 8px rgba(255, 215, 0, 0.8); /* Enhanced glow effect */
     letter-spacing: 2px
 }
 
@@ -529,4 +527,23 @@
 
 .review-text {
   margin-left: 4px;
+}
+
+.rating span {
+  color: #ccc; /* default empty */
+  position: relative;
+  display: inline-block;
+  font-size: 20px;
+}
+
+.rating .filled {
+  color: gold;
+}
+
+.rating .half::before {
+  content: '★';
+  color: gold;
+  position: absolute;
+  width: 50%;
+  overflow: hidden;
 }
