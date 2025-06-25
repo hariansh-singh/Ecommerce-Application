@@ -1,0 +1,12 @@
+<div class="promo-container">
+  <div class="promo-card" *ngFor="let code of promoCodes">
+    <div class="promo-title">{{ code.name }}</div>
+    <div class="promo-description">{{ code.description }}</div>
+    <div class="promo-code">
+      <span>{{ code.code }}</span>
+      <button (click)="copyCode(code.code)" aria-label="Copy Code">
+        📋
+      </button>
+    </div>
+  </div>
+</div>

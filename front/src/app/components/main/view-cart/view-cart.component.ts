@@ -376,23 +376,52 @@ export class ViewCartComponent implements OnInit {
   getFinalTotal(): number {
     return this.totalPrice - this.getDiscount();
   }
-  
-  applyPromoCode(): void {
-    // Simple promo code logic
-    if (this.promoCode.toUpperCase() === 'WELCOME10') {
+ applyPromoCode(): void {
+  const code = this.promoCode.toUpperCase();
+
+  switch (code) {
+    case 'WELCOME10':
       this.discount = this.totalPrice * 0.10; // 10% discount
-      this.promoApplied = true;
-      this.showSuccessToast('Promo code applied successfully!');
-    } else if (this.promoCode.toUpperCase() === 'FLAT500') {
+      break;
+    case 'FLAT500':
       this.discount = 500;
-      this.promoApplied = true;
-      this.showSuccessToast('Promo code applied successfully!');
-    } else {
-      this.promoApplied = false;
+      break;
+    case 'SAVE20':
+      this.discount = this.totalPrice * 0.20; // 20% off
+      break;
+    case 'SUMMER150':
+      this.discount = 150;
+      break;
+    case 'FREESHIP':
+      this.discount = 100; // Shipping discount
+      break;
+    case 'RAINY300':
+      this.discount = 300;
+      break;
+    case 'FESTIVE25':
+      this.discount = this.totalPrice * 0.25;
+      break;
+    case 'WEEKEND50':
+      this.discount = 50;
+      break;
+    case 'COMBO20':
+      this.discount = this.totalPrice * 0.20;
+      break;
+    case 'FINAL100':
+      this.discount = 100;
+      break;
+    default:
       this.discount = 0;
+      this.promoApplied = false;
       this.showErrorToast('Invalid promo code');
-    }
+      return;
   }
+
+  this.promoApplied = true;
+  this.showSuccessToast('Promo code applied successfully!');
+}
+
+
   
   selectPayment(method: string): void {
     this.selectedPayment = method;
