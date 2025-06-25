@@ -18,7 +18,7 @@
       >
     </a>
 
-    <!-- Current Location Display -->
+<!-- 
 <div
   class="location-display text-light mx-3 d-flex align-items-center"
   [ngClass]="{ 'animate__animated animate__fadeInDown': animationEnabled }"
@@ -26,6 +26,20 @@
   <i class="fas fa-map-marker-alt text-warning me-1"></i>
   <span *ngIf="location">{{ location }}</span>
   <span *ngIf="!location">Detecting location...</span>
+</div>
+ -->
+
+ <!-- Current Location Display with Heading -->
+<div
+  class="location-display text-light mx-3 d-flex flex-column align-items-start"
+  [ngClass]="{ 'animate__animated animate__fadeInDown': animationEnabled }"
+>
+  <span class="fw-semibold small text-uppercase text-warning">Delivering to</span>
+  <div class="d-flex align-items-center">
+    <i class="fas fa-map-marker-alt text-warning me-1"></i>
+    <span *ngIf="location">{{ location }}</span>
+    <span *ngIf="!location">Detecting location...</span>
+  </div>
 </div>
 
     <!-- Hamburger Menu for Mobile -->
