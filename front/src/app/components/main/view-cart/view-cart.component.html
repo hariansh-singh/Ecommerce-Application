@@ -240,4 +240,36 @@
       </div>
     </div>
   </div>
+
+  <!-- Payment Processing Overlay -->
+<div class="processing-overlay" [class.show]="isProcessing">
+  <div class="processing-content">
+    <div class="processing-animation">
+      <div class="processing-circle"></div>
+      <div class="processing-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+          <line x1="1" y1="10" x2="23" y2="10" stroke="currentColor" stroke-width="2" />
+        </svg>
+      </div>
+    </div>
+    <h3 class="processing-title">Processing Your Payment</h3>
+    <p class="processing-text">Please wait while we securely process your transaction...</p>
+    <div class="processing-steps">
+      <div class="processing-step" [class.active]="processingStep >= 1">
+        <div class="step-dot"></div>
+        <span>Validating details</span>
+      </div>
+      <div class="processing-step" [class.active]="processingStep >= 2">
+        <div class="step-dot"></div>
+        <span>Contacting bank</span>
+      </div>
+      <div class="processing-step" [class.active]="processingStep >= 3">
+        <div class="step-dot"></div>
+        <span>Confirming payment</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 </section>
