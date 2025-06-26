@@ -20,6 +20,7 @@ import { HomeSellerComponent } from './components/seller-dashboard/home-seller/h
 import { UserProfileComponent } from './components/main/user-profile/user-profile.component';
 import { UserAddressComponent } from './components/main/user-address/user-address.component';
 import { SalesComponent } from './components/seller-dashboard/sales/sales.component';
+import { OffersComponent } from './components/main/offers/offers.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -35,6 +36,7 @@ export const routes: Routes = [
       { path: 'cart', component: ViewCartComponent },
       { path: 'product/:id', component: ProductdetailsComponent },
       { path: 'shop', component: ShopComponent },
+      { path: 'offers', component: OffersComponent },
       { path: 'profile', component: UserProfileComponent }, // User profile route
       { path: 'useraddress',component: UserAddressComponent}, // Address route
     ],

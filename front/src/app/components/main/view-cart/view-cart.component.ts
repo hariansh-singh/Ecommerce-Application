@@ -9,7 +9,6 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { UserAddressService } from '../../../../services/user-address.service';
-
 @Component({
   selector: 'app-view-cart',
   standalone: true, 
@@ -46,7 +45,7 @@ export class ViewCartComponent implements OnInit {
   @ViewChild('checkoutSection') checkoutSection!: ElementRef;
   
   
-  
+processingStep: number = 0;
   cartItems: any[] = [];
   totalPrice: number = 0;
   isProcessing: boolean = false;
@@ -198,57 +197,79 @@ export class ViewCartComponent implements OnInit {
  redirectToAddressPage(): void {
     this.router.navigate(['/useraddress']); // Redirect to the User Address page
   }
-  placeOrder(): void {
-    if (!this.cartItems.length) {
-      this.showWarningToast('Your cart is empty!');
-      return;
-    }
-
-      if (!this.shippingAddress) {
-      this.showWarningToast('Please provide an address before placing an order.');
-      //this.router.navigate(['/user-address']); // Redirect to the address page
-      return;
-    }
-    
-    if (!this.validatePaymentDetails()) {
-      return;
-    }
-    
-    this.isProcessing = true;
-    
-    const orderData = {
-      customerId: this.decodedToken.CustomerId,
-      orderDate: new Date().toISOString(),
-      totalPrice: this.getFinalTotal(),
-      shippingAddress: this.shippingAddress, // In a real app, get this from a form
-      paymentMethod: this.selectedPayment,
-      orderItems: this.cartItems.map((item) => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        unitPrice: item.products.productPrice
-      }))
-    };
-    
-    this.orderService.placeNewOrder(orderData)
-      .pipe(finalize(() => this.isProcessing = false))
-      .subscribe({
-        next: () => {
-          this.showSuccessToast('Your order has been placed successfully!', 'Order Placed');
-          this.cartItems = [];
-          this.totalPrice = 0;
-          this.promoApplied = false;
-          this.discount = 0;
-          
-          // Clear cart data in service
-          this.cartService.clearCart(this.decodedToken.CustomerId).subscribe();
-        },
-        error: (error) => {
-          console.error('Error placing order:', error);
-          this.showErrorToast('Failed to place your order. Please try again.');
-        }
-      });
-  }
   
+  placeOrder(): void {
+  if (!this.cartItems.length) {
+    this.showWarningToast('Your cart is empty!');
+    return;
+  }
+
+  if (!this.shippingAddress) {
+    this.showWarningToast('Please provide an address before placing an order.');
+    return;
+  }
+
+  if (!this.validatePaymentDetails()) {
+    return;
+  }
+
+  // Begin visual simulation
+  this.isProcessing = true;
+  this.processingStep = 0;
+
+  const steps = [1, 2, 3];
+
+  steps.forEach((step, index) => {
+    setTimeout(() => {
+      this.processingStep = step;
+
+      if (step === 3) {
+        setTimeout(() => {
+          this.submitOrder(); // Now renamed from the original placeOrder()
+        }, 1500);
+      }
+    }, (index + 1) * 1500);
+  });
+}
+submitOrder(): void {
+  const orderData = {
+    customerId: this.decodedToken.CustomerId,
+    orderDate: new Date().toISOString(),
+    totalPrice: this.getFinalTotal(),
+    shippingAddress: this.shippingAddress,
+    paymentMethod: this.selectedPayment,
+    orderItems: this.cartItems.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+      unitPrice: item.products.productPrice
+    }))
+  };
+
+  this.orderService.placeNewOrder(orderData)
+    .pipe(finalize(() => {
+      this.isProcessing = false;
+      this.processingStep = 0;
+    }))
+    .subscribe({
+      next: () => {
+        this.showSuccessToast('Your order has been placed successfully!', 'Order Placed');
+        this.cartItems = [];
+        this.totalPrice = 0;
+        this.promoApplied = false;
+        this.discount = 0;
+
+        this.cartService.clearCart(this.decodedToken.CustomerId).subscribe();   
+          // Redirect to My Orders with userId
+        const userId = this.decodedToken.CustomerId;
+        this.router.navigate(['/myorders', userId]);
+      },
+      error: (error) => {
+        console.error('Error placing order:', error);
+        this.showErrorToast('Failed to place your order. Please try again.');
+      }
+    });
+}
+
   validatePaymentDetails(): boolean {
     if (this.selectedPayment === 'card') {
       if (!this.paymentDetails.cardholderName || 
@@ -376,23 +397,52 @@ export class ViewCartComponent implements OnInit {
   getFinalTotal(): number {
     return this.totalPrice - this.getDiscount();
   }
-  
-  applyPromoCode(): void {
-    // Simple promo code logic
-    if (this.promoCode.toUpperCase() === 'WELCOME10') {
+ applyPromoCode(): void {
+  const code = this.promoCode.toUpperCase();
+
+  switch (code) {
+    case 'WELCOME10':
       this.discount = this.totalPrice * 0.10; // 10% discount
-      this.promoApplied = true;
-      this.showSuccessToast('Promo code applied successfully!');
-    } else if (this.promoCode.toUpperCase() === 'FLAT500') {
+      break;
+    case 'FLAT500':
       this.discount = 500;
-      this.promoApplied = true;
-      this.showSuccessToast('Promo code applied successfully!');
-    } else {
-      this.promoApplied = false;
+      break;
+    case 'SAVE20':
+      this.discount = this.totalPrice * 0.20; // 20% off
+      break;
+    case 'SUMMER150':
+      this.discount = 150;
+      break;
+    case 'FREESHIP':
+      this.discount = 100; // Shipping discount
+      break;
+    case 'RAINY300':
+      this.discount = 300;
+      break;
+    case 'FESTIVE25':
+      this.discount = this.totalPrice * 0.25;
+      break;
+    case 'WEEKEND50':
+      this.discount = 50;
+      break;
+    case 'COMBO20':
+      this.discount = this.totalPrice * 0.20;
+      break;
+    case 'FINAL100':
+      this.discount = 100;
+      break;
+    default:
       this.discount = 0;
+      this.promoApplied = false;
       this.showErrorToast('Invalid promo code');
-    }
+      return;
   }
+
+  this.promoApplied = true;
+  this.showSuccessToast('Promo code applied successfully!');
+}
+
+
   
   selectPayment(method: string): void {
     this.selectedPayment = method;
