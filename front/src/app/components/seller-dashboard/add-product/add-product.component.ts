@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services/auth.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-add-product',
@@ -34,7 +35,32 @@ export class AddProductComponent {
   imageName: any;
 
 
-  constructor(private productService: ProductService,private router: Router) {}
+  constructor(private productService: ProductService,private router: Router,private elementRef: ElementRef) {}
+
+onSubmitClick() {
+  if (this.productForm.invalid) {
+    this.scrollToFirstInvalidControl();
+    this.productForm.markAllAsTouched(); // shows all validation messages
+    return;
+  }
+
+  this.submitProduct(); // your existing form submission logic
+}
+scrollToFirstInvalidControl() {
+  const invalidControlKey = Object.keys(this.productForm.controls).find(key =>
+    this.productForm.get(key)?.invalid
+  );
+
+  if (invalidControlKey) {
+    const controlElement = this.elementRef.nativeElement.querySelector(`[formcontrolname="${invalidControlKey}"]`);
+    if (controlElement) {
+      controlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      controlElement.focus();
+    }
+  }
+}
+
+
 
   handleFileUpload(event: any) {
   if (event.target.files.length > 0) {
@@ -62,6 +88,11 @@ handleCategoryChange(event: any) {
 submitProduct() {
   if (!this.selectedFile) {
     Swal.fire('Error', 'Please select an image.', 'error');
+    return;
+  }
+  if (this.productForm.invalid) {
+    this.scrollToFirstInvalidControl();
+    this.productForm.markAllAsTouched();
     return;
   }
 
