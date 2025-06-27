@@ -1,1 +1,60 @@
-<p>sales works!</p>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <h2 class="logo">🛍️ SellerPro</h2>
+    <nav>
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Orders</a>
+      <a href="#">Products</a>
+      <a href="#">Settings</a>
+    </nav>
+  </aside>
+
+  <main class="dashboard-content">
+    <header class="dashboard-header">
+      <h1>Seller Dashboard</h1>
+      <button class="refresh-btn">🔄 Refresh Data</button>
+    </header>
+
+    <section class="summary-cards">
+      <div class="card">
+        <p>Total Items Sold</p>
+        <h3>{{ totalItemsSold }}</h3>
+      </div>
+      <div class="card">
+        <p>Total Revenue</p>
+        <h3>₹{{ totalRevenue }}</h3>
+      </div>
+      <div class="card highlight">
+        <p>Best Selling Product</p>
+        <h3>{{ bestSeller?.name }}</h3>
+      </div>
+    </section>
+
+    <section class="products-section">
+      <div class="section-header">
+        <h2>Sold Products</h2>
+        <input type="text" placeholder="Search products..." />
+      </div>
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>Thumbnail</th>
+            <th>Product Name</th>
+            <th>Quantity Sold</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of soldProducts">
+            <td><img [src]="product.thumbnail" alt="{{ product.name }}" /></td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.quantity }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="footer">
+      <p>&copy; 2025 SellerPro. All rights reserved.</p>
+    </footer>
+  </main>
+</div>
