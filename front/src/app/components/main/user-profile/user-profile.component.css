@@ -987,3 +987,96 @@
   display: flex;
   flex-direction: column;
 }
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.payment-card {
+  position: relative;
+  background: linear-gradient(145deg, #1e1f41, #3a3f95);
+  color: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.payment-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.card-logo {
+  font-size: 2.5rem;
+  color: #ffd369;
+  margin-bottom: 1rem;
+}
+
+.card-content {
+  margin-bottom: 1rem;
+}
+
+.card-number {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 1px #000;
+}
+
+.card-name {
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.card-expiry {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.card-actions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  border-radius: 50%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: #ffd369;
+  color: #2b2e4a;
+  transform: scale(1.1);
+}
+
+.btn-icon.delete:hover {
+  background: #ff5e57;
+  color: white;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #555;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  color: #bbb;
+  margin-bottom: 1rem;
+}

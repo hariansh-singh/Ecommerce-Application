@@ -542,3 +542,103 @@
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
   transform: translateY(-2px);
 }
+
+.processing-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.processing-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+.processing-content {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeIn 0.4s ease forwards;
+}
+.processing-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.processing-text {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+.processing-animation {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem;
+}
+.processing-circle {
+  position: absolute;
+  inset: 0;
+  border: 5px solid #e0e0e0;
+  border-top: 5px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.processing-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #007bff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+.processing-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.processing-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+.processing-step {
+  display: flex;
+  align-items: center;
+  opacity: 0.5;
+  gap: 0.75rem;
+}
+.processing-step.active {
+  opacity: 1;
+}
+.step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ccc;
+}
+.processing-step.active .step-dot {
+  background: #007bff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

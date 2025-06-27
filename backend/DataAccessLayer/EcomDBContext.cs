@@ -2,6 +2,7 @@
 using backend.Models.CustomerModels;
 using backend.Models.OrderItemModels;
 using backend.Models.OrderModels;
+using backend.Models.PaymentModel;
 using backend.Models.ProductModels;
 using backend.Models.SellerDetails;
 using backend.Models.UserAddressModels;
@@ -20,7 +21,7 @@ namespace backend.DataAccessLayer
         public DbSet<OrderItemDBModel> OrderItems { get; set; }
         public DbSet<UserAddressDBModel> UserAddress { get; set; }
         public DbSet<UserReviewDBModel> UserReviews { get; set; }
-
+        public DbSet<PaymentDetailModel> PaymentDetails { get; set; }
 
     }
 }
