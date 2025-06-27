@@ -11,7 +11,7 @@
                 <form [formGroup]="productForm" (ngSubmit)="submitProduct()" enctype="multipart/form-data">
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input type="text" class="form-input" id="productName" placeholder=" "
+                      <input type="text" #productNameInput class="form-input" id="productName" placeholder=" "
                         formControlName="ProductName" required [class.error]="
                           productForm.get('ProductName')?.invalid &&
                           productForm.get('ProductName')?.touched
@@ -37,8 +37,8 @@
                   <!-- Product Category -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <select class="form-input role-select" id="productCategory" formControlName="ProductCategory"
-                        (change)="handleCategoryChange($event)" required [ngClass]="{
+                      <select #productCategorySelect class="form-input role-select" id="productCategory"
+                        formControlName="ProductCategory" (change)="handleCategoryChange($event)" required [ngClass]="{
         'error': productForm.get('ProductCategory')?.invalid && productForm.get('ProductCategory')?.touched
       }">
                         <option value="" disabled selected>Choose a Category</option>
@@ -56,10 +56,10 @@
                     </div>
 
                     <!-- Conditional Input Field for Custom Category -->
-                    <div *ngIf="isOtherSelected" class="input-wrapper">
+                    <div *ngIf="isOtherSelected" #customCategoryInput class="input-wrapper">
                       <!-- <input type="text" class="form-input" id="customCategory"
                         formControlName="CustomCategory" required /> -->
-                        <input type="text" class="form-input" id="customCategory" placeholder=" " [class.error]="
+                      <input type="text" class="form-input" id="customCategory" placeholder=" " [class.error]="
                           productForm.get('CustomCategory')?.invalid &&
                           productForm.get('CustomCategory')?.touched
                         " formControlName="CustomCategory" required />
@@ -80,7 +80,8 @@
                   <!-- Product Price -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input type="number" class="form-input" id="productPrice" placeholder=" " [class.error]="
+                      <input #productPriceInput type="number" class="form-input" id="productPrice" placeholder=" "
+                        [class.error]="
                           productForm.get('ProductPrice')?.invalid &&
                           productForm.get('ProductPrice')?.touched
                         " formControlName="ProductPrice" required />
@@ -108,7 +109,7 @@
                   <!-- Description -->
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <textarea class="form-input textarea-input" id="description" placeholder=" "
+                      <textarea #descriptionInput class="form-input textarea-input" id="description" placeholder=" "
                         formControlName="Description" required [class.error]="
                           productForm.get('Description')?.invalid &&
                           productForm.get('Description')?.touched
@@ -133,7 +134,7 @@
 
                   <div class="form-group">
                     <div class="input-wrapper">
-                      <input type="number" class="form-input" id="stockQuantity" placeholder=" "
+                      <input type="number" #stockQuantityInput class="form-input" id="stockQuantity" placeholder=" "
                         formControlName="StockQuantity" required [class.error]="
                           productForm.get('StockQuantity')?.invalid &&
                           productForm.get('StockQuantity')?.touched
@@ -183,14 +184,16 @@
                   </div>
 
                   <!-- Submit Button -->
+                  <!-- Submit Button -->
                   <div class="submit-section">
-                    <button class="submit-btn" type="submit" [disabled]="productForm.invalid">
+                    <button class="submit-btn" type="button" (click)="onSubmitClick()">
                       <span class="btn-text">
                         <i class="fas fa-check-circle"></i> Submit Product
                       </span>
                       <div class="btn-shine"></div>
                     </button>
                   </div>
+
                 </form>
               </div>
             </div>
