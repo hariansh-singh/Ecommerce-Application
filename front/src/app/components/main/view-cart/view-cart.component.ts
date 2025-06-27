@@ -9,6 +9,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import { UserAddressService } from '../../../../services/user-address.service';
+import { PaymentService } from '../../../../services/payment.service';
 @Component({
   selector: 'app-view-cart',
   standalone: true, 
@@ -63,7 +64,7 @@ processingStep: number = 0;
     cvv: '',
     upiId: ''
   };
-  
+  paymentService = inject(PaymentService);
   cartService = inject(CartService);
   authService = inject(AuthService);
   orderService = inject(OrderService);
@@ -197,7 +198,7 @@ processingStep: number = 0;
  redirectToAddressPage(): void {
     this.router.navigate(['/useraddress']); // Redirect to the User Address page
   }
-  
+ 
   placeOrder(): void {
   if (!this.cartItems.length) {
     this.showWarningToast('Your cart is empty!');
@@ -213,7 +214,31 @@ processingStep: number = 0;
     return;
   }
 
-  // Begin visual simulation
+  // If card is selected, store card details
+  if (this.selectedPayment === 'card') {
+    const cardData = {
+      customerId: this.decodedToken.CustomerId,
+      cardholderName: this.paymentDetails.cardholderName,
+      cardNumber: this.paymentDetails.cardNumber,
+      expiryDate: this.paymentDetails.expiryDate
+    };
+
+    this.paymentService.storeCardDetails(cardData).subscribe({
+      next: () => {
+        console.log('Card details saved');
+        this.startProcessing();
+      },
+      error: (err) => {
+        console.error('Error saving card details:', err);
+        this.showErrorToast('Failed to save card details');
+        this.isProcessing = false;
+      }
+    });
+  } else {
+    this.startProcessing();
+  }
+}
+startProcessing(): void {
   this.isProcessing = true;
   this.processingStep = 0;
 
@@ -225,7 +250,7 @@ processingStep: number = 0;
 
       if (step === 3) {
         setTimeout(() => {
-          this.submitOrder(); // Now renamed from the original placeOrder()
+          this.submitOrder();
         }, 1500);
       }
     }, (index + 1) * 1500);
@@ -259,7 +284,7 @@ submitOrder(): void {
         this.discount = 0;
 
         this.cartService.clearCart(this.decodedToken.CustomerId).subscribe();   
-          // Redirect to My Orders with userId
+         // Redirect to My Orders with userId
         const userId = this.decodedToken.CustomerId;
         this.router.navigate(['/myorders', userId]);
       },

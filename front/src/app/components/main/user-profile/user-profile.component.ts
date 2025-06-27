@@ -6,7 +6,7 @@ import { AuthService } from '../../../../services/auth.service';
 import Swal from 'sweetalert2';
 import { OrderService } from '../../../../services/order.service';
 import { MatCardLgImage } from '@angular/material/card';
-
+import { PaymentService } from '../../../../services/payment.service';
 @Component({
   selector: 'app-user-profile',
   imports: [CommonModule, FormsModule],
@@ -14,6 +14,8 @@ import { MatCardLgImage } from '@angular/material/card';
   styleUrl: './user-profile.component.css',
 })
 export class UserProfileComponent implements OnInit {
+  savedCards: any[] = [];
+
   user: any = {};
   addresses: any[] = [];
   orders: any[] = [];
@@ -27,6 +29,7 @@ export class UserProfileComponent implements OnInit {
 
   orderService: any = inject(OrderService);
   authService: any = inject(AuthService);
+paymentService = inject(PaymentService);
 
   userData: any = this.authService.decodedTokenData();
   customerId = this.userData?.CustomerId || 0;
@@ -64,7 +67,7 @@ export class UserProfileComponent implements OnInit {
     },
     { key: 'account', label: 'Account', icon: 'fa-user-lock' }
   ];
-
+  
   constructor(private userProfileService: UserProfileService) { }
 
   ngOnInit(): void {
@@ -72,6 +75,8 @@ export class UserProfileComponent implements OnInit {
     this.loadUserAddresses();
     this.loadCustomerOrders();
     this.loadUserReviews();
+    this.loadSavedCards();
+
   }
 
   loadCustomerInfo(): void {
@@ -88,6 +93,17 @@ export class UserProfileComponent implements OnInit {
       }
     );
   }
+loadSavedCards(): void {
+  this.paymentService.getSavedCards(this.customerId).subscribe({
+    next: (cards: any[]) => {
+      this.savedCards = cards;
+      this.updateNavigationCount('payments', cards.length);
+    },
+    error: (err) => {
+      console.error('Error fetching saved cards:', err);
+    }
+  });
+}
 
   loadUserAddresses(): void {
     this.userProfileService.getUserAddresses(this.customerId).subscribe(

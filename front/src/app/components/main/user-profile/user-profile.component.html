@@ -157,54 +157,48 @@
         </ng-template>
       </section>
 
-      <!-- Payment Methods Section -->
-      <section *ngIf="activeSection === 'payments'" class="content-section">
-        <div class="section-header">
-          <h2 class="mb-3 px-3">
-            <i class="fas fa-credit-card"></i> Payment Methods
-          </h2>
-          <button class="btn-add mb-2" (click)="addPaymentMethod()">
-            <i class="fas fa-plus"></i> Add New Card
-          </button>
-        </div>
+    <!-- Payment Methods Section -->
+<section *ngIf="activeSection === 'payments'" class="content-section">
+  <div class="section-header">
+    <h2 class="mb-3 px-3">
+      <i class="fas fa-credit-card"></i> Payment Methods
+    </h2>
+    <button class="btn-add mb-2" (click)="addPaymentMethod()">
+      <i class="fas fa-plus"></i> Add New Card
+    </button>
+  </div>
 
-        <div
-          class="payment-methods"
-          *ngIf="user.paymentMethods?.length > 0; else noPayments"
-        >
-          <div
-            class="payment-card"
-            *ngFor="let method of user.paymentMethods; let i = index"
-          >
-            <div class="card-icon">
-              <i class="fab" [ngClass]="getCardIcon(method.type)"></i>
-            </div>
-            <div class="card-info">
-              <h4>{{ method.type }} ending in {{ method.lastFour }}</h4>
-              <p>Expires {{ method.expiryMonth }}/{{ method.expiryYear }}</p>
-            </div>
-            <div class="card-actions">
-              <button class="btn-icon" (click)="editPaymentMethod(i)">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn-icon delete" (click)="deletePaymentMethod(i)">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          </div>
-        </div>
+  <div *ngIf="savedCards.length > 0; else noPayments" class="payment-methods">
+    <div class="payment-card" *ngFor="let card of savedCards; let i = index">
+      <div class="card-logo">
+        <i class="fab" [ngClass]="getCardIcon('visa')"></i>
+      </div>
 
-        <ng-template #noPayments>
-          <div class="empty-state">
-            <i class="fas fa-credit-card"></i>
-            <h3>No payment methods saved</h3>
-            <p>Add a payment method for faster and more secure checkout</p>
-            <!-- <button class="btn-primary" (click)="addPaymentMethod()">
-              <i class="fas fa-plus"></i> Add Payment Method
-            </button> -->
-          </div>
-        </ng-template>
-      </section>
+      <div class="card-content">
+        <div class="card-number">**** **** **** {{ card.lastFour }}</div>
+        <div class="card-name">{{ card.cardholderName }}</div>
+        <div class="card-expiry">Expiry: {{ card.expiryDate }}</div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-icon" (click)="editPaymentMethod(i)">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn-icon delete" (click)="deletePaymentMethod(i)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noPayments>
+    <div class="empty-state">
+      <i class="fas fa-credit-card"></i>
+      <h3>No payment methods saved</h3>
+      <p>Add a payment method for faster and more secure checkout</p>
+    </div>
+  </ng-template>
+</section>
 
       <!-- Order History Section -->
       <section *ngIf="activeSection === 'orders'" class="content-section">
