@@ -12,49 +12,210 @@
   <main class="dashboard-content">
     <header class="dashboard-header">
       <h1>Seller Dashboard</h1>
-      <button class="refresh-btn">🔄 Refresh Data</button>
+      <button class="refresh-btn" (click)="refreshData()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">🔄 Refresh Data</span>
+        <span *ngIf="isLoading">⏳ Loading...</span>
+      </button>
     </header>
 
-    <section class="summary-cards">
-      <div class="card">
-        <p>Total Items Sold</p>
-        <h3>{{ totalItemsSold }}</h3>
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading sales data...</p>
       </div>
-      <div class="card">
-        <p>Total Revenue</p>
-        <h3>₹{{ totalRevenue }}</h3>
-      </div>
-      <div class="card highlight">
-        <p>Best Selling Product</p>
-        <h3>{{ bestSeller?.name }}</h3>
-      </div>
-    </section>
+    </div>
 
-    <section class="products-section">
-      <div class="section-header">
-        <h2>Sold Products</h2>
-        <input type="text" placeholder="Search products..." />
+    <!-- Error State -->
+    <div *ngIf="errorMessage && !isLoading" class="error-container">
+      <div class="error-message">
+        <h3>⚠️ Error Loading Data</h3>
+        <p>{{ errorMessage }}</p>
+        <button class="retry-btn" (click)="refreshData()">Try Again</button>
       </div>
-      <table class="products-table">
-        <thead>
-          <tr>
-            <th>Thumbnail</th>
-            <th>Product Name</th>
-            <th>Quantity Sold</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let product of soldProducts">
-            <td><img [src]="product.thumbnail" alt="{{ product.name }}" /></td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.quantity }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    </div>
 
-    <footer class="footer">
-      <p>&copy; 2025 SellerPro. All rights reserved.</p>
-    </footer>
+    <!-- Empty State -->
+    <div *ngIf="isEmpty" class="empty-container">
+      <div class="empty-message">
+        <h3>📊 No Sales Data</h3>
+        <p>You haven't made any sales yet. Start selling to see your dashboard!</p>
+      </div>
+    </div>
+
+    <!-- Main Content - Only show when we have data -->
+    <div *ngIf="hasData && !isLoading">
+      <!-- Summary Cards -->
+      <section class="summary-cards">
+        <div class="card">
+          <div class="card-icon">📦</div>
+          <div class="card-content">
+            <p>Total Items Sold</p>
+            <h3>{{ formatNumber(totalItemsSold) }}</h3>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💰</div>
+          <div class="card-content">
+            <p>Total Revenue</p>
+            <h3>{{ formatCurrency(totalRevenue) }}</h3>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📈</div>
+          <div class="card-content">
+            <p>Total Orders</p>
+            <h3>{{ formatNumber(totalOrdersCount) }}</h3>
+          </div>
+        </div>
+        <div class="card highlight" *ngIf="bestSeller">
+          <div class="card-icon">🏆</div>
+          <div class="card-content">
+            <p>Best Selling Product</p>
+            <h3>{{ bestSeller.name }}</h3>
+            <small>{{ formatNumber(bestSeller.quantity) }} units sold</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- Products Section -->
+      <section class="products-section">
+        <div class="section-header">
+          <h2>Sold Products ({{ soldProducts.length }})</h2>
+          <div class="search-container">
+            <input 
+              type="text" 
+              placeholder="Search products..." 
+              [(ngModel)]="searchTerm"
+              (input)="onSearchChange()"
+              class="search-input"
+            />
+            <button class="search-clear" *ngIf="searchTerm" (click)="clearSearch()">✕</button>
+          </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="table-container">
+          <table class="products-table" *ngIf="filteredProducts.length > 0">
+            <thead>
+              <tr>
+                <th>Thumbnail</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Quantity Sold</th>
+                <th>Revenue</th>
+                <th>Orders</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of filteredProducts; trackBy: trackByProductId">
+                <td class="thumbnail-cell">
+                  <img 
+                    [src]="product.thumbnail" 
+                    [alt]="product.name"
+                    (error)="onImageError($event)"
+                    class="product-thumbnail"
+                  />
+                </td>
+                <td class="product-name">
+                  <strong>{{ product.name }}</strong>
+                </td>
+                <td class="category">
+                  <span class="category-badge">{{ product.category }}</span>
+                </td>
+                <td class="price">{{ formatCurrency(product.price) }}</td>
+                <td class="quantity">
+                  <span class="quantity-badge">{{ formatNumber(product.quantity) }}</span>
+                </td>
+                <td class="revenue">
+                  <strong>{{ formatCurrency(product.revenue) }}</strong>
+                </td>
+                <td class="orders">{{ product.orderCount }}</td>
+                <td class="actions">
+                  <button 
+                    class="action-btn view-btn" 
+                    (click)="viewProductDetails(product)"
+                    title="View Details"
+                  >
+                    👁️
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- No Search Results -->
+          <div *ngIf="filteredProducts.length === 0 && searchTerm" class="no-results">
+            <p>No products found matching "{{ searchTerm }}"</p>
+            <button class="clear-search-btn" (click)="clearSearch()">Clear Search</button>
+          </div>
+        </div>
+
+        <!-- Pagination (if needed) -->
+        <div class="pagination" *ngIf="filteredProducts.length > itemsPerPage">
+          <button 
+            class="page-btn" 
+            (click)="previousPage()" 
+            [disabled]="currentPage === 1"
+          >
+            ← Previous
+          </button>
+          <span class="page-info">
+            Page {{ currentPage }} of {{ totalPages }}
+          </span>
+          <button 
+            class="page-btn" 
+            (click)="nextPage()" 
+            [disabled]="currentPage === totalPages"
+          >
+            Next →
+          </button>
+        </div>
+      </section>
+
+      <!-- Additional Stats Section -->
+      <section class="additional-stats" *ngIf="soldProducts.length > 0">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <h4>Average Order Value</h4>
+            <p>{{ formatCurrency(totalRevenue / totalOrdersCount) }}</p>
+          </div>
+          <div class="stat-item">
+            <h4>Average Items per Order</h4>
+            <p>{{ formatNumber(totalItemsSold / totalOrdersCount) }}</p>
+          </div>
+          <div class="stat-item">
+            <h4>Top Category</h4>
+            <p>{{ getTopCategory() }}</p>
+          </div>
+          <div class="stat-item">
+            <h4>Last Updated</h4>
+            <p>{{ getCurrentDateTime() }}</p>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
+</div>
+
+<!-- Product Details Modal (if you want to show detailed view) -->
+<div class="modal-overlay" *ngIf="selectedProduct" (click)="closeProductDetails()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ selectedProduct.name }}</h3>
+      <button class="close-btn" (click)="closeProductDetails()">✕</button>
+    </div>
+    <div class="modal-body">
+      <img [src]="selectedProduct.thumbnail" [alt]="selectedProduct.name" class="modal-image">
+      <div class="product-details">
+        <p><strong>Category:</strong> {{ selectedProduct.category }}</p>
+        <p><strong>Price:</strong> {{ formatCurrency(selectedProduct.price) }}</p>
+        <p><strong>Total Sold:</strong> {{ formatNumber(selectedProduct.quantity) }} units</p>
+        <p><strong>Revenue:</strong> {{ formatCurrency(selectedProduct.revenue) }}</p>
+        <p><strong>Orders:</strong> {{ selectedProduct.orderCount }}</p>
+      </div>
+    </div>
+  </div>
 </div>

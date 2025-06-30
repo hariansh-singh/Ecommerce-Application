@@ -4,10 +4,12 @@ using backend.Repositories.CartRepository;
 using backend.Repositories.CustomerRepository;
 using backend.Repositories.OrderRepository;
 using backend.Repositories.ProductRepository;
+using backend.Repositories.SellerDashboardRepository;
 using backend.Repositories.SellerDetailsRepository;
 using backend.Repositories.UserAddressRepo;
 using backend.Repositories.UserProfileRepository;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +17,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.Google;
 
 
 
@@ -84,6 +85,7 @@ builder.Services.AddScoped<IAdminDashboardRepo, AdminDashboardRepo>();
 builder.Services.AddScoped<IUserAddressRepo, UserAddressRepo>();
 builder.Services.AddScoped<IUserReviewRepo, UserReviewRepo>();
 builder.Services.AddScoped<ISellerDetailsRepo, SellerDetailsRepo>();
+builder.Services.AddScoped<ISellerDashboardRepo, SellerDashboardRepo>();
 
 var app = builder.Build();
 Console.WriteLine($"Current Environment: {app.Environment.EnvironmentName}");
