@@ -42,13 +42,20 @@ namespace backend.Repositories.AdminDashboardRepository
 
         public async Task<List<object>> GetTopSellingProductsAsync()
         {
-            return await _context.OrderItems
+            var topProducts = await _context.OrderItems
+        .Include(oi => oi.Products) // Eagerly load related product
+        .GroupBy(oi => new { oi.ProductId, oi.Products.ProductName }) // Group by ID + Name
+        .Select(g => new
+        {
+            ProductId = g.Key.ProductId,
+            ProductName = g.Key.ProductName,
+            TotalSold = g.Sum(x => x.Quantity)
+        })
+        .OrderByDescending(x => x.TotalSold)
+        .Take(5)
+        .ToListAsync();
 
-                .GroupBy(o => o.ProductId)
-                .Select(g => new { ProductId = g.Key, TotalSold = g.Sum(o => o.Quantity) })
-                .OrderByDescending(x => x.TotalSold)
-                .Take(5)
-                .ToListAsync<object>();
+            return topProducts.Cast<object>().ToList(); // Return as List<object> if needed
         }
     }
 }
