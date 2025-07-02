@@ -1,6 +1,7 @@
 ﻿using backend.Repositories.SellerDashboardRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Controllers
 {
@@ -17,12 +18,12 @@ namespace backend.Controllers
 
         [HttpGet("salesinfo/{sellerId}")]
         public async Task<IActionResult> GetSalesInfo(int sellerId)
-        {
+        {   
             try
             {
                 var result = await _sellerDashboardRepo.GetSellerProductsSalesInfo(sellerId);
 
-                if (result == null || !result.Any())
+                if (result.ProductSales.IsNullOrEmpty())
                     return NotFound("No sales data found for the given seller.");
 
                 return Ok(new

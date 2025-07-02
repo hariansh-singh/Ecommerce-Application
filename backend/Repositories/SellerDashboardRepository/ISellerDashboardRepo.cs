@@ -1,7 +1,9 @@
-﻿namespace backend.Repositories.SellerDashboardRepository
+﻿using backend.Models.ProductSalesDTO;
+
+namespace backend.Repositories.SellerDashboardRepository
 {
     public interface ISellerDashboardRepo
     {
-        Task<Dictionary<int, decimal>> GetSellerProductsSalesInfo(int sellerId);
+        Task<ProductSalesResponseDTO> GetSellerProductsSalesInfo(int sellerId);
     }
 }
