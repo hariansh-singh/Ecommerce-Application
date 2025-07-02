@@ -1,5 +1,5 @@
-/* Layout */
 .dashboard-wrapper {
+  margin-top: 10px;
   display: flex;
   min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
