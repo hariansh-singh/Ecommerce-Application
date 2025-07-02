@@ -9,5 +9,6 @@ namespace backend.Repositories.OrderRepository
         Task<List<OrderDBModel>> GetOrdersById(int customerId);
         Task<bool> UpdateOrder(int orderId, OrderUIModel updatedOrder);
         Task<bool> DeleteOrder(int orderId);
+        Task<bool> CancelOrderAsync(int orderId);
     }
 }

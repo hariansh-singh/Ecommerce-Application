@@ -152,5 +152,24 @@ namespace backend.Repositories.OrderRepository
 
             return false;
         }
+
+        public async Task<bool> CancelOrderAsync(int orderId)
+        {
+            var order = await dbContext.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+                return false;
+
+            if (order.OrderStatus == "Delivered")
+                return false;
+
+            order.OrderStatus = "Cancelled";
+
+           
+            dbContext.Orders.Update(order);
+            var result = await dbContext.SaveChangesAsync();
+
+            return result > 0;
+        }
     }
 }
