@@ -11,7 +11,7 @@ using backend.Repositories.UserProfileRepository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Build.Framework;
+//using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
@@ -86,6 +86,10 @@ builder.Services.AddScoped<IUserAddressRepo, UserAddressRepo>();
 builder.Services.AddScoped<IUserReviewRepo, UserReviewRepo>();
 builder.Services.AddScoped<ISellerDetailsRepo, SellerDetailsRepo>();
 builder.Services.AddScoped<ISellerDashboardRepo, SellerDashboardRepo>();
+
+builder.Services.Configure<backend.Services.EmailService.EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<backend.Services.EmailService.IEmailService, backend.Services.EmailService.EmailService>();
 
 var app = builder.Build();
 Console.WriteLine($"Current Environment: {app.Environment.EnvironmentName}");

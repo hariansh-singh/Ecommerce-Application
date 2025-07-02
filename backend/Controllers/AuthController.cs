@@ -1,14 +1,17 @@
 ﻿using backend.Models.CustomerModels;
 using backend.Repositories.CustomerRepository;
+using backend.Services.EmailService;
+using backend.Services.EmailTemplates;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-
+using System.Net.Http;
+using System.Text.Json;
 
 namespace backend.Controllers
 {
@@ -18,13 +21,14 @@ namespace backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IEmailService _emailService;
 
-        public AuthController(IConfiguration _configuration, ICustomerRepository _customerRepository)
+        public AuthController(IConfiguration _configuration, ICustomerRepository _customerRepository, IEmailService _emailService)
         {
             this._configuration = _configuration;
             this._customerRepository = _customerRepository;
+            this._emailService = _emailService;
         }
-
 
         [HttpPost]
         [Route("login")]
@@ -42,6 +46,49 @@ namespace backend.Controllers
                     });
                 }
                 var token = IssueToken(customerLogin);
+
+                if (user.Email != null && user.Password != null)
+                {
+                    string displayName = GetDisplayNameFromEmail(user.Email);
+
+                    // --- Get IP Address ---
+                    string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                    if (string.IsNullOrEmpty(ipAddress) || ipAddress == "::1" || ipAddress == "127.0.0.1") // Localhost fallback
+                        ipAddress = "me"; // ipapi.co uses 'me' for current IP
+
+                    // --- Get Location from IP ---
+                    string location = "Unknown Location";
+                    try
+                    {
+                        using (var httpClient = new HttpClient())
+                        {
+                            var response = await httpClient.GetStringAsync($"https://ipapi.co/{ipAddress}/json/");
+                            var doc = JsonDocument.Parse(response);
+
+                            string city = doc.RootElement.TryGetProperty("city", out var cityProp) ? cityProp.GetString() : "";
+                            string region = doc.RootElement.TryGetProperty("region", out var regionProp) ? regionProp.GetString() : "";
+                            string country = doc.RootElement.TryGetProperty("country_name", out var countryProp) ? countryProp.GetString() : "";
+
+                            location = $"{city}, {region}, {country}".Trim(new char[] { ' ', ',' });
+                            if (string.IsNullOrWhiteSpace(location) || location == ", ,")
+                                location = "Unknown Location";
+                        }
+                    }
+                    catch
+                    {
+                        // fallback already set
+                    }
+
+                    // --- Parse Device from User-Agent ---
+                    string userAgent = Request.Headers["User-Agent"].ToString();
+                    string device = ParseUserAgentSimple(userAgent);
+
+                    await _emailService.SendEmailAsync(
+                        user.Email,
+                        "Welcome back to Sha.in - Login Confirmation",
+                        EmailTemplateService.GetLoginEmailTemplate(displayName ?? "Valued Customer", location, device)
+                    );
+                }
 
                 return Ok(new
                 {
@@ -119,6 +166,7 @@ namespace backend.Controllers
                 msg = "Failed to add user"
             });
         }
+
         [HttpGet("google-login")]
         public IActionResult GoogleLogin()
         {
@@ -159,10 +207,45 @@ namespace backend.Controllers
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-
             // ✅ Redirect to Angular app with token
             return Redirect($"http://localhost:4200/register?token={token}");
+        }
 
+        private string GetDisplayNameFromEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                return "Valued Customer";
+
+            string localPart = email.Split('@')[0];
+            string displayName = localPart
+                .Replace(".", " ")
+                .Replace("-", " ")
+                .Replace("_", " ");
+
+            return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(displayName);
+        }
+
+        // Simple User-Agent parser (for real use, consider UAParser NuGet)
+        private string ParseUserAgentSimple(string userAgent)
+        {
+            if (string.IsNullOrEmpty(userAgent))
+                return "Unknown Device";
+
+            if (userAgent.Contains("Windows"))
+                return "Web Browser on Windows";
+            if (userAgent.Contains("Macintosh"))
+                return "Web Browser on macOS";
+            if (userAgent.Contains("Linux") && !userAgent.Contains("Android"))
+                return "Web Browser on Linux";
+            if (userAgent.Contains("Android"))
+                return "Mobile Browser on Android";
+            if (userAgent.Contains("iPhone"))
+                return "Mobile Browser on iPhone";
+            if (userAgent.Contains("iPad"))
+                return "Mobile Browser on iPad";
+            // Add more as needed
+
+            return "Web Browser";
         }
     }
 }
