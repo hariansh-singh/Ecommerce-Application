@@ -130,5 +130,24 @@ namespace backend.Controllers
                 msg = "Order deleted successfully"
             });
         }
+
+        [HttpPatch("cancel/{orderId}")]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            bool success = await _orderRepository.CancelOrderAsync(orderId);
+
+            if (!success)
+            {
+                return BadRequest(new
+                {
+                    message = "Failed to cancel the order. It may not exist or is already delivered."
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Order has been cancelled successfully."
+            });
+        }
     }
 }

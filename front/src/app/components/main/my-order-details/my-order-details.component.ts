@@ -6,6 +6,7 @@ import { Subject, takeUntil, finalize } from 'rxjs';
 import { OrderService } from '../../../../services/order.service';
 import { AuthService } from '../../../../services/auth.service';
 import { jsPDF } from 'jspdf';
+import Swal from 'sweetalert2';
 
 interface OrderItem {
   productId: string;
@@ -226,56 +227,56 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
   }
 
   submitReviewFromModal(): void {
-  if (!this.selectedItem || !this.selectedOrder) {
-    console.error('Error: No selected item or order.');
-    return;
+    if (!this.selectedItem || !this.selectedOrder) {
+      console.error('Error: No selected item or order.');
+      return;
+    }
+
+    if (!this.reviewForm.rating || this.reviewForm.rating < 1 || this.reviewForm.rating > 5) {
+      alert('Please select a rating between 1 and 5 stars.');
+      console.error('Invalid rating:', this.reviewForm.rating);
+      return;
+    }
+
+    if (!this.customerId || this.customerId === 0) {
+      alert('Customer ID not found. Please log in again.');
+      console.error('Customer ID missing.');
+      return;
+    }
+
+    this.isSubmittingReview = true;
+
+    const reviewData: UserReviewModel = {
+      customerId: this.customerId,
+      productId: parseInt(this.selectedItem.productId),
+      rating: this.reviewForm.rating,
+      reviewText: this.reviewForm.reviewText || '',
+    };
+
+    console.log('Submitting review:', reviewData);
+
+    this.orderService.submitProductReview(reviewData)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.isSubmittingReview = false;
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Review submitted successfully:', response);
+          this.selectedItem!.rating = this.reviewForm.rating;
+          this.selectedItem!.reviewText = this.reviewForm.reviewText;
+          this.selectedItem!.reviewSubmitted = true;
+          this.closeReviewDialog();
+          this.showSuccessMessage('Review submitted successfully!');
+        },
+        error: (error) => {
+          console.error('Error submitting review:', error);
+          alert('Failed to submit review. Please try again.');
+        },
+      });
   }
-
-  if (!this.reviewForm.rating || this.reviewForm.rating < 1 || this.reviewForm.rating > 5) {
-    alert('Please select a rating between 1 and 5 stars.');
-    console.error('Invalid rating:', this.reviewForm.rating);
-    return;
-  }
-
-  if (!this.customerId || this.customerId === 0) {
-    alert('Customer ID not found. Please log in again.');
-    console.error('Customer ID missing.');
-    return;
-  }
-
-  this.isSubmittingReview = true;
-
-  const reviewData: UserReviewModel = {
-    customerId: this.customerId,
-    productId: parseInt(this.selectedItem.productId),
-    rating: this.reviewForm.rating,
-    reviewText: this.reviewForm.reviewText || '',
-  };
-
-  console.log('Submitting review:', reviewData);
-
-  this.orderService.submitProductReview(reviewData)
-    .pipe(
-      takeUntil(this.destroy$),
-      finalize(() => {
-        this.isSubmittingReview = false;
-      })
-    )
-    .subscribe({
-      next: (response) => {
-        console.log('Review submitted successfully:', response);
-        this.selectedItem!.rating = this.reviewForm.rating;
-        this.selectedItem!.reviewText = this.reviewForm.reviewText;
-        this.selectedItem!.reviewSubmitted = true;
-        this.closeReviewDialog();
-        this.showSuccessMessage('Review submitted successfully!');
-      },
-      error: (error) => {
-        console.error('Error submitting review:', error);
-        alert('Failed to submit review. Please try again.');
-      },
-    });
-}
 
 
   private showSuccessMessage(message: string): void {
@@ -347,4 +348,34 @@ export class MyOrderDetailsComponent implements OnInit, OnDestroy {
   trackByItemId(index: number, item: OrderItem): string {
     return `${item.productId}-${index}`;
   }
+
+  cancelOrder(order: Order): void {
+  this.orderService.cancelOrderById(order.orderId)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: () => {
+        order.orderStatus = 'Cancelled'; // Update the UI
+        Swal.fire('Cancelled!', 'Your order has been cancelled.', 'success');
+      },
+      error: (err) => {
+        console.error('Cancel error:', err);
+        Swal.fire('Error', 'Unable to cancel the order. Please try again.', 'error');
+      }
+    });
+   }
+
+  confirmCancelOrder(order: Order): void {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'Do you want to cancel this order?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, cancel it',
+    cancelButtonText: 'No, keep it'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.cancelOrder(order);
+    }
+  });
+}
 }
