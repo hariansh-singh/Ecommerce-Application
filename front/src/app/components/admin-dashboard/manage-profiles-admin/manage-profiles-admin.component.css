@@ -975,3 +975,108 @@
     transition-duration: 0.01ms !important;
   }
 }
+.user-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1.5rem;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.95rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.user-table thead {
+  background: linear-gradient(to right, #3f51b5, #5c6bc0);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.user-table th {
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  background-clip: padding-box;
+  z-index: 1;
+}
+
+.user-table td {
+  padding: 1rem 1.25rem;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.user-table tbody tr:hover {
+  background-color: #f9f9fc;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.user-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Badges */
+.role-badge,
+.status-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 4px 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Roles */
+.role-user {
+  background: rgba(33, 150, 243, 0.1);
+  color: #2196f3;
+  border: 1px solid #2196f3;
+}
+
+.role-seller {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+  border: 1px solid #ff9800;
+}
+
+.role-admin {
+  background: rgba(156, 39, 176, 0.1);
+  color: #9c27b0;
+  border: 1px solid #9c27b0;
+}
+
+/* Status */
+.status-1 {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+  border: 1px solid #4caf50;
+}
+
+.status-0 {
+  background: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+  border: 1px solid #f44336;
+}
+
+/* Action Buttons */
+.status-btn {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: none;
+  background: #3f51b5;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.status-btn:hover {
+  background: #303f9f;
+}
