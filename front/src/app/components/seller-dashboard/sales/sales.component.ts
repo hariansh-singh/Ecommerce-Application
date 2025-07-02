@@ -1,4 +1,6 @@
 import { Component,OnInit  } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
 
 interface SoldProduct {
   name: string;
@@ -7,7 +9,7 @@ interface SoldProduct {
 }
 @Component({
   selector: 'app-sales',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './sales.component.html',
   styleUrl: './sales.component.css'
 })

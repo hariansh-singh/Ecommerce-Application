@@ -16,6 +16,7 @@
       <span class="text-light brand-name"
         >Sha<span class="brand-sub">.in</span></span
       >
+      
     </a>
 
 <!-- 
@@ -29,18 +30,8 @@
 </div>
  -->
 
- <!-- Current Location Display with Heading -->
-<div
-  class="location-display text-light mx-3 d-flex flex-column align-items-start"
-  [ngClass]="{ 'animate__animated animate__fadeInDown': animationEnabled }"
->
-  <span class="fw-semibold small text-uppercase text-warning">Delivering to</span>
-  <div class="d-flex align-items-center">
-    <i class="fas fa-map-marker-alt text-warning me-1"></i>
-    <span *ngIf="location">{{ location }}</span>
-    <span *ngIf="!location">Detecting location...</span>
-  </div>
-</div>
+
+
 
     <!-- Hamburger Menu for Mobile -->
     <button
@@ -83,6 +74,16 @@
         </div>
       </div>
 
+      <div
+  class="location-display text-light mx-3 d-flex flex-column align-items-start"
+  [ngClass]="{ 'animate__animated animate__fadeInDown': animationEnabled }"
+>
+  <div class="d-flex align-items-center">
+    <i class="fas fa-map-marker-alt text-warning me-1"></i>
+    <span *ngIf="location">{{ location }}</span>
+    <span *ngIf="!location">Detecting location...</span>
+  </div>
+</div>
       <!-- Account & Cart Icons -->
       <div class="d-flex align-items-center ms-auto">
         <!-- Not Logged In -->
@@ -206,6 +207,7 @@
 >
   <div class="container-fluid">
     <ul class="nav justify-content-center">
+      
       <li class="nav-item">
         <a class="cat-link" routerLink="/">Home</a>
       </li>
