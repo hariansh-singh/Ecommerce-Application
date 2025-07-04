@@ -159,7 +159,7 @@ namespace backend.Controllers
             {
                 var displayName = customer.Name;
                 await _emailService.SendEmailAsync(
-                        customer.Email,
+                        customer.Email!,
                         "Welcome to Sha.in - Registration Confirmation",
                         EmailTemplateService.GetRegisterEmailTemplate(displayName ?? "Valued Customer")
                     );
@@ -199,7 +199,7 @@ namespace backend.Controllers
             var name = principal.FindFirstValue(ClaimTypes.Name);
 
             // Optional: check if user exists in DB, or auto-register
-            var existingCustomer = await _customerRepository.FindByEmailAsync(email);
+            var existingCustomer = await _customerRepository.FindByEmailAsync(email!);
             if (existingCustomer == null)
             {
                 var newCustomer = new CustomerUIModel
@@ -210,10 +210,65 @@ namespace backend.Controllers
                 };
 
                 var newId = await _customerRepository.AddUser(newCustomer);
-                existingCustomer = await _customerRepository.FindByEmailAsync(email); // re-fetch with ID
+                existingCustomer = await _customerRepository.FindByEmailAsync(email!); // re-fetch with ID
+
+                var displayName = name;
+                await _emailService.SendEmailAsync(
+                        email!,
+                        "Welcome to Sha.in - Registration Confirmation",
+                        EmailTemplateService.GetRegisterEmailTemplate(displayName ?? "Valued Customer")
+                    );
+
+            }
+            else
+            {
+                string displayName = name!;
+
+                // --- Get IP Address ---
+                string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString()!;
+                if (string.IsNullOrEmpty(ipAddress) || ipAddress == "::1" || ipAddress == "127.0.0.1") // Localhost fallback
+                    ipAddress = "me"; // ipapi.co uses 'me' for current IP
+
+                // --- Get Location from IP ---
+                string location = "Unknown Location";
+                if (ipAddress != "me")
+                {
+                    using (var httpClient = new HttpClient())
+                    {
+                        var response = await httpClient.GetStringAsync($"https://ipapi.co/{ipAddress}/json/");
+                        var doc = JsonDocument.Parse(response);
+
+                        string city = doc.RootElement.TryGetProperty("city", out var cityProp) ? cityProp.GetString() ?? "" : "";
+                        string region = doc.RootElement.TryGetProperty("region", out var regionProp) ? regionProp.GetString() ?? "" : "";
+                        string country = doc.RootElement.TryGetProperty("country_name", out var countryProp) ? countryProp.GetString() ?? "" : "";
+
+                        var parts = new List<string>();
+                        if (!string.IsNullOrWhiteSpace(city)) parts.Add(city);
+                        if (!string.IsNullOrWhiteSpace(region)) parts.Add(region);
+                        if (!string.IsNullOrWhiteSpace(country)) parts.Add(country);
+
+                        if (parts.Count > 0)
+                            location = string.Join(", ", parts);
+                    }
+                }
+                else
+                {
+                    location = "Local Host";
+                }
+
+                // --- Parse Device from User-Agent ---
+                string userAgent = Request.Headers["User-Agent"].ToString();
+                string device = ParseUserAgentSimple(userAgent);
+
+                await _emailService.SendEmailAsync(
+                    email!,
+                    "Welcome back to Sha.in - Login Confirmation",
+                    EmailTemplateService.GetLoginEmailTemplate(displayName ?? "Valued Customer", location, device)
+                );
             }
 
-            var token = IssueToken(existingCustomer);
+
+            var token = IssueToken(existingCustomer!);
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
