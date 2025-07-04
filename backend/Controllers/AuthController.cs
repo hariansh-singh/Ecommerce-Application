@@ -157,6 +157,12 @@ namespace backend.Controllers
             var result = await _customerRepository.AddUser(customer);
             if (result > 0)
             {
+                var displayName = customer.Name;
+                await _emailService.SendEmailAsync(
+                        customer.Email,
+                        "Welcome to Sha.in - Registration Confirmation",
+                        EmailTemplateService.GetRegisterEmailTemplate(displayName ?? "Valued Customer")
+                    );
                 return Ok(new
                 {
                     err = 0,
