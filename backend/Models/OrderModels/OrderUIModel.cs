@@ -26,6 +26,10 @@ namespace backend.Models.OrderModels
         [Required]
         public string? PaymentMethod { get; set; }
 
+        [Required]
+        public string? OrderStatus { get; set; } = "Preparing";
+
+
 
         [Required]
         public List<OrderItemUIModel> OrderItems { get; set; } = new List<OrderItemUIModel>();

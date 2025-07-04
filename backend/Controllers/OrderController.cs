@@ -149,5 +149,37 @@ namespace backend.Controllers
                 message = "Order has been cancelled successfully."
             });
         }
+
+        [HttpPatch("updateStatus/{orderId}")]
+        public async Task<IActionResult> UpdateDeliveryStatus(int orderId, [FromBody] string newStatus)
+        {
+            if (string.IsNullOrWhiteSpace(newStatus))
+            {
+                return BadRequest(new
+                {
+                    err = 1,
+                    msg = "Invalid delivery status provided"
+                });
+            }
+
+            var result = await _orderRepository.UpdateOrderStatusAsync(orderId, newStatus);
+
+            if (!result)
+            {
+                return NotFound(new
+                {
+                    err = 1,
+                    msg = "Order not found or update failed"
+                });
+            }
+
+            return Ok(new
+            {
+                err = 0,
+                msg = $"Order status updated to '{newStatus}'"
+            });
+        }
+
     }
+
 }

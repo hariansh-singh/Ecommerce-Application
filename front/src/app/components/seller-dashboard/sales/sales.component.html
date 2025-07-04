@@ -83,13 +83,8 @@
         <div class="section-header">
           <h2>Sold Products ({{ soldProducts.length }})</h2>
           <div class="search-container">
-            <input 
-              type="text" 
-              placeholder="Search products..." 
-              [(ngModel)]="searchTerm"
-              (input)="onSearchChange()"
-              class="search-input"
-            />
+            <input type="text" placeholder="Search products..." [(ngModel)]="searchTerm" (input)="onSearchChange()"
+              class="search-input" />
             <button class="search-clear" *ngIf="searchTerm" (click)="clearSearch()">✕</button>
           </div>
         </div>
@@ -112,12 +107,8 @@
             <tbody>
               <tr *ngFor="let product of filteredProducts; trackBy: trackByProductId">
                 <td class="thumbnail-cell">
-                  <img 
-                    [src]="product.thumbnail" 
-                    [alt]="product.name"
-                    (error)="onImageError($event)"
-                    class="product-thumbnail"
-                  />
+                  <img [src]="product.thumbnail" [alt]="product.name" (error)="onImageError($event)"
+                    class="product-thumbnail" />
                 </td>
                 <td class="product-name">
                   <strong>{{ product.name }}</strong>
@@ -134,13 +125,28 @@
                 </td>
                 <td class="orders">{{ product.orderCount }}</td>
                 <td class="actions">
-                  <button 
-                    class="action-btn view-btn" 
-                    (click)="viewProductDetails(product)"
-                    title="View Details"
-                  >
-                    👁️
+
+
+                  <!-- Delivery Status Dropdown -->
+                  <select [(ngModel)]="product.deliveryStatus" (change)="updateDeliveryStatus(product)"
+                    [disabled]="product.status === 'Canceled'"
+                    class="delivery-dropdown">
+                    <option value="Pending">Pending</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                  </select>
+
+
+                  <!-- Cancel Order Button -->
+                  <button class="cancel-btn" (click)="cancelOrder(product.orderId)"
+                     [disabled]="product.status !== 'Pending'"title="Cancel Order">
+                    ❌ Cancel
                   </button>
+
+                  <!-- Order Status Display -->
+                  <span class="order-status" [ngClass]="{ 'cancelled': product.status === 'Canceled' }">
+                    {{ product.status || 'Active' }}
+                  </span>
                 </td>
               </tr>
             </tbody>
@@ -155,21 +161,13 @@
 
         <!-- Pagination (if needed) -->
         <div class="pagination" *ngIf="filteredProducts.length > itemsPerPage">
-          <button 
-            class="page-btn" 
-            (click)="previousPage()" 
-            [disabled]="currentPage === 1"
-          >
+          <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">
             ← Previous
           </button>
           <span class="page-info">
             Page {{ currentPage }} of {{ totalPages }}
           </span>
-          <button 
-            class="page-btn" 
-            (click)="nextPage()" 
-            [disabled]="currentPage === totalPages"
-          >
+          <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
             Next →
           </button>
         </div>
