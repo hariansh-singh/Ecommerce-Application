@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ApiResponse, ProductSalesInfo, SellerDashboardService } from '../../../../services/seller-dashboard.service';
 import { AuthService } from '../../../../services/auth.service';
+import { OrderService } from '../../../../services/order.service';
 
 // Import the interfaces from the service
 
@@ -18,6 +19,9 @@ interface SoldProduct {
   revenue: number;
   orderCount: number;
   thumbnail: string;
+  deliveryStatus: string; // e.g. "Pending", "Shipped", "Delivered"
+  status: string;          // e.g. "Active", "Canceled"
+  orderId: number;         // required for cancellation
 }
 
 @Component({
@@ -29,6 +33,7 @@ interface SoldProduct {
 export class SalesComponent implements OnInit, OnDestroy {
   // Use the updated service name
   private sellerDashboardService = inject(SellerDashboardService);
+    private orderService = inject(OrderService);
   
   // Summary data
   totalItemsSold = 0;
@@ -92,73 +97,70 @@ export class SalesComponent implements OnInit, OnDestroy {
 
     this.subscription.add(salesSubscription);
   }
+private processSalesData(apiResponse: ApiResponse): void {
+  console.log('Processing API Response:', apiResponse);
 
-  private processSalesData(apiResponse: ApiResponse): void {
-    console.log('Processing API Response:', apiResponse);
-    
-    // Check if the response is valid and has the expected structure
-    if (!apiResponse || apiResponse.err !== 0 || !apiResponse.data) {
-      console.error('API Response error or invalid structure');
-      this.errorMessage = apiResponse?.msg || 'Invalid response from server';
-      return;
-    }
-
-    const data = apiResponse.data;
-    
-    // Check if data has the expected structure
-    if (!data.productSales || !Array.isArray(data.productSales)) {
-      console.error('Product sales data is missing or invalid');
-      this.errorMessage = 'Product sales data is not available';
-      return;
-    }
-
-    console.log('Product Sales Data:', data.productSales);
-
-    // Set summary data from API
-    this.totalItemsSold = data.totalProductsSold || 0;
-    this.totalRevenue = data.totalRevenue || 0;
-    this.totalOrdersCount = data.totalOrdersCount || 0;
-
-    // Transform API data to UI format
-    this.soldProducts = data.productSales.map((product: ProductSalesInfo, index: number) => {
-      try {
-        return {
-          productId: product.productId || index + 1,
-          name: product.productName || 'Unknown Product',
-          category: product.productCategory || 'Unknown Category',
-          price: product.productPrice || 0,
-          quantity: product.totalQuantitySold || 0,
-          revenue: product.totalRevenue || 0,
-          orderCount: product.orderDetails?.length || 0,
-          thumbnail: this.getProductThumbnail(product.productName || 'Unknown', product.productCategory || 'Unknown')
-        };
-      } catch (error) {
-        console.error('Error processing product:', product, error);
-        return {
-          productId: index + 1,
-          name: 'Error Processing Product',
-          category: 'Unknown',
-          price: 0,
-          quantity: 0,
-          revenue: 0,
-          orderCount: 0,
-          thumbnail: this.getDefaultThumbnail()
-        };
-      }
-    });
-
-    console.log('Processed Sold Products:', this.soldProducts);
-
-    // Find best seller by quantity
-    this.bestSeller = this.soldProducts.reduce((max, product) => 
-      product.quantity > (max?.quantity ?? 0) ? product : max, 
-      null as SoldProduct | null
-    );
-
-    // Initialize filtered products
-    this.filteredProducts = [...this.soldProducts];
-    this.updatePagination();
+  if (!apiResponse || apiResponse.err !== 0 || !apiResponse.data) {
+    console.error('API Response error or invalid structure');
+    this.errorMessage = apiResponse?.msg || 'Invalid response from server';
+    return;
   }
+
+  const data = apiResponse.data;
+
+  if (!data.productSales || !Array.isArray(data.productSales)) {
+    console.error('Product sales data is missing or invalid');
+    this.errorMessage = 'Product sales data is not available';
+    return;
+  }
+
+  this.totalItemsSold = data.totalProductsSold || 0;
+  this.totalRevenue = data.totalRevenue || 0;
+  this.totalOrdersCount = data.totalOrdersCount || 0;
+
+  this.soldProducts = data.productSales.map((product: ProductSalesInfo, index: number) => {
+    try {
+      const firstOrder = product.orderDetails?.[0];
+
+      return {
+        productId: product.productId || index + 1,
+        orderId: firstOrder?.orderId || 0,
+        name: product.productName || 'Unknown Product',
+        category: product.productCategory || 'Unknown Category',
+        price: product.productPrice || 0,
+        quantity: product.totalQuantitySold || 0,
+        revenue: product.totalRevenue || 0,
+        orderCount: product.orderDetails?.length || 0,
+        deliveryStatus: firstOrder?.orderStatus || 'Pending',
+        status: firstOrder?.orderStatus || 'Active',
+        thumbnail: this.getProductThumbnail(product.productName || 'Unknown', product.productCategory || 'Unknown')
+      };
+    } catch (error) {
+      console.error('Error processing product:', product, error);
+      return {
+        productId: index + 1,
+        orderId: 0,
+        name: 'Error Processing Product',
+        category: 'Unknown',
+        price: 0,
+        quantity: 0,
+        revenue: 0,
+        orderCount: 0,
+        deliveryStatus: 'Pending',
+        status: 'Unknown',
+        thumbnail: this.getDefaultThumbnail()
+      };
+    }
+  });
+
+  this.bestSeller = this.soldProducts.reduce((max, product) =>
+    product.quantity > (max?.quantity ?? 0) ? product : max,
+    null as SoldProduct | null
+  );
+
+  this.filteredProducts = [...this.soldProducts];
+  this.updatePagination();
+}
 
   // Search functionality
   onSearchChange(): void {
@@ -290,6 +292,47 @@ export class SalesComponent implements OnInit, OnDestroy {
       day: 'numeric'
     });
   }
+updateDeliveryStatus(product: SoldProduct): void {
+  console.log('Sending update for order:', product.orderId, '→', product.deliveryStatus);
+  this.orderService.updateOrderStatus(product.orderId, product.deliveryStatus).subscribe({
+    next: res => {
+      console.log('Status update response:', res);
+      this.triggerNotification(`📦 Updated to '${product.deliveryStatus}'`);
+      product.status = product.deliveryStatus;
+    },
+    error: err => {
+      console.error('Status update failed:', err);
+      this.triggerNotification(`❌ Failed to update status`);
+    }
+  });
+}
+
+
+
+cancelOrder(orderId: number): void {
+  const confirmCancel = confirm(`Cancel Order #${orderId}?`);
+  if (!confirmCancel) return;
+
+  this.orderService.cancelOrderById(orderId).subscribe({
+    next: () => {
+      const item = this.soldProducts.find(p => p.orderId === orderId);
+      if (item) item.status = 'Canceled';
+      this.triggerNotification(`❌ Order #${orderId} canceled`);
+    },
+    error: () => this.triggerNotification(`⚠️ Could not cancel order`)
+  });
+}
+
+
+
+notificationMessage = '';
+showNotification = false;
+
+triggerNotification(message: string): void {
+  this.notificationMessage = message;
+  this.showNotification = true;
+  setTimeout(() => this.showNotification = false, 3000);
+}
 
   // Public methods for template
   refreshData(): void {

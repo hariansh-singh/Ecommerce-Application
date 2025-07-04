@@ -171,5 +171,15 @@ namespace backend.Repositories.OrderRepository
 
             return result > 0;
         }
+        public async Task<bool> UpdateOrderStatusAsync(int orderId, string newStatus)
+        {
+            var order = await dbContext.Orders.FindAsync(orderId);
+            if (order == null) return false;
+
+            order.OrderStatus = newStatus;
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

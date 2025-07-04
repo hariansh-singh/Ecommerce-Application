@@ -41,5 +41,14 @@ export class OrderService {
     return this.http.patch(`${this.API_URL}/api/Order/cancel/${orderId}`, {});
   }
 
+updateOrderStatus(orderId: number, status: string): Observable<any> {
+ return this.http.patch(
+  `${this.API_URL}/api/Order/updateStatus/${orderId}`,
+  `"${status}"`,  // serialize as a raw JSON string
+  { headers: { 'Content-Type': 'application/json' } }
+);
+
+}
+
 
 }
