@@ -47,11 +47,11 @@ export const routes: Routes = [
     component: SellerDashboardComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', component: HomeSellerComponent },
+      { path: '', component: SalesComponent},
       { path: 'addProduct', component: AddProductComponent },
       { path: 'editpro/:id', component: EditProductComponent },
       { path: 'allorders', component: AllOrderDetailsComponent },
-     { path: 'sales', component: SalesComponent },
+     { path: 'homedashboard', component: HomeSellerComponent}
       
     ],
   },
