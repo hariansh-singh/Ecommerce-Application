@@ -220,15 +220,15 @@ namespace backend.Services.EmailTemplates
             <!-- Login Information -->
             <div class=""login-info"">
                 <div class=""login-details"">
-                    <span class=""detail-label"">🕐 Login Time:</span>
+                    <span class=""detail-label"">🕐 Login Time: </span>
                     <span class=""detail-value"">{ConvertToIST(DateTime.UtcNow)}</span>
                 </div>
                 <div class=""login-details"">
-                    <span class=""detail-label"">🌐 Location:</span>
+                    <span class=""detail-label"">🌐 Location: </span>
                     <span class=""detail-value"">{location}</span>
                 </div>
                 <div class=""login-details"">
-                    <span class=""detail-label"">📱 Device:</span>
+                    <span class=""detail-label"">📱 Device: </span>
                     <span class=""detail-value"">{device}</span>
                 </div>
             </div>

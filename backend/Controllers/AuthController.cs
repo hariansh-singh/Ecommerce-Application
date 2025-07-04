@@ -49,38 +49,42 @@ namespace backend.Controllers
 
                 if (user.Email != null && user.Password != null)
                 {
-                    string displayName = GetDisplayNameFromEmail(user.Email);
+                    string displayName = customerLogin.Name!;
 
                     // --- Get IP Address ---
-                    string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                    string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString()!;
                     if (string.IsNullOrEmpty(ipAddress) || ipAddress == "::1" || ipAddress == "127.0.0.1") // Localhost fallback
                         ipAddress = "me"; // ipapi.co uses 'me' for current IP
 
                     // --- Get Location from IP ---
                     string location = "Unknown Location";
-                    try
+                    if(ipAddress != "me")
                     {
                         using (var httpClient = new HttpClient())
                         {
                             var response = await httpClient.GetStringAsync($"https://ipapi.co/{ipAddress}/json/");
                             var doc = JsonDocument.Parse(response);
 
-                            string city = doc.RootElement.TryGetProperty("city", out var cityProp) ? cityProp.GetString() : "";
-                            string region = doc.RootElement.TryGetProperty("region", out var regionProp) ? regionProp.GetString() : "";
-                            string country = doc.RootElement.TryGetProperty("country_name", out var countryProp) ? countryProp.GetString() : "";
+                            string city = doc.RootElement.TryGetProperty("city", out var cityProp) ? cityProp.GetString() ?? "" : "";
+                            string region = doc.RootElement.TryGetProperty("region", out var regionProp) ? regionProp.GetString() ?? "" : "";
+                            string country = doc.RootElement.TryGetProperty("country_name", out var countryProp) ? countryProp.GetString() ?? "" : "";
 
-                            location = $"{city}, {region}, {country}".Trim(new char[] { ' ', ',' });
-                            if (string.IsNullOrWhiteSpace(location) || location == ", ,")
-                                location = "Unknown Location";
+                            var parts = new List<string>();
+                            if (!string.IsNullOrWhiteSpace(city)) parts.Add(city);
+                            if (!string.IsNullOrWhiteSpace(region)) parts.Add(region);
+                            if (!string.IsNullOrWhiteSpace(country)) parts.Add(country);
+
+                            if (parts.Count > 0)
+                                location = string.Join(", ", parts);
                         }
                     }
-                    catch
+                    else
                     {
-                        // fallback already set
+                        location = "Local Host";
                     }
 
-                    // --- Parse Device from User-Agent ---
-                    string userAgent = Request.Headers["User-Agent"].ToString();
+                        // --- Parse Device from User-Agent ---
+                        string userAgent = Request.Headers["User-Agent"].ToString();
                     string device = ParseUserAgentSimple(userAgent);
 
                     await _emailService.SendEmailAsync(
@@ -209,20 +213,6 @@ namespace backend.Controllers
 
             // ✅ Redirect to Angular app with token
             return Redirect($"http://localhost:4200/register?token={token}");
-        }
-
-        private string GetDisplayNameFromEmail(string email)
-        {
-            if (string.IsNullOrEmpty(email))
-                return "Valued Customer";
-
-            string localPart = email.Split('@')[0];
-            string displayName = localPart
-                .Replace(".", " ")
-                .Replace("-", " ")
-                .Replace("_", " ");
-
-            return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(displayName);
         }
 
         // Simple User-Agent parser (for real use, consider UAParser NuGet)
