@@ -1,109 +1,167 @@
+/* 🌐 Import a high-end modern font */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
+
+* {
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 🌆 Layout */
 .dashboard-wrapper {
   margin-top: 10px;
   display: flex;
   min-height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
+  background: #f1f3f6;
 }
 
+/* 🧭 Sidebar */
 .sidebar {
-  width: 220px;
-  background-color: #2c3e50;
+  width: 230px;
+  background: linear-gradient(135deg, #2c3e50, #34495e);
   color: #ecf0f1;
   padding: 30px 20px;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s;
 }
 
 .logo {
-  font-size: 22px;
-  margin-bottom: 40px;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 50px;
+  color: #ffffff;
+  letter-spacing: 1px;
 }
 
+/* 🌐 Sidebar links */
 .sidebar nav a {
   display: block;
   color: #bdc3c7;
   text-decoration: none;
-  margin: 15px 0;
-  font-size: 16px;
-  transition: 0.3s;
+  margin: 16px 0;
+  font-size: 17px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 10px 12px;
+  border-radius: 8px;
 }
 
 .sidebar nav a.active,
 .sidebar nav a:hover {
-  color: #fff;
-  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: translateX(5px);
 }
 
-/* Main Content */
+/* 📦 Main Content */
 .dashboard-content {
   flex: 1;
-  padding: 30px;
-  background-color: #f9f9f9;
+  padding: 40px;
+  background-color: #f9fbfd;
+  animation: fadeSlide 0.5s ease-out;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 30px;
 }
 
+.dashboard-header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d3436;
+}
+
+/* 🔄 Refresh Button */
 .refresh-btn {
-  padding: 8px 16px;
-  background-color: #1abc9c;
-  color: white;
+  padding: 10px 18px;
+  background: linear-gradient(to right, #00b894, #55efc4);
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: background 0.3s ease;
 }
 
 .refresh-btn:hover {
-  background-color: #16a085;
+  background: linear-gradient(to right, #0984e3, #74b9ff);
 }
 
-/* Summary Cards */
+/* 💡 Summary Cards */
 .summary-cards {
   display: flex;
-  gap: 20px;
-  margin: 30px 0;
+  gap: 24px;
+  margin-bottom: 40px;
 }
 
 .card {
   flex: 1;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.08);
 }
 
 .card h3 {
-  font-size: 22px;
-  color: #2c3e50;
+  font-size: 24px;
+  font-weight: 600;
+  color: #2d3436;
 }
 
 .card.highlight {
-  background: #ffeaa7;
-  border-left: 5px solid #fdcb6e;
+  background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+  border-left: none;
 }
 
-/* Products Section */
+/* 🛍️ Products Section */
 .products-section {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
 .section-header input {
-  padding: 8px 12px;
+  padding: 10px 14px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 15px;
 }
 
+/* 🧾 Table */
 .products-table {
   width: 100%;
   border-collapse: collapse;
@@ -111,37 +169,101 @@
 
 .products-table th,
 .products-table td {
-  padding: 12px;
+  padding: 14px 12px;
   text-align: left;
+  font-size: 15px;
+  color: #444;
   border-bottom: 1px solid #eee;
 }
 
 .products-table img {
-  width: 50px;
+  width: 52px;
   height: auto;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
-/* Footer */
+/* 📎 Footer */
 .footer {
   text-align: center;
-  margin-top: 40px;
+  margin-top: 60px;
   color: #999;
   font-size: 14px;
 }
 
-/* Responsive */
+/* 📱 Responsive */
 @media (max-width: 768px) {
   .dashboard-wrapper {
     flex-direction: column;
   }
+
   .sidebar {
     width: 100%;
     display: flex;
     justify-content: space-around;
-    padding: 10px;
+    padding: 16px;
   }
+
   .summary-cards {
     flex-direction: column;
   }
+}
+
+
+/* 🧮 Additional Stats Section */
+.additional-stats {
+  margin-top: 50px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  padding: 32px;
+  animation: fadeSlideUp 0.7s ease-in-out;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 💠 Grid Layout */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+/* 📊 Stat Item Styling */
+.stat-item {
+  background: linear-gradient(135deg, #f0f4f8, #ffffff);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* 📝 Typography */
+.stat-item h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 8px;
+}
+
+.stat-item p {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.3px;
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
 }

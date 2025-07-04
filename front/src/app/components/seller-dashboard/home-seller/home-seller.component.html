@@ -27,7 +27,8 @@
 
     <!-- Stats Cards -->
     <div class="stats-grid">
-      <div class="stat-card">
+      <div class="stat-card"  [ngClass]="{ 'active': selectedStockFilter === 'all' }"
+       (click)="filterByStockStatus('all')">
         <div class="stat-icon total">
         </div>
         <div class="stat-content">
@@ -36,7 +37,8 @@
         </div>
       </div>
       
-      <div class="stat-card">
+      <div class="stat-card"  [ngClass]="{ 'active': selectedStockFilter === 'in-stock' }"
+      (click)="filterByStockStatus('in-stock')">
         <div class="stat-icon in-stock">
         </div>
         <div class="stat-content">
@@ -45,7 +47,8 @@
         </div>
       </div>
       
-      <div class="stat-card">
+      <div class="stat-card"  [ngClass]="{ 'active': selectedStockFilter === 'low-stock' }"
+      (click)="filterByStockStatus('low-stock')">
         <div class="stat-icon low-stock">
         </div>
         <div class="stat-content">
@@ -54,7 +57,8 @@
         </div>
       </div>
       
-      <div class="stat-card">
+      <div class="stat-card"  [ngClass]="{ 'active': selectedStockFilter === 'out-of-stock' }"
+      (click)="filterByStockStatus('out-of-stock')">
         <div class="stat-icon out-stock">
         </div>
         <div class="stat-content">
@@ -77,10 +81,10 @@
     <h3>No Products Found</h3>
     <p *ngIf="searchTerm">No products match your search criteria. Try different keywords.</p>
     <p *ngIf="!searchTerm">You haven't added any products yet. Start by adding your first product.</p>
-    <button class="btn-primary" [routerLink]="['addProduct']">
+    <!-- <button class="btn-primary" [routerLink]="['addProduct']">
       <i class="bi bi-plus"></i>
       Add Your First Product
-    </button>
+    </button> -->
   </div>
 
   <!-- Products Table -->

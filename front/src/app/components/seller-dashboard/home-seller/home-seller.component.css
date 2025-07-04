@@ -481,3 +481,20 @@
     height: 40px;
   }
 }
+
+
+.stat-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card.active {
+  border-color: #4CAF50; /* Green border, adjust to fit your theme */
+  background-color: #f0fff0; /* Light green background */
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
