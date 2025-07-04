@@ -293,12 +293,20 @@ private processSalesData(apiResponse: ApiResponse): void {
     });
   }
 updateDeliveryStatus(product: SoldProduct): void {
-  console.log('Sending update for order:', product.orderId, '→', product.deliveryStatus);
+  if (product.status === 'Canceled') {
+    this.triggerNotification(`🚫 Cannot update status for a canceled order.`);
+    return;
+  }
+
   this.orderService.updateOrderStatus(product.orderId, product.deliveryStatus).subscribe({
     next: res => {
-      console.log('Status update response:', res);
-      this.triggerNotification(`📦 Updated to '${product.deliveryStatus}'`);
       product.status = product.deliveryStatus;
+      this.triggerNotification(`📦 Updated to '${product.deliveryStatus}'`);
+
+      // Optional: once shipped, disallow cancel by syncing status
+      if (product.deliveryStatus === 'Shipped') {
+        product.status = 'Shipped';
+      }
     },
     error: err => {
       console.error('Status update failed:', err);
@@ -309,19 +317,29 @@ updateDeliveryStatus(product: SoldProduct): void {
 
 
 
+
 cancelOrder(orderId: number): void {
+  const item = this.soldProducts.find(p => p.orderId === orderId);
+  if (!item) return;
+
+  if (item.status !== 'Pending') {
+    this.triggerNotification(`⚠️ Only 'Pending' orders can be canceled.`);
+    return;
+  }
+
   const confirmCancel = confirm(`Cancel Order #${orderId}?`);
   if (!confirmCancel) return;
 
   this.orderService.cancelOrderById(orderId).subscribe({
     next: () => {
-      const item = this.soldProducts.find(p => p.orderId === orderId);
-      if (item) item.status = 'Canceled';
+      item.status = 'Canceled';
+      item.deliveryStatus = 'Canceled';
       this.triggerNotification(`❌ Order #${orderId} canceled`);
     },
     error: () => this.triggerNotification(`⚠️ Could not cancel order`)
   });
 }
+
 
 
 
@@ -347,6 +365,7 @@ triggerNotification(message: string): void {
   get hasData(): boolean {
     return this.soldProducts.length > 0;
   }
+
 
   get isEmpty(): boolean {
     return !this.isLoading && !this.errorMessage && this.soldProducts.length === 0;

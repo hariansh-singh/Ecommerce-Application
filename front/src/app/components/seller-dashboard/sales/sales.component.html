@@ -129,6 +129,7 @@
 
                   <!-- Delivery Status Dropdown -->
                   <select [(ngModel)]="product.deliveryStatus" (change)="updateDeliveryStatus(product)"
+                    [disabled]="product.status === 'Canceled'"
                     class="delivery-dropdown">
                     <option value="Pending">Pending</option>
                     <option value="Shipped">Shipped</option>
@@ -138,7 +139,7 @@
 
                   <!-- Cancel Order Button -->
                   <button class="cancel-btn" (click)="cancelOrder(product.orderId)"
-                    [disabled]="product.status === 'Canceled'" title="Cancel Order">
+                     [disabled]="product.status !== 'Pending'"title="Cancel Order">
                     ❌ Cancel
                   </button>
 
