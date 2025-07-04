@@ -18,6 +18,7 @@ export class HomeSellerComponent implements OnInit {
   searchTerm: string = '';
   filteredProducts: any[] = [];
   sortBy: string = 'productName';
+  selectedStockFilter: 'all' | 'in-stock' | 'low-stock' | 'out-of-stock' = 'all';  //added
   sortOrder: 'asc' | 'desc' = 'asc';
 
   authService = inject(AuthService);
@@ -97,6 +98,34 @@ deleteProduct(id: number): void {
       product.productId.toString().includes(this.searchTerm)
     );
   }
+
+  //added
+  filterByStockStatus(status: 'all' | 'in-stock' | 'low-stock' | 'out-of-stock'): void {
+  this.selectedStockFilter = status;
+
+  switch (status) {
+    case 'in-stock':
+      this.filteredProducts = this.products.filter(p => p.stockQuantity > 10);
+      break;
+    case 'low-stock':
+      this.filteredProducts = this.products.filter(p => p.stockQuantity > 0 && p.stockQuantity <= 10);
+      break;
+    case 'out-of-stock':
+      this.filteredProducts = this.products.filter(p => p.stockQuantity === 0);
+      break;
+    default:
+      this.filteredProducts = [...this.products];
+      break;
+  }
+  // Also reapply search filter, if any
+  if (this.searchTerm.trim()) {
+    this.filteredProducts = this.filteredProducts.filter(product =>
+      product.productName.toLowerCase().includes(this.searchTerm) ||
+      product.description.toLowerCase().includes(this.searchTerm) ||
+      product.productId.toString().includes(this.searchTerm)
+    );
+  }
+}
 
   sortProducts(column: string): void {
     if (this.sortBy === column) {
