@@ -19,8 +19,9 @@ interface SoldProduct {
   revenue: number;
   orderCount: number;
   thumbnail: string;
-  deliveryStatus: string; // e.g. "Pending", "Shipped", "Delivered"
-  status: string;          // e.g. "Active", "Canceled"
+  orderStatus: string;  
+  nextStatus?: string; // transient field, not persisted
+        // e.g. "Active", "Canceled"
   orderId: number;         // required for cancellation
 }
 
@@ -45,6 +46,7 @@ export class SalesComponent implements OnInit, OnDestroy {
   // Search and filtering
   searchTerm = '';
   filteredProducts: SoldProduct[] = [];
+
   
   // Pagination
   currentPage = 1;
@@ -53,7 +55,25 @@ export class SalesComponent implements OnInit, OnDestroy {
   
   // Modal
   selectedProduct: SoldProduct | null = null;
-  
+  private readonly statusTransitions: Record<string, string[]> = {
+    Pending: ['Shipped'],
+    Shipped: ['Delivered'],
+    Delivered: [],
+    Canceled: []
+  };
+  private isValidTransition(from: string, to: string): boolean {
+  return this.statusTransitions[from]?.includes(to);
+}
+  getAllowedStatuses(current: string): string[] {
+  const transitions: Record<string, string[]> = {
+    Pending: ['Shipped'],
+    Shipped: ['Delivered'],
+    Delivered: [],
+    Canceled: []
+  };
+  return transitions[current] || [];
+}
+
   // UI states
   isLoading = false;
   errorMessage: string | null = null;
@@ -131,8 +151,8 @@ private processSalesData(apiResponse: ApiResponse): void {
         quantity: product.totalQuantitySold || 0,
         revenue: product.totalRevenue || 0,
         orderCount: product.orderDetails?.length || 0,
-        deliveryStatus: firstOrder?.orderStatus || 'Pending',
-        status: firstOrder?.orderStatus || 'Active',
+//deliveryStatus: firstOrder?.orderStatus || 'Pending',
+        orderStatus: firstOrder?.orderStatus || 'Pending',
         thumbnail: this.getProductThumbnail(product.productName || 'Unknown', product.productCategory || 'Unknown')
       };
     } catch (error) {
@@ -146,8 +166,7 @@ private processSalesData(apiResponse: ApiResponse): void {
         quantity: 0,
         revenue: 0,
         orderCount: 0,
-        deliveryStatus: 'Pending',
-        status: 'Unknown',
+        orderStatus: 'Pending',
         thumbnail: this.getDefaultThumbnail()
       };
     }
@@ -292,37 +311,40 @@ private processSalesData(apiResponse: ApiResponse): void {
       day: 'numeric'
     });
   }
+
+ 
+
 updateDeliveryStatus(product: SoldProduct): void {
-  if (product.status === 'Canceled') {
+  const currentStatus = product.orderStatus;
+  const selectedStatus = product.nextStatus;
+
+  if (currentStatus === 'Canceled') {
     this.triggerNotification(`🚫 Cannot update status for a canceled order.`);
     return;
   }
 
-  this.orderService.updateOrderStatus(product.orderId, product.deliveryStatus).subscribe({
-    next: res => {
-      product.status = product.deliveryStatus;
-      this.triggerNotification(`📦 Updated to '${product.deliveryStatus}'`);
+  if (!selectedStatus || !this.isValidTransition(currentStatus, selectedStatus)) {
+    this.triggerNotification(`⚠️ Invalid transition from '${currentStatus}' to '${selectedStatus}'`);
+    return;
+  }
 
-      // Optional: once shipped, disallow cancel by syncing status
-      if (product.deliveryStatus === 'Shipped') {
-        product.status = 'Shipped';
-      }
+  this.orderService.updateOrderStatus(product.orderId, selectedStatus).subscribe({
+    next: () => {
+      product.orderStatus = selectedStatus;
+      product.nextStatus = undefined;
+      this.triggerNotification(`📦 Order status updated to '${selectedStatus}'`);
     },
-    error: err => {
-      console.error('Status update failed:', err);
+    error: () => {
       this.triggerNotification(`❌ Failed to update status`);
     }
   });
 }
 
-
-
-
 cancelOrder(orderId: number): void {
   const item = this.soldProducts.find(p => p.orderId === orderId);
   if (!item) return;
 
-  if (item.status !== 'Pending') {
+  if (item.orderStatus !== 'Pending') {
     this.triggerNotification(`⚠️ Only 'Pending' orders can be canceled.`);
     return;
   }
@@ -332,13 +354,15 @@ cancelOrder(orderId: number): void {
 
   this.orderService.cancelOrderById(orderId).subscribe({
     next: () => {
-      item.status = 'Canceled';
-      item.deliveryStatus = 'Canceled';
+      item.orderStatus = 'Canceled';
       this.triggerNotification(`❌ Order #${orderId} canceled`);
     },
-    error: () => this.triggerNotification(`⚠️ Could not cancel order`)
+    error: () => {
+      this.triggerNotification(`⚠️ Could not cancel order`);
+    }
   });
 }
+
 
 
 
