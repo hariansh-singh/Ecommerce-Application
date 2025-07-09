@@ -128,25 +128,25 @@
 
 
                   <!-- Delivery Status Dropdown -->
-                  <select [(ngModel)]="product.deliveryStatus" (change)="updateDeliveryStatus(product)"
-                    [disabled]="product.status === 'Canceled'"
-                    class="delivery-dropdown">
-                    <option value="Pending">Pending</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
+                  <select [(ngModel)]="product.nextStatus" (change)="updateDeliveryStatus(product)"
+                    [disabled]="product.orderStatus === 'Canceled'" class="delivery-dropdown">
+                    <option *ngFor="let status of getAllowedStatuses(product.orderStatus)" [value]="status">
+                      {{ status }}
+                    </option>
                   </select>
 
 
                   <!-- Cancel Order Button -->
                   <button class="cancel-btn" (click)="cancelOrder(product.orderId)"
-                     [disabled]="product.status !== 'Pending'"title="Cancel Order">
+                    [disabled]="product.orderStatus !== 'Pending'" title="Cancel Order">
                     ❌ Cancel
                   </button>
 
                   <!-- Order Status Display -->
-                  <span class="order-status" [ngClass]="{ 'cancelled': product.status === 'Canceled' }">
-                    {{ product.status || 'Active' }}
+                  <span class="order-status" [ngClass]="{ 'cancelled': product.orderStatus === 'Canceled' }">
+                    {{ product.orderStatus || 'Active' }}
                   </span>
+
                 </td>
               </tr>
             </tbody>

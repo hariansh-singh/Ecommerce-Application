@@ -181,10 +181,27 @@ namespace backend.Repositories.OrderRepository
             var order = await dbContext.Orders.FindAsync(orderId);
             if (order == null) return false;
 
+            // Prevent status changes on canceled orders
+            if (order.OrderStatus == "Canceled")
+                return false;
+
+            // Define allowed forward transitions
+            var validTransitions = new Dictionary<string, List<string>>
+    {
+        { "Pending", new() { "Shipped" } },
+        { "Shipped", new() { "Delivered" } },
+        { "Delivered", new() },  // Terminal state
+        { "Canceled", new() }    // Terminal state
+    };
+
+            if (!validTransitions.TryGetValue(order.OrderStatus, out var allowed) || !allowed.Contains(newStatus))
+                return false;
+
             order.OrderStatus = newStatus;
             await dbContext.SaveChangesAsync();
             return true;
         }
+
 
     }
 }
