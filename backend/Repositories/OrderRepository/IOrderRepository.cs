@@ -4,7 +4,7 @@ namespace backend.Repositories.OrderRepository
 {
     public interface IOrderRepository
     {
-        Task<bool> AddOrder(OrderUIModel order);
+        Task<OrderDBModel> AddOrder(OrderUIModel order);
         Task<List<OrderDBModel>> GetAllOrders();
         Task<List<OrderDBModel>> GetOrdersById(int customerId);
         Task<bool> UpdateOrder(int orderId, OrderUIModel updatedOrder);

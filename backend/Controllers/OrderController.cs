@@ -1,6 +1,7 @@
 ﻿using backend.Models.OrderModels;
+using backend.Models.UploadInvoiceRequestDTO;
 using backend.Repositories.OrderRepository;
-using Microsoft.AspNetCore.Http;
+using backend.Services.EmailService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -11,10 +12,12 @@ namespace backend.Controllers
     {
 
         private readonly IOrderRepository _orderRepository;
+        private readonly IEmailService _emailService;
 
-        public OrderController(IOrderRepository orderRepository)
+        public OrderController(IOrderRepository orderRepository, IEmailService emailService)
         {
             _orderRepository = orderRepository;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -66,7 +69,7 @@ namespace backend.Controllers
             }
 
             var result = await _orderRepository.AddOrder(order);
-            if (!result)
+            if (result.OrderId < 1)
             {
                 return BadRequest(new
                 {
@@ -77,8 +80,36 @@ namespace backend.Controllers
             return Ok(new
             {
                 err = 0,
-                msg = "Order placed successfully"
+                msg = "Order placed successfully",
+                data = result
             });
+        }
+
+
+        [HttpPost("upload-invoice")]
+        public async Task<IActionResult> UploadInvoice([FromForm] UploadInvoiceRequest request)
+        {
+            if (request.Invoice == null || request.Invoice.Length == 0)
+            {
+                return BadRequest(new { err = 1, msg = "No invoice file uploaded." });
+            }
+
+            var tempPath = Path.GetTempFileName();
+            using (var stream = new FileStream(tempPath, FileMode.Create))
+            {
+                await request.Invoice.CopyToAsync(stream);
+            }
+
+            var subject = $"Your Order #{request.OrderId} Invoice - Sha.in";
+            var body = $"<p>Dear {request.CustomerName},<br/>Thank you for your order! Please find your invoice attached.</p>";
+
+            await _emailService.SendEmailWithAttachmentAsync(
+                request.CustomerEmail!, subject, body, tempPath, $"invoice_{request.OrderId}.pdf"
+            );
+
+            System.IO.File.Delete(tempPath);
+
+            return Ok(new { err = 0, msg = "Invoice uploaded and email sent." });
         }
 
 
@@ -131,6 +162,7 @@ namespace backend.Controllers
             });
         }
 
+
         [HttpPatch("cancel/{orderId}")]
         public async Task<IActionResult> CancelOrder(int orderId)
         {
@@ -149,6 +181,7 @@ namespace backend.Controllers
                 message = "Order has been cancelled successfully."
             });
         }
+
 
         [HttpPatch("updateStatus/{orderId}")]
         public async Task<IActionResult> UpdateDeliveryStatus(int orderId, [FromBody] string newStatus)
