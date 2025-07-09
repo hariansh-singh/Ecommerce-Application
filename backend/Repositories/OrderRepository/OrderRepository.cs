@@ -19,7 +19,7 @@ namespace backend.Repositories.OrderRepository
         }
 
 
-        public async Task<bool> AddOrder(OrderUIModel order)
+        public async Task<OrderDBModel> AddOrder(OrderUIModel order)
         {
             using var transaction = await dbContext.Database.BeginTransactionAsync();
             try
@@ -92,7 +92,12 @@ namespace backend.Repositories.OrderRepository
 
                 // Commit transaction
                 await transaction.CommitAsync();
-                return true;
+                var completeOrder = await dbContext.Orders
+                    .Include(o => o.OrderItems)!                                   // used ! to prevent null value warnings
+                        .ThenInclude(oi => oi.Products)
+                            .FirstOrDefaultAsync(o => o.OrderId == newOrder.OrderId);
+
+                return completeOrder ?? newOrder;
             }
             catch
             {
