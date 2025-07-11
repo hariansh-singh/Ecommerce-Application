@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using backend.DataAccessLayer;
 using backend.Models.CustomerModels;
+using backend.Services.EmailService;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories.CustomerRepository
@@ -10,11 +11,13 @@ namespace backend.Repositories.CustomerRepository
 
         private readonly EcomDBContext dBContext;
         private readonly IMapper mapper;
+        private readonly IEmailService emailService;
 
-        public CustomerRepository(EcomDBContext dBContext, IMapper mapper)
+        public CustomerRepository(EcomDBContext dBContext, IMapper mapper, IEmailService emailService)
         {
             this.dBContext = dBContext;
             this.mapper = mapper;
+            this.emailService = emailService;
         }
 
         public async Task<int?> AddUser(CustomerUIModel user)
@@ -65,26 +68,7 @@ namespace backend.Repositories.CustomerRepository
             return false;
         }
 
-        public async Task<string> ChangeUserStatus(int customerId)
-        {
-            var userData = await dBContext.Customers.FirstOrDefaultAsync(x => x.CustomerId == customerId);
-            if (userData != null)
-            {
-                if(userData.UserStatus == 1)
-                {
-                    userData.UserStatus = 0;
-                    await dBContext.SaveChangesAsync();
-                    return "User Deactivated";
-                }
-                else
-                {
-                    userData.UserStatus = 1;
-                    await dBContext.SaveChangesAsync();
-                    return "User Activated";
-                }
-            }
-            return string.Empty;
-        }
+       
 
         public async Task<bool> DeleteUser(int customerId)
         {
@@ -154,6 +138,34 @@ namespace backend.Repositories.CustomerRepository
             }
 
             return false;
+        }
+
+        public async Task<string> ChangeUserStatus(int customerId)
+        {
+            var userData = await dBContext.Customers.FirstOrDefaultAsync(x => x.CustomerId == customerId);
+            if (userData != null)
+            {
+                bool isActivating = userData.UserStatus == 0;
+
+                userData.UserStatus = isActivating ? 1 : 0;
+                await dBContext.SaveChangesAsync();
+
+                // ✉️ Send status update email
+                var statusLabel = isActivating ? "Activated" : "Deactivated";
+                string subject = $"Your account has been {statusLabel}";
+                string message = $@"
+            Hello {userData.Name},<br/><br/>
+            Your account has been <strong>{statusLabel.ToLower()}</strong> by the admin.<br/>
+            If you believe this was done in error, please reach out to support.<br/><br/>
+            — Sha.in Team
+        ";
+
+                await emailService.SendEmailAsync(userData.Email!, subject, message);
+
+                return $"User {statusLabel}";
+            }
+
+            return string.Empty;
         }
     }
 }
