@@ -6,7 +6,7 @@ namespace backend.Services.EmailService
 {
     public class EmailSettings
     {
-        public string ?SmtpServer { get; set; }
+        public string? SmtpServer { get; set; }
         public int Port { get; set; }
         public string? SenderEmail { get; set; }
         public string? SenderName { get; set; }
@@ -17,6 +17,7 @@ namespace backend.Services.EmailService
     public interface IEmailService
     {
         Task SendEmailAsync(string to, string subject, string body);
+        Task SendEmailWithAttachmentAsync(string to, string subject, string htmlBody, string attachmentPath, string attachmentName);
     }
 
     public class EmailService : IEmailService
@@ -35,6 +36,29 @@ namespace backend.Services.EmailService
             email.To.Add(MailboxAddress.Parse(to));
             email.Subject = subject;
             email.Body = new TextPart("html") { Text = body };
+
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync(_settings.SmtpServer, _settings.Port, MailKit.Security.SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_settings.Username, _settings.Password);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+        }
+
+        public async Task SendEmailWithAttachmentAsync(string to, string subject, string htmlBody, string attachmentPath, string attachmentName)
+        {
+            var email = new MimeMessage();
+            email.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
+            email.To.Add(MailboxAddress.Parse(to));
+            email.Subject = subject;
+
+            var builder = new BodyBuilder
+            {
+                HtmlBody = htmlBody
+            };
+
+            builder.Attachments.Add(attachmentName, System.IO.File.ReadAllBytes(attachmentPath), new ContentType("application", "pdf"));
+
+            email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
             await smtp.ConnectAsync(_settings.SmtpServer, _settings.Port, MailKit.Security.SecureSocketOptions.StartTls);

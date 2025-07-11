@@ -19,7 +19,7 @@ namespace backend.Repositories.OrderRepository
         }
 
 
-        public async Task<bool> AddOrder(OrderUIModel order)
+        public async Task<OrderDBModel> AddOrder(OrderUIModel order)
         {
             using var transaction = await dbContext.Database.BeginTransactionAsync();
             try
@@ -92,7 +92,12 @@ namespace backend.Repositories.OrderRepository
 
                 // Commit transaction
                 await transaction.CommitAsync();
-                return true;
+                var completeOrder = await dbContext.Orders
+                    .Include(o => o.OrderItems)!                                   // used ! to prevent null value warnings
+                        .ThenInclude(oi => oi.Products)
+                            .FirstOrDefaultAsync(o => o.OrderId == newOrder.OrderId);
+
+                return completeOrder ?? newOrder;
             }
             catch
             {
@@ -176,10 +181,27 @@ namespace backend.Repositories.OrderRepository
             var order = await dbContext.Orders.FindAsync(orderId);
             if (order == null) return false;
 
+            // Prevent status changes on canceled orders
+            if (order.OrderStatus == "Canceled")
+                return false;
+
+            // Define allowed forward transitions
+            var validTransitions = new Dictionary<string, List<string>>
+    {
+        { "Pending", new() { "Shipped" } },
+        { "Shipped", new() { "Delivered" } },
+        { "Delivered", new() },  // Terminal state
+        { "Canceled", new() }    // Terminal state
+    };
+
+            if (!validTransitions.TryGetValue(order.OrderStatus, out var allowed) || !allowed.Contains(newStatus))
+                return false;
+
             order.OrderStatus = newStatus;
             await dbContext.SaveChangesAsync();
             return true;
         }
+
 
     }
 }
