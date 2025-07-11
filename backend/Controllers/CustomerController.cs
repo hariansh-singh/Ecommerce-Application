@@ -1,5 +1,6 @@
 ﻿using backend.Models.CustomerModels;
 using backend.Repositories.CustomerRepository;
+using backend.Services.EmailService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -11,10 +12,12 @@ namespace backend.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly IEmailService _emailService;
 
-        public CustomerController(ICustomerRepository _customerRepository)
+        public CustomerController(ICustomerRepository _customerRepository, IEmailService emailService)
         {
             this._customerRepository = _customerRepository;
+            this._emailService = emailService;
         }
 
         [HttpGet]

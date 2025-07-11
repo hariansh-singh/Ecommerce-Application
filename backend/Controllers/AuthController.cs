@@ -34,7 +34,7 @@ namespace backend.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel user)
         {
-            if (ModelState.IsValid)
+             if (ModelState.IsValid)
             {
                 var customerLogin = await _customerRepository.Login(user);
                 if (customerLogin == null)
@@ -157,13 +157,13 @@ namespace backend.Controllers
             var result = await _customerRepository.AddUser(customer);
             if (result > 0)
             {
-                var displayName = customer.Name;
+                 var displayName = customer.Name;
                 await _emailService.SendEmailAsync(
                         customer.Email!,
                         "Welcome to Sha.in - Registration Confirmation",
                         EmailTemplateService.GetRegisterEmailTemplate(displayName ?? "Valued Customer")
                     );
-                return Ok(new
+                 return Ok(new
                 {
                     err = 0,
                     msg = "Registration successful",
@@ -208,7 +208,7 @@ namespace backend.Controllers
                     Name = name,
                     Role = "user"
                 };
-
+                
                 var newId = await _customerRepository.AddUser(newCustomer);
                 existingCustomer = await _customerRepository.FindByEmailAsync(email!); // re-fetch with ID
 
@@ -269,11 +269,25 @@ namespace backend.Controllers
 
 
             var token = IssueToken(existingCustomer!);
-
+             
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // ✅ Redirect to Angular app with token
             return Redirect($"http://localhost:4200/register?token={token}");
+        }
+
+        private string GetDisplayNameFromEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                return "Valued Customer";
+
+            string localPart = email.Split('@')[0];
+            string displayName = localPart
+                .Replace(".", " ")
+                .Replace("-", " ")
+                .Replace("_", " ");
+
+            return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(displayName);
         }
 
         // Simple User-Agent parser (for real use, consider UAParser NuGet)
